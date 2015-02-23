@@ -1,5 +1,15 @@
 [
 	{
+		"version": "2.4.0",
+		"date": "Feb 23, 2015",
+		"new": [
+			"You can now use emoticons as keywords, e.g. setting a keyword to <code>Kappa</code> will work as expected."
+		],
+		"fixed": [
+			"Button not showing up sometimes."
+		]
+	},
+	{
 		"version": "2.3.2",
 		"date": "Oct 24, 2014",
 		"fixed": [
