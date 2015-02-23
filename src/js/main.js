@@ -15,7 +15,6 @@ require('./boot/styles').onload = function () {
 	var button = require('./boot/button');
 	var tip = button.tip;
 	var isFrame = window !== window.parent;
-	var runsIn = ['channel', 'chat'];
 	var tgaWindows = {};
 
 	// button does different things in different situations:
@@ -28,15 +27,19 @@ require('./boot/styles').onload = function () {
 
 	// update button state on window resize
 	evt.bind(window, 'resize', throttle(updateButtonState, 100));
+
 	// update button state on  location.pathname change
 	setInterval(onLocationChange.bind(null, updateButtonState), 1000);
-	// set initial button state
+
+	// re-attach button when DOM changed (navigation)
+	new MutationObserver(throttle(button.attach, 600)).observe(document.body, { childList: true });
+
+	// attach button & set initial button state
+	button.attach();
 	updateButtonState();
 
 	function updateButtonState() {
-		var pageType = twitch.pageType();
 		var channelID = window.location.pathname.match(/^\/([^\/]+)/i)[1];
-		if (~runsIn.indexOf(pageType)) button.attach();
 		if (tga && window.innerWidth < tga.options.minWindowWidth) {
 			tip.content(
 				isFrame
