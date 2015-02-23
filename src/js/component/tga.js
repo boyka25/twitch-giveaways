@@ -147,7 +147,7 @@ function Controller(container, options) {
 		}
 		user.lastMessage = new Date();
 		if (self.winner === user) user.messages.push(new Message(message.html));
-		if (self.keyword && message.html.indexOf(self.keyword) === 0) {
+		if (self.keyword && message.text.indexOf(self.keyword) === 0) {
 			if (self.cfg.keywordAntispam && user.keyword === self.keyword) {
 				user.keywordEntries++;
 				if (user.keywordEntries > self.cfg.keywordAntispamLimit) user.eligible = false;

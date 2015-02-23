@@ -4,6 +4,7 @@ var slice = require('sliced');
 var closest = require('closest');
 var chatContainer = query('.chat-room .chat-lines');
 var User = require('../model/user');
+var textify = require('./textify');
 
 if (!chatContainer) return false;
 
@@ -13,7 +14,7 @@ emitter(chat);
 
 // chat messages observer
 var chatObserver = new MutationObserver(function processMutations(mutations) {
-	var addedNodes, i, l, node, line, name, message;
+	var addedNodes, i, l, node, line, name, html, text;
 	for (var m = 0, ml = mutations.length; m < ml; m++) {
 		addedNodes = mutations[m].addedNodes;
 		for (i = 0, l = addedNodes.length; i < l; i++) {
@@ -24,13 +25,15 @@ var chatObserver = new MutationObserver(function processMutations(mutations) {
 			name = name && name.textContent.trim();
 			if (!name) continue;
 			if (query('.deleted', line)) continue;
-			message = query('.message', line).innerHTML.trim();
+			html = query('.message', line).innerHTML.trim();
+			text = textify(html);
 			chat.emit('message', {
 				user: {
 					name: name,
 					badges: slice(query.all('.badge', line)).map(getGroups).filter(filterFalsy),
 				},
-				html: message,
+				html: html,
+				text: text,
 				time: new Date()
 			});
 		}
