@@ -1,7 +1,6 @@
 var emitter = require('emitter');
 var query = require('query');
 var slice = require('sliced');
-var closest = require('closest');
 var chatContainer = query('.chat-room .chat-lines');
 var User = require('../model/user');
 var textify = require('./textify');
@@ -19,7 +18,7 @@ var chatObserver = new MutationObserver(function processMutations(mutations) {
 		addedNodes = mutations[m].addedNodes;
 		for (i = 0, l = addedNodes.length; i < l; i++) {
 			node = addedNodes[i];
-			line = closest(node, '.chat-line', true, chatContainer);
+			line = node.querySelector && node.querySelector('.chat-line');
 			if (!line) continue;
 			name = query('.from', line);
 			name = name && name.textContent.trim();

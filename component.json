@@ -18,7 +18,6 @@
     "darsain/tooltips": "*",
     "darsain/sortedlist": "*",
     "darsain/constructor-apply": "*",
-    "component/closest": "*",
     "component/emitter": "*",
     "component/events": "*",
     "component/inherit": "*",
