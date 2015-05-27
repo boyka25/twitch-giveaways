@@ -1,5 +1,13 @@
 [
 	{
+		"version": "2.4.1",
+		"date": "May 27, 2015",
+		"fixed": [
+			"Message parsing broken by twitch DOM markup changes.",
+			"Top bars shrinking when content becomes scrollable."
+		]
+	},
+	{
 		"version": "2.4.0",
 		"date": "Feb 23, 2015",
 		"new": [
