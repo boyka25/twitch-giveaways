@@ -1,5 +1,12 @@
 [
 	{
+		"version": "2.4.2",
+		"date": "May 30, 2015",
+		"fixed": [
+			"Extension broken by last update. The issue was only in production build and didn't show up in development, so I didn't catch it beforehand. Sorry about that."
+		]
+	},
+	{
 		"version": "2.4.1",
 		"date": "May 27, 2015",
 		"fixed": [
