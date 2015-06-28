@@ -19,6 +19,8 @@ var chatObserver = new MutationObserver(function processMutations(mutations) {
 		for (i = 0, l = addedNodes.length; i < l; i++) {
 			node = addedNodes[i];
 			line = node.querySelector && node.querySelector('.chat-line');
+			if (!line && node.matches && node.matches('.chat-line'))
+				line = node;  // BTTV fix;
 			if (!line) continue;
 			name = query('.from', line);
 			name = name && name.textContent.trim();
