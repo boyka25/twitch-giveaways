@@ -21,14 +21,11 @@ process.once('exit', function (code) {
  * @param  {Error} err
  */
 function handleError(err) {
-	var gutil = require('gulp-util');
 	var maxStackLines = 10;
 	errorOccurred = true;
-	if (err.name && err.stack)
-		err = gutil.colors.red(err.plugin + ': ' + err.name + ': ') +
-			gutil.colors.bold.red(err.message) +
-			'\n' + err.stack.replace(err.message, '').split('\n').map(shortenLine).slice(0, maxStackLines).join('\n');
-	gutil.log(err);
+	if (err.name && err.stack) err = err.plugin + ': ' + err.name + ': ' + err.message + '\n'
+		+ err.stack.replace(err.message, '').split('\n').map(shortenLine).slice(0, maxStackLines).join('\n');
+	console.error(err);
 	if (this.emit) this.emit('end');
 }
 
