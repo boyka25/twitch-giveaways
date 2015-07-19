@@ -232,12 +232,11 @@ gulp.task('release', ['bump'], function () {
 });
 
 gulp.task('serve', function () {
-	var gutil = require('gulp-util');
 	var http = require('http');
 	var ecstatic = require('ecstatic');
 	var port = argv.port || 8080;
 	http.createServer(ecstatic({ root: __dirname })).listen(port);
-	gutil.log('Serving:', gutil.colors.magenta('http://localhost:' + port + '/test/chat'));
+	console.log('Serving:', 'http://localhost:' + port + '/test/chat');
 	gulp.start('watch');
 });
 

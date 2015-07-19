@@ -16,7 +16,6 @@
     "gulp-svgicons2svgfont": "~0.1.1",
     "gulp-ttf2woff": "0.0.8",
     "gulp-uglify": "~0.3.1",
-    "gulp-util": "^3.0.0",
     "gulp-zip": "~0.4.0",
     "minimist": "~0.2.0",
     "rimraf": "^2.2.8",
