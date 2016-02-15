@@ -21,7 +21,7 @@ app.cfgDefaults = {
 	keywordAntispam: false,
 	keywordAntispamLimit: 1,
 	displayTooltips: true,
-	ignoreList: ['jtv']
+	ignoreList: ['jtv','nightbot','moobot','vivbot','wizebot','coebot']
 };
 app.optionDefaults = {
 	storageName: 'twitchGiveaways',
