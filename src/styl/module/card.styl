@@ -17,6 +17,7 @@
 			justify-content: center
 			size: emblemSize
 			margin: 0 auto
+			font-size: 30px
 			background-color: colors.lighter
 			background-size: cover
 			border-radius: 50%
@@ -24,9 +25,6 @@
 			img
 				size: emblemSize
 				border-radius: 50%
-
-			.tgi
-				font-size: 50px
 
 		aside
 			position: absolute
@@ -56,10 +54,8 @@
 		.meta
 			&:first-child
 				text-align: right
-			.tgi
+			.status
 				margin: 0 5px
-				font-size: 22px
-
 
 		.action
 			position: relative
@@ -74,16 +70,16 @@
 			&:hover
 				color: colors.primary
 
-			.tgi
+			.Icon
 				position: relative
 				z-index: 4
 				display: flex
 				justify-content: center
 				align-items: center
-				size: 30px
+				size: 26px
 				background: colors.background
+				border: 2px solid colors.background
 				border-radius: 50%
-				font-size: 24px
 
 			.name
 				position: relative
@@ -143,6 +139,6 @@
 			&:last-child:after
 				display: none
 
-			.tgi
+			.Icon
 				margin-right: 10px
 				font-size: 22px

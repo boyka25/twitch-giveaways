@@ -4,9 +4,11 @@ var Tip = require('tooltip');
 var query = require('query');
 
 // tga button
+var icon = e.svg('svg', e.svg('use', {'xlink:href': '#icon-gift'}));
+icon.setAttribute('class', 'tga-button Icon');
 var button = module.exports = e('a.tga-button.button.glyph-only', {
 	href: 'javascript:void(0)'
-}, e('i.tgi.tgi-gift'));
+}, icon);
 
 // tooltip
 var tip = new Tip('', {

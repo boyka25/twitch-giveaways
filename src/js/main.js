@@ -9,6 +9,7 @@ function onLocationChange(callback) {
 	callback();
 }
 
+require('./boot/icons');
 require('./boot/styles').onload = function () {
 	var pageType = twitch.pageType();
 	var tga = pageType === 'chat' ? require('./boot/tga') : null;

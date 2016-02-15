@@ -99,13 +99,7 @@ Deletes the `build/` directory.
 
 ### icons
 
-Builds the `icons.woff` font from `src/icon/` icons into `build/` directory.
-
-### icons:serialize
-
-When adding or removing icons from `src/icon/`, run this task to re-prefix their codepoints, and re-generate `src/styl/module/icons.styl` file to mirror the changes.
-
-As this task changes the codepoints, you have to run `gulp icons` to re-generate `icons.woff`.
+Builds the `icons.svg` sprite from `src/icon/` icons into `build/` directory.
 
 ### package
 

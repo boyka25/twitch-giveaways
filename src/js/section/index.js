@@ -1,4 +1,5 @@
 var m = require('mithril');
+var icon = require('../component/icon');
 var ucFirst = require('to-sentence-case');
 var withKey = require('../lib/withkey');
 var animate = require('../lib/animate');
@@ -76,7 +77,7 @@ function groupToToggle(name, i) {
 			onmousedown: withKey(1, this.setter('rolling.groups.' + name).to(!this.rolling.groups[name])),
 			config: animate('slideinleft', 50 * i)
 		}, [
-			m('i', {class: this.rolling.groups[name] ? 'tgi tgi-check' : 'tgi tgi-close'}),
+			icon(this.rolling.groups[name] ? 'check' : 'close'),
 			ucFirst(name)
 	]);
 }
@@ -121,11 +122,11 @@ tabs.keyword = {
 			m('.btn.clean', {
 				onmousedown: withKey(1, ctrl.cleanEntries),
 				'data-tip': 'Clean all entries<br><small>Makes people enter the keyword again.</small>'
-			}, [m('i.tgi.tgi-trash')]),
+			}, [icon('trash')]),
 			m('.btn.cancel', {
 				onmousedown: withKey(1, ctrl.cancelKeyword),
 				'data-tip': 'Cancel keyword <kbd>ESC</kbd>'
-			}, [m('i.tgi.tgi-close')])
+			}, [icon('close')])
 		]);
 	}
 };

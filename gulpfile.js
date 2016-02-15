@@ -108,21 +108,16 @@ function contentScriptsStream() {
 		.pipe(gulpif(argv.production, uglify()));
 }
 
-function iconFontStream() {
-	var svgfont = require('gulp-svgicons2svgfont');
-	var svg2ttf = require('gulp-svg2ttf');
-	var ttf2woff = require('gulp-ttf2woff');
+function iconsStream() {
+	var svgmin = require('gulp-svgmin');
+	var rename = require('gulp-rename');
+	var svgstore = require('gulp-svgstore');
+
 	return gulp.src('src/icon/*.svg')
-		.pipe(svgfont({
-			fontName: 'icons',
-			normalize: true,
-			// centerHorizontally: true
-		}))
-		.on('error', handleError)
-		.pipe(svg2ttf())
-		.on('error', handleError)
-		.pipe(ttf2woff())
-		.on('error', handleError);
+		.pipe(svgmin())
+		.pipe(rename({prefix: 'icon-'}))
+		.pipe(svgstore())
+		.pipe(rename({basename: 'icons'}));
 }
 
 function assetsStream() {
@@ -130,58 +125,11 @@ function assetsStream() {
 }
 
 gulp.task('assets', function () {
-	return assetsStream().pipe(gulp.dest(destination)).pipe(livereload({ auto: false }));
+	return assetsStream().pipe(gulp.dest(destination));
 });
 
 gulp.task('icons', function () {
-	return iconFontStream().pipe(gulp.dest(destination)).pipe(livereload({ auto: false }));
-});
-
-gulp.task('icons:serialize', function (cb) {
-	var fs = require('fs');
-	var path = require('path');
-	var consolidate = require('gulp-consolidate');
-	var iconsDir = 'src/icon';
-	var iconsTemplate = 'template/icons.styl';
-	var stylModules = 'src/styl/module';
-	var cbs = callbacks(cb);
-
-	fs.readdir(iconsDir, processFiles);
-
-	function processFiles(err, files) {
-		if (err) return handleError(err);
-		var icons = files.filter(onlysvg).map(describe).sort(byName).map(addCodepoints);
-		icons.forEach(renameFile);
-		generateStyl(icons);
-	}
-	function onlysvg(filename) { return filename.substr(-4) === '.svg'; }
-	function byName(a, b) { return a.name < b.name ? -1 : 1; }
-	function describe(filename) {
-		return {
-			filename: filename,
-			name: filename.replace(/(^ue[a-f\d]{3}-)|(\.svg$)/gi, '')
-		};
-	}
-	function addCodepoints(file, i) {
-		file.codepoint = 57345 + i;
-		file.character = file.codepoint.toString(16);
-		return file;
-	}
-	function renameFile(icon) {
-		var filename = 'u' + icon.character + '-' + icon.name + '.svg';
-		if (filename === icon.filename) return;
-		else fs.rename(path.join(iconsDir, icon.filename), path.join(iconsDir, filename), cbs());
-	}
-	function generateStyl(icons) {
-		gulp.src(iconsTemplate)
-			.pipe(consolidate('swig', {
-				name: 'icons',
-				glyphs: icons
-			}))
-			.on('error', handleError)
-			.pipe(gulp.dest(stylModules))
-			.on('end', cbs());
-	}
+	return iconsStream().pipe(gulp.dest(destination));
 });
 
 gulp.task('clean', function (cb) {
@@ -189,7 +137,7 @@ gulp.task('clean', function (cb) {
 });
 
 gulp.task('scripts:content', function () {
-	return contentScriptsStream().pipe(gulp.dest(destination)).pipe(livereload({ auto: false }));
+	return contentScriptsStream().pipe(gulp.dest(destination));
 });
 
 gulp.task('scripts', ['scripts:content']);
@@ -220,7 +168,7 @@ gulp.task('package', function () {
 	argv.production = true;
 	return streamqueue({ objectMode: true },
 		assetsStream(),
-		iconFontStream(),
+		iconsStream(),
 		scriptsStream(),
 		stylesStream()
 	).pipe(zip('tga-' + version + '.zip')).pipe(gulp.dest('.'));
@@ -232,9 +180,11 @@ gulp.task('release', ['bump'], function () {
 
 gulp.task('watch', function () {
 	livereload.listen();
+	// assets and scripts require Developer mode reload and F5
 	gulp.watch(['manifest.json', 'src/img/**/*'], ['assets']);
 	gulp.watch(['component.json', 'data/*.json', 'src/js/**/*.js'], ['scripts']);
 	gulp.watch('src/styl/**/*.styl', ['styles']);
+	gulp.watch(['src/icon/*.svg'], ['icons']);
 });
 
 gulp.task('default', ['build'], function () {

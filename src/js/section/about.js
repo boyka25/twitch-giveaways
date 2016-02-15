@@ -1,4 +1,5 @@
 var m = require('mithril');
+var icon = require('../component/icon');
 var animate = require('../lib/animate');
 var morpher = require('../lib/morpher');
 
@@ -27,7 +28,7 @@ function view(ctrl) {
 				])
 			]),
 			m('.lead', [
-				m('.emblem', {config: animate('slideintop')}, [m('i.tgi.tgi-tga')]),
+				m('.emblem', {config: animate('slideintop')}, [icon('tga')]),
 				m('aside.middle', [
 					m('.meta', {config: animate('slideinright', 50)}, [m('h3', ctrl.version.version)]),
 					m('.meta', {config: animate('slideinleft', 50)}, [m('em', ctrl.version.date)])
@@ -35,10 +36,10 @@ function view(ctrl) {
 				m('aside.lower', [
 					m('a.action', {href: 'https://github.com/darsain/twitch-giveaways', target: '_blank', config: animate('slideinright', 150)}, [
 						m('span.name', 'Repository'),
-						m('i.tgi.tgi-github')
+						icon('github')
 					]),
 					m('a.action', {href: 'https://twitter.com/darsain', target: '_blank', config: animate('slideinleft', 150)}, [
-						m('i.tgi.tgi-twitter'),
+						icon('twitter'),
 						m('span.name', 'Author')
 					])
 				])

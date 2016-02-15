@@ -1,4 +1,5 @@
 var m = require('mithril');
+var icon = require('../component/icon');
 var ucfirst = require('to-sentence-case');
 var animate = require('../lib/animate');
 var morpher = require('../lib/morpher');
@@ -47,7 +48,7 @@ function view(ctrl) {
 				release.version,
 				m('small', release.date),
 				m('.spacer'),
-				m('i.tgi.tgi-chevron-' + (release.collapsed() ? 'down' : 'up'))
+				icon(release.collapsed() ? 'chevron-down' : 'chevron-up', {class: 'chevron'})
 			]),
 			description.length ? m('.description.fadein', description) : null
 		]);

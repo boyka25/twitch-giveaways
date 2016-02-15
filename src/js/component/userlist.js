@@ -1,4 +1,5 @@
 var m = require('mithril');
+var icon = require('../component/icon');
 var extend = require('extend');
 var ucFirst = require('to-sentence-case');
 var closest = require('closest');
@@ -77,13 +78,13 @@ function view(ctrl) {
 }
 
 function userToLi(user) {
-	var icon = groups[user.group].icon;
+	var groupIcon = groups[user.group].icon;
 	return m('li', {key: user.id, class: user.eligible ? 'checked' : '', 'data-id': user.id}, [
 		m('span.eligible'),
 		m('span.name', this.query
 			? m.trust(user.name.replace(this.query, '<span class="query">$1</span>'))
 			: user.name),
-		user.subscriber ? m('i.tgi.tgi-star.subscriber', {'data-tip': 'Subscriber', 'data-tip-place': 'right'}) : null,
-		icon ? m('i.tgi.tgi-' + icon + '.' + user.group, {'data-tip': ucFirst(user.group), 'data-tip-place': 'right'}) : null
+		user.subscriber ? icon('star', 'subscriber') : null,
+		groupIcon ? icon(groupIcon, user.group) : null
 	]);
 }

@@ -26,7 +26,6 @@
   "web_accessible_resources": [
     "content.css",
     "bitcoin.png",
-    "icons.woff",
-    "loading.gif"
+    "icons.svg"
   ]
 }

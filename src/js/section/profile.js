@@ -1,5 +1,6 @@
 var m = require('mithril');
 var e = require('e');
+var icon = require('../component/icon');
 var timespan = require('../lib/timespan');
 var animate = require('../lib/animate');
 var withKey = require('../lib/withkey');
@@ -124,7 +125,7 @@ function view(ctrl) {
 		m('.card', [
 			m('.lead', [
 				m('.emblem', {config: animate('rotatein', 0, 600)}, [
-					user.avatar ? m('img', {src: user.avatar}) : m('i.tgi.tgi-user')
+					user.avatar ? m('img', {src: user.avatar}) : icon('user')
 				]),
 				m('aside.middle', [
 					m('.meta', {
@@ -134,19 +135,19 @@ function view(ctrl) {
 								? 'Couldn\'t be determined<br><small>Connection issues, or twitch api down?</small>'
 								: ''
 						}, [
-							'Following', m('i.tgi.tgi-' + (following ? 'check' : following === false ? 'close' : 'help'))
+							'Following', icon(following ? 'check' : following === false ? 'close' : 'help', 'status')
 					]),
 					m('.meta', {class: 'color-' + (subscriber ? 'success' : 'light'), config: animate('slideinleft', 200)}, [
-						m('i.tgi.tgi-' + (subscriber ? 'check' : 'close')), 'Subscribed'
+						icon(subscriber ? 'check' : 'close', 'status'), 'Subscribed'
 					])
 				]),
 				m('aside.lower', [
 					m('.action.sliding', {onmousedown: withKey(1, ctrl.roll), config: animate('slideinright', 300)}, [
 						m('span.name', 'Roll again'),
-						m('i.tgi.tgi-reload')
+						icon('reload')
 					]),
 					m('a.action.sliding', {href: user.messageURL, target: '_blank', config: animate('slideinleft', 300)}, [
-						m('i.tgi.tgi-envelope'),
+						icon('envelope'),
 						m('span.name', 'Send message')
 					])
 				])
@@ -158,7 +159,7 @@ function view(ctrl) {
 		m('.messages', [
 			m('h2.title', {config: animate('slideinleft', i++ * 50 + 200)}, [
 				m('span.name', {'data-tip': 'Messages since being rolled.'}, [
-					m('i.tgi.tgi-speech-bubble'),
+					icon('speech-bubble'),
 					' Messages ',
 					m('span.count', user.messages.length)
 				]),

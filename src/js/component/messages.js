@@ -1,4 +1,5 @@
 var m = require('mithril');
+var icon = require('../component/icon');
 var animate = require('../lib/animate');
 
 module.exports = Messages;
@@ -28,7 +29,7 @@ function Messages() {
 		return !self.store.length ? null : m('.msgs', self.store.map(function (message, i) {
 			return m('.msg.' + message.type, {key: message.text + message.type, config: animate('slideinleft', 50 * i)}, [
 				m('span.text', message.text),
-				m('span.close', {onclick: self.close.bind(self, i)}, m('i.tgi.tgi-close'))
+				m('span.close', {onclick: self.close.bind(self, i)}, icon('close'))
 			]);
 		}));
 	};

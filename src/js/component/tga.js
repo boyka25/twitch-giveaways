@@ -1,4 +1,5 @@
 var m = require('mithril');
+var icon = require('../component/icon');
 var Tooltips = require('tooltips');
 var throttle = require('throttle');
 var withKey = require('../lib/withkey');
@@ -318,7 +319,7 @@ function view(ctrl) {
 						value: ctrl.search
 					}),
 					ctrl.search
-						? m('.cancel', {onclick: ctrl.setter('search').to(''), 'data-tip': 'Cancel search <kbd>ESC</kbd>'}, m('i.tgi.tgi-close'))
+						? m('.cancel', {onclick: ctrl.setter('search').to(''), 'data-tip': 'Cancel search <kbd>ESC</kbd>'}, icon('close', '-small'))
 						: null
 				]),
 				m('h3.count', ctrl.selectedUsers.length)
@@ -331,13 +332,13 @@ function view(ctrl) {
 					class: ctrl.classWhenActive('index', 'button index', 'active'),
 					onmousedown: ctrl.toSection('index'),
 					'data-tip': 'Giveaway'
-				}, [m('i.tgi.tgi-gift')]),
+				}, [icon('gift')]),
 				ctrl.winner
 					? m('div', {
 						class: ctrl.classWhenActive('profile', 'button profile', 'active'),
 						onmousedown: ctrl.toSection('profile', ctrl.winner),
 						'data-tip': 'Last winner'
-					}, [m('i.tgi.tgi-trophy'), m('span.label', ctrl.winner.name)])
+					}, [icon('trophy'), m('span.label', ctrl.winner.name)])
 					: null
 				,
 				m('.spacer'),
@@ -345,23 +346,23 @@ function view(ctrl) {
 					class: ctrl.classWhenActive('config', 'button config', 'active'),
 					onmousedown: ctrl.toSection('config'),
 					'data-tip': 'Configuration'
-				}, [m('i.tgi.tgi-cogwheel')]),
+				}, [icon('cogwheel')]),
 				m('div', {
 					class: ctrl.classWhenActive('changelog', 'button index', 'active'),
 					onmousedown: ctrl.toSection('changelog'),
 					'data-tip': 'Changelog'
 				}, [
-					m('i.tgi.tgi-list'),
+					icon('list'),
 					ctrl.isNewVersion && !ctrl.section.isActive('changelog') ? m('.new') : null
 				]),
 				m('div', {
 					class: ctrl.classWhenActive('about', 'button index', 'active'),
 					onmousedown: ctrl.toSection('about'),
 					'data-tip': 'About + FAQ'
-				}, [m('i.tgi.tgi-help')]),
+				}, [icon('help')]),
 				m('.button.close', {
 					onmousedown: ctrl.close, 'data-tip': 'Close Giveaways'
-				}, [m('i.tgi.tgi-close')])
+				}, [icon('close')])
 			]),
 			ctrl.messages.render(),
 			m('section.section.' + ctrl.section.active, {key: 'section-' + ctrl.section.active}, ctrl.section.render()),

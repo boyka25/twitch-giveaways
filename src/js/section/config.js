@@ -1,4 +1,5 @@
 var m = require('mithril');
+var icon = require('../component/icon');
 var animate = require('../lib/animate');
 var withKey = require('../lib/withkey');
 
@@ -37,8 +38,8 @@ function view(ctrl) {
 		// uncheck winners
 		m('article.option.uncheck-winners', {config: animate('slideinleft', 50 * i++)}, [
 			m('label', {onmousedown: withKey(1, ctrl.setter('cfg.uncheckWinners').to(!ctrl.cfg.uncheckWinners))}, 'Uncheck winners'),
-			m('i', {
-				class: 'checkbox tgi ' + (ctrl.cfg.uncheckWinners ? 'tgi-check checked' : 'tgi-close'),
+			icon(ctrl.cfg.uncheckWinners ? 'check' : 'close', {
+				class: 'checkbox' + (ctrl.cfg.uncheckWinners ? ' checked' : ''),
 				onmousedown: withKey(1, ctrl.setter('cfg.uncheckWinners').to(!ctrl.cfg.uncheckWinners))
 			}),
 			m('p.description', 'When enabled, winners are automatically unchecked to not win twice.')
@@ -46,8 +47,8 @@ function view(ctrl) {
 		// keyword antispam
 		m('article.option.keyword-antispam', {config: animate('slideinleft', 50 * i++)}, [
 			m('label', {onmousedown: withKey(1, ctrl.setter('cfg.keywordAntispam').to(!ctrl.cfg.keywordAntispam))}, 'Keyword antispam'),
-			m('i', {
-				class: 'checkbox tgi ' + (ctrl.cfg.keywordAntispam ? 'tgi-check checked' : 'tgi-close'),
+			icon(ctrl.cfg.keywordAntispam ? 'check' : 'close', {
+				class: 'checkbox' + (ctrl.cfg.keywordAntispam ? ' checked' : ''),
 				onmousedown: withKey(1, ctrl.setter('cfg.keywordAntispam').to(!ctrl.cfg.keywordAntispam))
 			}),
 			ctrl.cfg.keywordAntispam ? m('input[type=range]', {
@@ -69,17 +70,17 @@ function view(ctrl) {
 				placeholder: 'enter names here',
 				oninput: m.withAttr('value', ctrl.updateIgnoreList),
 				value: ctrl.cfg.ignoreList.join('\n')
-			}),
+			})
 		]),
 		// display tooltips
 		m('article.option.display-tooltips', {config: animate('slideinleft', 50 * i++)}, [
 			m('label', {onmousedown: withKey(1, ctrl.setter('cfg.displayTooltips').to(!ctrl.cfg.displayTooltips))}, 'Display tooltips'),
-			m('i', {
-				class: 'checkbox tgi ' + (ctrl.cfg.displayTooltips ? 'tgi-check checked' : 'tgi-close'),
+			icon(ctrl.cfg.displayTooltips ? 'check' : 'close', {
+				class: 'checkbox' + (ctrl.cfg.displayTooltips ? ' checked' : ''),
 				onmousedown: withKey(1, ctrl.setter('cfg.displayTooltips').to(!ctrl.cfg.displayTooltips))
 			}),
 			m('p.description', 'Hide tooltips if you already know what is what.')
-		]),
+		])
 	];
 }
 
