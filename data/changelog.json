@@ -1,5 +1,18 @@
 [
 	{
+		"version": "2.4.4",
+		"date": "Feb 15, 2015",
+		"added": [
+			"Several popular twitch bots were added to default Ignore List. If you've modified your Ignore List before, you won't see this change."
+		],
+		"changed": [
+			"New icon system. You shouldn't notice anything."
+		],
+		"fixed": [
+			"Misplaced user count."
+		]
+	},
+	{
 		"version": "2.4.3",
 		"date": "Jun 29, 2015",
 		"fixed": [

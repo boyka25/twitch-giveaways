@@ -35,7 +35,7 @@ function view(ctrl) {
 		var description = [];
 		if (!release.collapsed()) {
 			if (release.description) description = description.concat(release.description.map(toP));
-			['new', 'changed', 'fixed', 'removed'].forEach(function (name) {
+			['new', 'added', 'removed', 'changed', 'fixed'].forEach(function (name) {
 				if (!release[name]) return;
 				description.push(m('h2.changestype.' + name, ucfirst(name)));
 				description.push(m('ul.' + name, release[name].map(toLI)));
