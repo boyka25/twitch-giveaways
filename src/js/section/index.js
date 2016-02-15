@@ -112,7 +112,7 @@ tabs.keyword = {
 	},
 	view: function (ctrl) {
 		return m('.keyword' + (ctrl.keyword ? '.active' : ''), {key: 'keyword', config: animate('slideinleft', 50)}, [
-			m('input.word', {
+			m('input[type=text].word', {
 				value: ctrl.keyword,
 				placeholder: 'Enter keyword ...',
 				oninput: m.withAttr('value', ctrl.setter('keyword')),
