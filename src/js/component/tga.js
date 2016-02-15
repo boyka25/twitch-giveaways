@@ -310,7 +310,7 @@ function view(ctrl) {
 		m('.viewers', [
 			m('.bar', [
 				m('.search', [
-					m('input', {
+					m('input[type=text]', {
 						oninput: m.withAttr('value', ctrl.setter('search')),
 						onkeydown: withKey(27, ctrl.setter('search').to('')),
 						placeholder: 'Search...',
