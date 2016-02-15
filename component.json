@@ -31,13 +31,5 @@
     "lhorie/mithril": "~0.1.19",
     "eivindfjeldstad/dot": "~0.1.0",
     "component/escape-regexp": "^1.0.2"
-  },
-  "development": {
-    "scripts": [
-      "src/js/fixtures.js"
-    ],
-    "dependencies": {
-      "victorquinn/chancejs": "~0.5.6"
-    }
   }
 }

@@ -4,7 +4,6 @@ var livereload = require('gulp-livereload');
 
 // tasks config
 var argv = require('minimist')(process.argv.slice(2), { alias: {
-	port: 'p',
 	production: 'P',
 	type: 't'
 }});
@@ -231,15 +230,6 @@ gulp.task('release', ['bump'], function () {
 	gulp.start('package');
 });
 
-gulp.task('serve', function () {
-	var http = require('http');
-	var ecstatic = require('ecstatic');
-	var port = argv.port || 8080;
-	http.createServer(ecstatic({ root: __dirname })).listen(port);
-	console.log('Serving:', 'http://localhost:' + port + '/test/chat');
-	gulp.start('watch');
-});
-
 gulp.task('watch', function () {
 	livereload.listen();
 	gulp.watch(['manifest.json', 'src/img/**/*'], ['assets']);
@@ -248,5 +238,5 @@ gulp.task('watch', function () {
 });
 
 gulp.task('default', ['build'], function () {
-	gulp.start('serve');
+	gulp.start('watch');
 });

@@ -3,7 +3,6 @@
     "gulp": "^3.8.0",
     "component-build": "^1.2.0",
     "component-resolver": "^1.1.7",
-    "ecstatic": "^0.5.4",
     "gulp-autoprefixer": "~0.0.8",
     "gulp-bump": "~0.1.10",
     "gulp-consolidate": "^0.1.2",
