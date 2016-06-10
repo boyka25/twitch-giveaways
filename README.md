@@ -126,5 +126,3 @@ Starts watching scripts, styles, and assets for changes, and builds what is nece
 Also spins up a livereload server. You can [install the livereload extension](http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions) which will reload the testing environment as style changes happen.
 
 On script changes, you need to reload the extension via chrome Extensions Developmer mode.
-
-Also doesn't listen for `src/icon/` changes! When messing with icons, you need to run `gulp icons:serialize` & `gulp icons` manually.
