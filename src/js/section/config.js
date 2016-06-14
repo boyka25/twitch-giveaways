@@ -27,13 +27,16 @@ function view(ctrl) {
 		m('article.option.active-timeout', {config: animate('slideinleft', 50 * i++)}, [
 			m('label[for=cfg-active-timeout]', 'Active timeout'),
 			m('input[type=range]#cfg-active-timeout', {
-				min: 1,
+				min: 0,
 				max: 60,
 				oninput: m.withAttr('value', ctrl.setter('cfg.activeTimeout').type('number')),
 				value: ctrl.cfg.activeTimeout
 			}),
-			m('span.meta', [ctrl.cfg.activeTimeout, ' ', m('em', 'min')]),
-			m('p.description', 'Time since last message, after which users are no longer considered active and removed from the list.')
+			m('span.meta', ctrl.cfg.activeTimeout
+				? [ctrl.cfg.activeTimeout, ' ', m('em', 'min')]
+				: [m('em', 'disabled')]
+			),
+			m('p.description', 'Time since last message, after which users are no longer considered active and removed from the list. Set to 0 to disable.')
 		]),
 		// uncheck winners
 		m('article.option.uncheck-winners', {config: animate('slideinleft', 50 * i++)}, [

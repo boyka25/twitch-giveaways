@@ -266,13 +266,17 @@ function Controller(container, options) {
 
 	// set user cleaning interval
 	this.cleanUsers = function () {
-		var timeout = new Date(+new Date() - self.cfg.activeTimeout * 1000 * 60);
+		var timeout = self.cfg.activeTimeout
+			? new Date(+new Date() - self.cfg.activeTimeout * 1000 * 60)
+			: false;
 		var removed = 0;
-		for (var i = 0, user; user = self.users[i], i < self.users.length; i++)
-			if (user.lastMessage < timeout || ~self.cfg.ignoreList.indexOf(user.id)) {
+		for (var i = 0, user; user = self.users[i], i < self.users.length; i++) {
+			var timedOut = timeout && user.lastMessage < timeout;
+			if (timedOut || ~self.cfg.ignoreList.indexOf(user.id)) {
 				self.users.remove(user);
 				i--; removed++;
 			}
+		}
 		if (removed) m.redraw();
 	};
 	this.userCleanIntervalID = setInterval(this.cleanUsers, 1000 * 10);
