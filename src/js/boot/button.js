@@ -5,8 +5,8 @@ var query = require('query');
 
 // tga button
 var icon = e.svg('svg', e.svg('use', {'xlink:href': '#icon-gift'}));
-icon.setAttribute('class', 'tga-button Icon');
-var button = module.exports = e('a.tga-button.button.glyph-only', {
+icon.setAttribute('class', 'icon Icon');
+var button = module.exports = e('a.tga-button.button.button--icon-only.float-left', {
 	href: 'javascript:void(0)'
 }, icon);
 

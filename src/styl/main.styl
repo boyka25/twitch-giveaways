@@ -32,12 +32,16 @@
 
 // match selector specificity :/
 .ember-chat .chat-interface .chat-buttons-container .tga-button
+	color: colors.primary
+
+	&:hover
+		color: colors.primaryDark
 
 	&.disabled
 		color: colors.grey
 		cursor: default
 
-	.tga-button
+	.icon
 		display: block
-		margin: 4px 0
+		margin: 4px .7em
 		size: 20px
