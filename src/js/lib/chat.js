@@ -31,7 +31,7 @@ var chatObserver = new MutationObserver(function processMutations(mutations) {
 			chat.emit('message', {
 				user: {
 					name: name,
-					badges: slice(query.all('.badge', line)).map(getGroups).filter(filterFalsy),
+					badges: slice(query.all('.badge-img', line)).map(getBadge).filter(truthy),
 				},
 				html: html,
 				text: text,
@@ -41,13 +41,14 @@ var chatObserver = new MutationObserver(function processMutations(mutations) {
 	}
 });
 
-function getGroups(el) {
-	for (var i = 0; i < el.classList.length; i++)
-		if (User.groups.hasOwnProperty(el.classList[i]) || ~User.badges.indexOf(el.classList[i]))
-			return el.classList[i];
+function getBadge(el) {
+	var name = el.getAttribute('original-title').toLowerCase();
+	if (~User.badges.indexOf(name)) {
+		return name;
+	}
 }
 
-function filterFalsy(group) {
+function truthy(group) {
 	return group;
 }
 

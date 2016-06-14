@@ -94,4 +94,4 @@ User.groups = {
 	}
 };
 
-User.badges = ['subscriber'];
+User.badges = Object.keys(User.groups).concat('subscriber');
