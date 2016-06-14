@@ -1,5 +1,13 @@
 [
 	{
+		"version": "2.4.5",
+		"date": "Jun 14, 2016",
+		"fixed": [
+			"User badges/groups not being recognized after recent Twitch changes.",
+			"Bad TGA button styling after recent Twitch changes."
+		]
+	},
+	{
 		"version": "2.4.4",
 		"date": "Feb 15, 2015",
 		"added": [
