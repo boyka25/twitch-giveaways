@@ -125,7 +125,9 @@ function view(ctrl) {
 		m('.card', [
 			m('.lead', [
 				m('.emblem', {config: animate('rotatein', 0, 600)}, [
-					user.avatar ? m('img', {src: user.avatar}) : icon('user')
+					m('a', {href: user.profileURL, target: '_blank'}, [
+						user.avatar ? m('img', {src: user.avatar}) : icon('user')
+					])
 				]),
 				m('aside.middle', [
 					m('.meta', {
@@ -153,7 +155,7 @@ function view(ctrl) {
 				])
 			]),
 			m('.title', {config: animate('slideintop', i++ * 50 + 200)}, [
-				m('h1', [m('a', {href: user.profileURL, target: '_blank'}, user.name)])
+				m('h1', user.name)
 			])
 		]),
 		m('.messages', [
