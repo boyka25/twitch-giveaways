@@ -12,13 +12,11 @@ Comfortable giveaways system for [Twitch.tv](http://twitch.tv) channels.
 
 [component(1)](https://github.com/component/component) - Opinionated, and non wasteful package manager & builder made for the front end world.
 
-[Mithril](https://github.com/lhorie/mithril.js) - Really fast and simple virtual DOM diffing framework.
+[Mithril](https://github.com/lhorie/mithril.js) - Really fast and simple immediate mode framework.
 
 [Gulp](https://github.com/gulpjs/gulp) - Streams oriented build system.
 
 ... and lots of small libraries defined in [component.json](https://github.com/darsain/twitch-giveaways/blob/master/component.json).
-
-Thanks to the efficient component(1) ecosystem and Mithril framework, the whole production build with dependencies is only 70KB+. That is smaller than jQuery! :)
 
 ## Development environment
 
