@@ -49,6 +49,21 @@ function view(ctrl) {
 			m('legend', {config: animate('fadein', 100)}, 'Support the development'),
 			require('../component/support').view(ctrl)
 		]),
+		m('fieldset.sponsorship', [
+			m('legend', {config: animate('fadein', 100)}, 'Sponsor Twitch Giveaways'),
+			m('p', [
+				'To sponsor Twitch Giveaways, email: ',
+				m('a', {href: 'mailto:' + require('../component/sponsors').cfg.email}, [
+					require('../component/sponsors').cfg.email
+				])
+			]),
+			m('p', ['You\'ll get:']),
+			m('ul', [
+				m('li', 'Logo spanning 50% of the available width.'),
+				m('li', 'Leading to URL of your choice.'),
+				m('li', 'Tooltip with name and description of your product.')
+			])
+		]),
 		m('fieldset.faq', [
 				m('legend', {config: animate('fadein', 100)}, 'Frequently Asked Questions')
 			].concat(ctrl.faqs.map(function (faq, i) {

@@ -121,7 +121,8 @@ function iconsStream() {
 }
 
 function assetsStream() {
-	return gulp.src(['manifest.json', 'src/img/**/*']);
+	return gulp.src(['manifest.json', 'src/img/**/*'])
+		.pipe(gulp.src('banner/*', {base: process.cwd()}));
 }
 
 gulp.task('assets', function () {

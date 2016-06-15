@@ -1,0 +1,9 @@
+[
+	{
+		"name": "Foo",
+		"description": "Foos of bazd bars.",
+		"url": "https://github.com",
+		"banner": "foo.png",
+		"expires": "2016-06-15"
+	}
+]

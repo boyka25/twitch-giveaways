@@ -67,7 +67,10 @@ function view(ctrl) {
 				}, 'Roll'),
 			]),
 		]),
-		require('../component/support').view(ctrl, 'Support the development<br><small>Please? :)</small>')
+		m('fieldset', [
+			m('legend', 'Sponsored by'),
+			require('../component/sponsors').view(ctrl)
+		])
 	];
 }
 
