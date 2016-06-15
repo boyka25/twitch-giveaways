@@ -1,5 +1,16 @@
 [
 	{
+		"version": "2.5.0",
+		"date": "Jun 15, 2016",
+		"new": [
+			"Implemented sponsorship. Hopefully this will at least cover time investment that went into this extension, and make me motivated to maintain and improve it further."
+		],
+		"changed": [
+			"Winner username no longer links to their profile so you can easily double-click-select and paste in chat.",
+			"You can now go to winner's profile by clicking on their avatar."
+		]
+	},
+	{
 		"version": "2.4.5",
 		"date": "Jun 14, 2016",
 		"fixed": [
