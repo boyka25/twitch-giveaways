@@ -105,7 +105,8 @@ function contentScriptsStream() {
 		}));
 	}
 	return stream.on('error', handleError)
-		.pipe(gulpif(argv.production, uglify()));
+		.pipe(gulpif(argv.production, uglify()))
+		.on('error', handleError);
 }
 
 function iconsStream() {
@@ -121,8 +122,11 @@ function iconsStream() {
 }
 
 function assetsStream() {
-	return gulp.src(['manifest.json', 'src/img/**/*'])
-		.pipe(gulp.src('banner/*', {base: process.cwd()}));
+	var streamqueue = require('streamqueue');
+	return streamqueue({ objectMode: true },
+		gulp.src(['./manifest.json', './src/img/**/*']),
+		gulp.src('./banner/*', {base: process.cwd()})
+	);
 }
 
 gulp.task('assets', function () {
