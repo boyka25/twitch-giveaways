@@ -74,8 +74,12 @@ function tooltip(sponsor) {
 		};
 
 		ctx.tip = new Tooltip(content, options);
-		ctx.show = () => ctx.tip.show(el);
-		ctx.hide = () => ctx.tip.hide();
+		ctx.show = function () {
+			ctx.tip.show(el);
+		}
+		ctx.hide = function () {
+			ctx.tip.hide();
+		}
 		ctx.onunload = function () {
 			el.removeEventListener('mouseover', ctx.show);
 			el.removeEventListener('mouseout', ctx.hide);
