@@ -31,7 +31,7 @@ var chatObserver = new MutationObserver(function processMutations(mutations) {
 			chat.emit('message', {
 				user: {
 					name: name,
-					badges: slice(query.all('.badge-img', line)).map(getBadge).filter(truthy),
+					badges: slice(query.all('.badge', line)).map(getBadge).filter(truthy),
 				},
 				html: html,
 				text: text,
