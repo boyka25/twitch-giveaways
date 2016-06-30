@@ -1,5 +1,13 @@
 [
 	{
+		"version": "2.5.1",
+		"date": "Jun 30, 2016",
+		"fixed": [
+			"Chat parser not recognizing user badges again.",
+			"Long usernames stretched the width of the whole TGA window."
+		]
+	},
+	{
 		"version": "2.5.0",
 		"date": "Jun 15, 2016",
 		"new": [
