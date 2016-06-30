@@ -10,13 +10,13 @@ Comfortable giveaways system for [Twitch.tv](http://twitch.tv) channels.
 
 ## Technologies used
 
-[component(1)](https://github.com/component/component) - Opinionated, and non wasteful package manager & builder made for the front end world.
+[component(1)](https://github.com/component/component) - Opinionated package manager & builder made for the front end world.
 
-[Mithril](https://github.com/lhorie/mithril.js) - Really fast and simple immediate mode framework.
+[Mithril](https://github.com/lhorie/mithril.js) - Fast and simple immediate mode framework.
 
 [Gulp](https://github.com/gulpjs/gulp) - Streams oriented build system.
 
-... and lots of small libraries defined in [component.json](https://github.com/darsain/twitch-giveaways/blob/master/component.json).
+... and lots of small libraries listed in [component.json](https://github.com/darsain/twitch-giveaways/blob/master/component.json).
 
 ## Development environment
 
@@ -25,7 +25,7 @@ You need to have [nodejs](http://nodejs.org/) installed.
 Gulp:
 
 ```
-npm install -g gulp
+npm install -g gulp-cli
 ```
 
 Gulp tasks dependencies:
@@ -121,6 +121,4 @@ Builds styles into `build/` directory.
 
 Starts watching scripts, styles, and assets for changes, and builds what is necessary.
 
-Also spins up a livereload server. You can [install the livereload extension](http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions) which will reload the testing environment as style changes happen.
-
-On script changes, you need to reload the extension via chrome Extensions Developmer mode.
+On script changes, you need to reload the extension via chrome Extensions Developmer mode. On style & asset changes, just F5 the twitch chat.
