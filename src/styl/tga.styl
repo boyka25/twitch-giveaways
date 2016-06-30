@@ -1,4 +1,6 @@
 {namespace}
+	viewersBoxSize = 180px
+
 	display: flex
 	align-items: stretch
 	absolute: top left bottom
@@ -19,7 +21,8 @@
 	.viewers
 		display: flex
 		flex-flow: column
-		width: 180px
+		flex-shrink: 0
+		width: viewersBoxSize
 		min-height: 200px
 
 		.bar
@@ -71,6 +74,7 @@
 		display: flex
 		flex-flow: column
 		align-items: stretch
+		width: s('calc(100% - %s)', viewersBoxSize)
 
 		.bar
 			display: flex
