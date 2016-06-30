@@ -6,7 +6,7 @@ var animate = require('../lib/animate');
 var cfg = {
 	email: 'sponsorship@darsa.in'
 };
-var sponsors = require('tga/data/sponsors.json').filter(expired);
+var sponsors = require('tga/data/sponsors.json').filter(activeSponsors);
 
 module.exports = {
 	name: 'sponsors',
@@ -24,7 +24,13 @@ function view(ctrl) {
 }
 
 function sponsor(sponsor) {
-	return m('a', {href: sponsor.url, config: tooltip(sponsor)}, [
+	var anchorProps = {
+		href: sponsor.url,
+		target: '_blank',
+		config: tooltip(sponsor)
+	};
+
+	return m('a', anchorProps, [
 		m('img.banner', {
 			src: chrome.extension.getURL('banner/' + sponsor.banner)
 		})
@@ -54,8 +60,9 @@ function placeholder() {
 	]);
 }
 
-function expired(sponsor) {
-	return new Date(sponsor.expires) > Date.now();
+function activeSponsors(sponsor) {
+	var time = Date.now();
+	return time > new Date(sponsor.start) && time < new Date(sponsor.end);
 }
 
 function tooltip(sponsor) {
@@ -76,11 +83,12 @@ function tooltip(sponsor) {
 		ctx.tip = new Tooltip(content, options);
 		ctx.show = function () {
 			ctx.tip.show(el);
-		}
+		};
 		ctx.hide = function () {
 			ctx.tip.hide();
-		}
+		};
 		ctx.onunload = function () {
+			ctx.hide();
 			el.removeEventListener('mouseover', ctx.show);
 			el.removeEventListener('mouseout', ctx.hide);
 		};

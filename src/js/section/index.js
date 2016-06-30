@@ -34,6 +34,10 @@ function Controller() {
 function view(ctrl) {
 	var i = 0;
 	return [
+		m('fieldset', [
+			m('legend', 'Sponsored by'),
+			require('../component/sponsors').view(ctrl)
+		]),
 		m('.controls', [
 			m('.block.groups', Object.keys(ctrl.rolling.groups).map(groupToToggle, ctrl)),
 			m('ul.block.rolltypes', {config: animate('slideinleft', 50 * i++)}, ctrl.rolling.types.map(typeToTab, ctrl)),
@@ -66,10 +70,6 @@ function view(ctrl) {
 					onmousedown: withKey(1, ctrl.roll)
 				}, 'Roll'),
 			]),
-		]),
-		m('fieldset', [
-			m('legend', 'Sponsored by'),
-			require('../component/sponsors').view(ctrl)
 		])
 	];
 }

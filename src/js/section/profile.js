@@ -70,35 +70,33 @@ function Controller(user) {
 
 	// messages scrolling config : keeps the scrollbar at the end when new messages arrive
 	this.messagesScrolling = function (el, isInit, ctx) {
-		if (!isInit) {
-			ctx.sync = function () {
-				ctx.top = el.scrollTop;
-				ctx.scrollHeight = el.scrollHeight;
-				ctx.clientHeigh = el.clientHeight;
-				ctx.atEnd = el.scrollTop > el.scrollHeight - el.clientHeight - 30;
-			};
-			ctx.toEnd = function () {
-				el.scrollTop = el.scrollHeight - el.clientHeight;
-			};
-			ctx.change = throttle(function () {
-				if (ctx.atEnd) ctx.toEnd();
-				ctx.sync();
-			}, 100);
-			ctx.message = function (message) {
-				if (message.user.name === self.user.name) ctx.change();
-			};
-			window.addEventListener('resize', ctx.change);
-			el.addEventListener('scroll', ctx.sync);
-			chat.on('message', ctx.message);
-			ctx.onunload = function () {
-				window.removeEventListener('resize', self.messagesSync);
-				el.removeEventListener('scroll', ctx.sync);
-				chat.off('message', ctx.message);
-			};
-			ctx.toEnd();
-			return;
-		}
-		ctx.change();
+		if (isInit) return ctx.change();
+
+		ctx.sync = function () {
+			ctx.top = el.scrollTop;
+			ctx.scrollHeight = el.scrollHeight;
+			ctx.clientHeigh = el.clientHeight;
+			ctx.atEnd = el.scrollTop > el.scrollHeight - el.clientHeight - 30;
+		};
+		ctx.toEnd = function () {
+			el.scrollTop = el.scrollHeight - el.clientHeight;
+		};
+		ctx.change = throttle(function () {
+			if (ctx.atEnd) ctx.toEnd();
+			ctx.sync();
+		}, 100);
+		ctx.message = function (message) {
+			if (message.user.name === self.user.name) ctx.change();
+		};
+		window.addEventListener('resize', ctx.change);
+		el.addEventListener('scroll', ctx.sync);
+		chat.on('message', ctx.message);
+		ctx.onunload = function () {
+			window.removeEventListener('resize', self.messagesSync);
+			el.removeEventListener('scroll', ctx.sync);
+			chat.off('message', ctx.message);
+		};
+		ctx.toEnd();
 	};
 
 	// clock
@@ -115,7 +113,13 @@ function Controller(user) {
 }
 
 function view(ctrl) {
-	if (ctrl.loading) return m('.section-spinner');
+	if (ctrl.loading) return [
+		m('fieldset', [
+			m('legend', 'Sponsored by'),
+			require('../component/sponsors').view(ctrl)
+		]),
+		m('.section-spinner')
+	];
 	var i = 0;
 	var user = ctrl.user;
 	var following = user.following;
