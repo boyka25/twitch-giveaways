@@ -185,7 +185,18 @@ function Controller(container, config) {
 		var winner = pool[Math.random() * pool.length | 0];
 		winner.messages = [];
 		winner.rolledAt = new Date();
-		if (self.options.uncheckWinners) winner.eligible = false;
+
+		// uncheck winner
+		if (self.options.uncheckWinners) {
+			winner.eligible = false;
+		}
+
+		// announce winner
+		if (self.options.announceWinner) {
+			chat.post(String(self.options.announceTemplate).replace('{name}', winner.name));
+		}
+
+		// set winner and open their profile
 		self.setter('winner')(winner);
 		self.section.activate('profile', winner);
 	};

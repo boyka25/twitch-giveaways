@@ -53,6 +53,32 @@ function view(ctrl) {
 			}),
 			m('p.description', 'When enabled, winners are automatically unchecked to not win twice.')
 		]),
+		// announce winner
+		m('article.option.announce-winner', {
+			key: 'option-announce-winner',
+			config: animate('slideinleft', 50 * i++)
+		}, [
+			m('label', {onmousedown: withKey(1, ctrl.setter('options.announceWinner').to(!ctrl.options.announceWinner))}, 'Announce winners'),
+			icon(ctrl.options.announceWinner ? 'check' : 'close', {
+				class: 'checkbox' + (ctrl.options.announceWinner ? ' checked' : ''),
+				onmousedown: withKey(1, ctrl.setter('options.announceWinner').to(!ctrl.options.announceWinner))
+			}),
+			m('p.description', 'Announce winner in chat. You need to be logged in!')
+		]),
+		// announce template
+		!ctrl.options.announceWinner ? null : m('article.option.announce-template', {
+			key: 'option-announce-template',
+			config: animate('slideinleft', 50 * i++)
+		}, [
+			m('label[for=option-announce-template]', [
+				'Announce template',
+				m('p.description', [m('code', '{name}'), ' - winner\'s name'])
+			]),
+			m('textarea#option-announce-template', {
+				oninput: m.withAttr('value', ctrl.setter('options.announceTemplate')),
+				value: ctrl.options.announceTemplate
+			})
+		]),
 		// keyword antispam
 		m('article.option.keyword-antispam', {
 			key: 'option-keyword-antispam',

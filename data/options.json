@@ -2,6 +2,8 @@
 	"activeTimeout": 15,
 	"lastReadChangelog": "0.0.0",
 	"uncheckWinners": true,
+	"announceWinner": true,
+	"announceTemplate": "the winner is @{name}!",
 	"keywordAntispam": false,
 	"keywordAntispamLimit": 1,
 	"displayTooltips": true,

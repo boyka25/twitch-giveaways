@@ -5,11 +5,31 @@ var chatContainer = query('.chat-room .chat-lines');
 var User = require('../model/user');
 var textify = require('./textify');
 
-if (!chatContainer) return false;
+if (!chatContainer) return;
 
 var chat = module.exports = {};
 
+// make chat object an event emitter
 emitter(chat);
+
+var chatTextarea = query('.chat-room .js-chat_input');
+var chatSubmit = query('.chat-room .js-chat-buttons__submit');
+
+// post message to the chat
+chat.post = function (message) {
+	if (!chatTextarea || !chatSubmit) return;
+
+	chatTextarea.value = String(message);
+
+	// Simulate an input event so ember's data binding picks up the new value,
+	// since changing textarea.value programatically doesn't fire anything.
+	chatTextarea.dispatchEvent(new Event('input', {
+		bubbles: true,
+		cancelable: true
+	}));
+
+	chatSubmit.click();
+};
 
 // chat messages observer
 var chatObserver = new MutationObserver(function processMutations(mutations) {
