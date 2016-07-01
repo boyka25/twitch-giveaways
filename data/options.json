@@ -1,0 +1,24 @@
+{
+	"storageName": "twitchGiveaways",
+	"minWindowWidth": 800,
+	"maxSubscriberLuck": 10,
+	"tooltips": {
+		"tooltip": {
+			"baseClass": "tgatip",
+			"auto": 1,
+			"effectClass": "slide"
+		},
+		"key": "tip",
+		"observe": true
+	},
+	"searchFilters": {
+		"!": {
+			"prop": "eligible",
+			"value": false
+		},
+		"*": {
+			"prop": "subscriber",
+			"value": true
+		}
+	}
+}

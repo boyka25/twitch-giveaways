@@ -15,39 +15,8 @@ var extend = require('extend');
 var app = module.exports = {};
 app.controller = Controller;
 app.view = view;
-app.cfgDefaults = {
-	activeTimeout: 15, // minutes
-	lastReadChangelog: '0.0.0',
-	uncheckWinners: true,
-	keywordAntispam: false,
-	keywordAntispamLimit: 1,
-	displayTooltips: true,
-	ignoreList: ['jtv','nightbot','moobot','vivbot','wizebot','coebot']
-};
-app.optionDefaults = {
-	storageName: 'twitchGiveaways',
-	minWindowWidth: 800,
-	maxSubscriberLuck: 10,
-	tooltips: {
-		tooltip: {
-			baseClass: 'tgatip',
-			auto: 1,
-			effectClass: 'slide'
-		},
-		key: 'tip',
-		observe: true
-	},
-	searchFilters: {
-		'!': {
-			prop: 'eligible',
-			value: false
-		},
-		'*': {
-			prop: 'subscriber',
-			value: true
-		}
-	}
-};
+app.cfgDefaults = require('tga/data/config.json');
+app.optionDefaults = require('tga/data/options.json');
 
 /**
  * Initiate an app on a container, and return the controller instance.

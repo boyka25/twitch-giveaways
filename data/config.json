@@ -1,0 +1,16 @@
+{
+	"activeTimeout": 15,
+	"lastReadChangelog": "0.0.0",
+	"uncheckWinners": true,
+	"keywordAntispam": false,
+	"keywordAntispamLimit": 1,
+	"displayTooltips": true,
+	"ignoreList": [
+		"jtv",
+		"nightbot",
+		"moobot",
+		"vivbot",
+		"wizebot",
+		"coebot"
+	]
+}
