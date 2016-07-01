@@ -24,7 +24,10 @@ function view(ctrl) {
 	var i = 0;
 	return [
 		// active timeout
-		m('article.option.active-timeout', {config: animate('slideinleft', 50 * i++)}, [
+		m('article.option.active-timeout', {
+			key: 'option-active-timeout',
+			config: animate('slideinleft', 50 * i++)
+		}, [
 			m('label[for=option-active-timeout]', 'Active timeout'),
 			m('input[type=range]#option-active-timeout', {
 				min: 0,
@@ -39,7 +42,10 @@ function view(ctrl) {
 			m('p.description', 'Time since last message, after which users are no longer considered active and removed from the list. Set to 0 to disable.')
 		]),
 		// uncheck winners
-		m('article.option.uncheck-winners', {config: animate('slideinleft', 50 * i++)}, [
+		m('article.option.uncheck-winners', {
+			key: 'option-uncheck-winners',
+			config: animate('slideinleft', 50 * i++)
+		}, [
 			m('label', {onmousedown: withKey(1, ctrl.setter('options.uncheckWinners').to(!ctrl.options.uncheckWinners))}, 'Uncheck winners'),
 			icon(ctrl.options.uncheckWinners ? 'check' : 'close', {
 				class: 'checkbox' + (ctrl.options.uncheckWinners ? ' checked' : ''),
@@ -48,7 +54,10 @@ function view(ctrl) {
 			m('p.description', 'When enabled, winners are automatically unchecked to not win twice.')
 		]),
 		// keyword antispam
-		m('article.option.keyword-antispam', {config: animate('slideinleft', 50 * i++)}, [
+		m('article.option.keyword-antispam', {
+			key: 'option-keyword-antispam',
+			config: animate('slideinleft', 50 * i++)
+		}, [
 			m('label', {onmousedown: withKey(1, ctrl.setter('options.keywordAntispam').to(!ctrl.options.keywordAntispam))}, 'Keyword antispam'),
 			icon(ctrl.options.keywordAntispam ? 'check' : 'close', {
 				class: 'checkbox' + (ctrl.options.keywordAntispam ? ' checked' : ''),
@@ -64,7 +73,10 @@ function view(ctrl) {
 			m('p.description', 'People who enter keyword more than ' + howManyTimes(ctrl.options.keywordAntispamLimit) + ' are automatically unchecked.')
 		]),
 		// ignore list
-		m('article.option.ignore-list', {config: animate('slideinleft', 50 * i++)}, [
+		m('article.option.ignore-list', {
+			key: 'option-ignore-list',
+			config: animate('slideinleft', 50 * i++)
+		}, [
 			m('label[for=option-ignore-list]', [
 				'Ignore list',
 				m('p.description', 'Separate usernames with new lines.')
@@ -76,7 +88,10 @@ function view(ctrl) {
 			})
 		]),
 		// display tooltips
-		m('article.option.display-tooltips', {config: animate('slideinleft', 50 * i++)}, [
+		m('article.option.display-tooltips', {
+			key: 'option-display-tooltips',
+			config: animate('slideinleft', 50 * i++)
+		}, [
 			m('label', {onmousedown: withKey(1, ctrl.setter('options.displayTooltips').to(!ctrl.options.displayTooltips))}, 'Display tooltips'),
 			icon(ctrl.options.displayTooltips ? 'check' : 'close', {
 				class: 'checkbox' + (ctrl.options.displayTooltips ? ' checked' : ''),

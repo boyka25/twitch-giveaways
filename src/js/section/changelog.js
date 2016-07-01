@@ -41,7 +41,10 @@ function view(ctrl) {
 				description.push(m('ul.' + name, release[name].map(toLI)));
 			});
 		}
-		return m('article.release', {config: animate('slideinleft', 50 * i)}, [
+		return m('article.release', {
+			key: 'release-' + release.version,
+			config: animate('slideinleft', 50 * i)
+		}, [
 			m('h1.version', {
 				onmousedown: withKey(1, release.collapsed.bind(null, !release.collapsed()))
 			}, [
