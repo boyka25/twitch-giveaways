@@ -1,6 +1,5 @@
 /*jshint node:true */
 var gulp = require('gulp');
-var livereload = require('gulp-livereload');
 
 // tasks config
 var argv = require('minimist')(process.argv.slice(2), { alias: {
@@ -22,36 +21,12 @@ process.once('exit', function (code) {
 function handleError(err) {
 	var maxStackLines = 10;
 	errorOccurred = true;
-	if (err.name && err.stack) err = err.plugin + ': ' + err.name + ': ' + err.message + '\n'
-		+ err.stack.replace(err.message, '').split('\n').map(shortenLine).slice(0, maxStackLines).join('\n');
+	if (err.name && err.stack) {
+		err = err.plugin + ': ' + err.name + ': ' + err.message + '\n'
+		+ err.stack.replace(err.message, '').split('\n').slice(0, maxStackLines).join('\n');
+	}
 	console.error(err);
 	if (this.emit) this.emit('end');
-}
-
-function shortenLine(line) {
-	var max = 80;
-	return line.length > 80
-		? line.substr(0, max * 0.6 | 0) + '{...}' + line.substr(-max * 0.4 | 0)
-		: line;
-}
-
-/**
- * Dynamic callback concatenation.
- * @param  {Function} callback
- * @return {Function}
- */
-function callbacks(callback) {
-	var count = 0;
-	var done = false;
-	return function () {
-		count++;
-		return function (err) {
-			if ((!--count || err) && !done) {
-				done = true;
-				callback(err);
-			}
-		};
-	};
 }
 
 function stylesStream() {
@@ -148,7 +123,7 @@ gulp.task('scripts:content', function () {
 gulp.task('scripts', ['scripts:content']);
 
 gulp.task('styles:content', function () {
-	return contentStylesStream().pipe(gulp.dest(destination)).pipe(livereload({ auto: false }));
+	return contentStylesStream().pipe(gulp.dest(destination));
 });
 
 gulp.task('styles', ['styles:content']);
@@ -184,9 +159,7 @@ gulp.task('release', ['bump'], function () {
 });
 
 gulp.task('watch', function () {
-	livereload.listen();
-	// assets and scripts require Developer mode reload and F5
-	gulp.watch(['manifest.json', 'src/img/**/*'], ['assets']);
+	gulp.watch(['manifest.json', 'src/img/**/*', 'banner/*'], ['assets']);
 	gulp.watch(['component.json', 'data/*.json', 'src/js/**/*.js'], ['scripts']);
 	gulp.watch('src/styl/**/*.styl', ['styles']);
 	gulp.watch(['src/icon/*.svg'], ['icons']);
