@@ -15,8 +15,8 @@ var extend = require('extend');
 var app = module.exports = {};
 app.controller = Controller;
 app.view = view;
-app.cfgDefaults = require('tga/data/config.json');
-app.optionDefaults = require('tga/data/options.json');
+app.config = require('tga/data/config.json');
+app.options = require('tga/data/options.json');
 
 /**
  * Initiate an app on a container, and return the controller instance.
@@ -40,20 +40,21 @@ var User = require('../model/user');
 var Users = require('../model/users');
 var Message = require('../model/message');
 
-function Controller(container, options) {
+function Controller(container, config) {
 	var self = this;
 	this.app = this;
 	this.container = container;
 	this.isOpen = false;
 	this.setter = setters(this);
 
-	// data
-	this.options = extend(true, app.optionDefaults, options);
-	this.cfg = extend(true, {}, app.cfgDefaults,
-		localStorage[this.options.storageName] ? JSON.parse(localStorage[this.options.storageName]) : {}
-	);
+	// session data
+	this.config = extend(true, app.config, config);
+	var savedOptions = localStorage[this.config.storageName]
+		? JSON.parse(localStorage[this.config.storageName])
+		: {};
+	this.options = extend(true, {}, app.options, savedOptions);
 	this.version = require('tga/data/changelog.json')[0].version;
-	this.isNewVersion = this.cfg.lastReadChangelog !== this.version;
+	this.isNewVersion = this.options.lastReadChangelog !== this.version;
 	this.users = new Users();
 	this.selectedUsers = new Users();
 	this.rolling = {
@@ -71,8 +72,8 @@ function Controller(container, options) {
 	this.messages = new Messages();
 
 	// save config on change
-	this.setter.on('cfg', function (cfg) {
-		localStorage[self.options.storageName] = JSON.stringify(cfg);
+	this.setter.on('options', function (options) {
+		localStorage[self.config.storageName] = JSON.stringify(options);
 	});
 
 	// selected users abstraction
@@ -89,7 +90,7 @@ function Controller(container, options) {
 
 	function selectedFilter(user) {
 		if (!self.rolling.groups[user.group]) return false;
-		if (self.rolling.subscriberLuck > self.options.maxSubscriberLuck && !user.subscriber) return false;
+		if (self.rolling.subscriberLuck > self.config.maxSubscriberLuck && !user.subscriber) return false;
 		if (self.searchFilter && user[self.searchFilter.prop] !== self.searchFilter.value) return false;
 		if (self.searchQuery && !~user.id.indexOf(self.searchQuery)) return false;
 		if (self.rolling.type === 'keyword' && self.keyword && self.keyword !== user.keyword) return false;
@@ -112,15 +113,15 @@ function Controller(container, options) {
 			user = new User(message.user);
 			// check if the user shouldn't be ignored
 			if (~Users.ignoredGroups.indexOf(user.group)) return;
-			if (~self.cfg.ignoreList.indexOf(user.id)) return;
+			if (~self.options.ignoreList.indexOf(user.id)) return;
 			self.users.insert(user);
 		}
 		user.lastMessage = new Date();
 		if (self.winner === user) user.messages.push(new Message(message.html));
 		if (self.keyword && message.text.indexOf(self.keyword) === 0) {
-			if (self.cfg.keywordAntispam && user.keyword === self.keyword) {
+			if (self.options.keywordAntispam && user.keyword === self.keyword) {
 				user.keywordEntries++;
-				if (user.keywordEntries > self.cfg.keywordAntispamLimit) user.eligible = false;
+				if (user.keywordEntries > self.options.keywordAntispamLimit) user.eligible = false;
 			} else {
 				user.keyword = self.keyword;
 				user.keywordEntries = 1;
@@ -146,7 +147,7 @@ function Controller(container, options) {
 	this.searchQuery = '';
 	this.setter.on('search', function () {
 		self.search = String(self.search).trim().toLowerCase();
-		self.searchFilter = self.options.searchFilters[self.search[0]];
+		self.searchFilter = self.config.searchFilters[self.search[0]];
 		self.searchQuery = self.searchFilter ? self.search.substr(1).trim() : self.search;
 	});
 	this.setter.on('search', requestUpdateSelectedUsers);
@@ -184,7 +185,7 @@ function Controller(container, options) {
 		var winner = pool[Math.random() * pool.length | 0];
 		winner.messages = [];
 		winner.rolledAt = new Date();
-		if (self.cfg.uncheckWinners) winner.eligible = false;
+		if (self.options.uncheckWinners) winner.eligible = false;
 		self.setter('winner')(winner);
 		self.section.activate('profile', winner);
 	};
@@ -222,11 +223,11 @@ function Controller(container, options) {
 
 	// tooltips
 	this.tooltips = false;
-	this.setter.on('cfg.displayTooltips', makeTooltips);
-	makeTooltips(this.cfg.displayTooltips);
+	this.setter.on('options.displayTooltips', makeTooltips);
+	makeTooltips(this.options.displayTooltips);
 
 	function makeTooltips(display) {
-		if (display && !self.tooltips) self.tooltips = new Tooltips(container, self.options.tooltips);
+		if (display && !self.tooltips) self.tooltips = new Tooltips(container, self.config.tooltips);
 		else if (!display && self.tooltips) {
 			self.tooltips.destroy();
 			self.tooltips = false;
@@ -235,13 +236,13 @@ function Controller(container, options) {
 
 	// set user cleaning interval
 	this.cleanUsers = function () {
-		var timeout = self.cfg.activeTimeout
-			? new Date(+new Date() - self.cfg.activeTimeout * 1000 * 60)
+		var timeout = self.options.activeTimeout
+			? new Date(+new Date() - self.options.activeTimeout * 1000 * 60)
 			: false;
 		var removed = 0;
 		for (var i = 0, user; user = self.users[i], i < self.users.length; i++) {
 			var timedOut = timeout && user.lastMessage < timeout;
-			if (timedOut || ~self.cfg.ignoreList.indexOf(user.id)) {
+			if (timedOut || ~self.options.ignoreList.indexOf(user.id)) {
 				self.users.remove(user);
 				i--; removed++;
 			}
@@ -251,7 +252,7 @@ function Controller(container, options) {
 	this.userCleanIntervalID = setInterval(this.cleanUsers, 1000 * 10);
 
 	// also clean users when ignore list has changed
-	this.setter.on('cfg.ignoreList', throttle(this.cleanUsers, 1000));
+	this.setter.on('options.ignoreList', throttle(this.cleanUsers, 1000));
 
 	// open & close logic
 	this.windowWidth = window.innerWidth;
@@ -259,11 +260,11 @@ function Controller(container, options) {
 	// close on window resize when window is too small
 	evt.bind(window, 'resize', throttle(function () {
 		self.windowWidth = window.innerWidth;
-		if (self.windowWidth < self.options.minWindowWidth) self.close();
+		if (self.windowWidth < self.config.minWindowWidth) self.close();
 	}, 100));
 
 	this.open = function () {
-		if (self.windowWidth < self.options.minWindowWidth) return;
+		if (self.windowWidth < self.config.minWindowWidth) return;
 		self.isOpen = true;
 		self.container.classList.add('open');
 	};
@@ -318,7 +319,7 @@ function view(ctrl) {
 				m('div', {
 					class: ctrl.classWhenActive('config', 'button config', 'active'),
 					onmousedown: ctrl.toSection('config'),
-					'data-tip': 'Configuration'
+					'data-tip': 'Settings'
 				}, [icon('cogwheel')]),
 				m('div', {
 					class: ctrl.classWhenActive('changelog', 'button index', 'active'),

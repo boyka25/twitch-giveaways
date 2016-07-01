@@ -41,7 +41,7 @@ require('./boot/styles').onload = function () {
 
 	function updateButtonState() {
 		var channelID = window.location.pathname.match(/^\/([^\/]+)/i)[1];
-		if (tga && window.innerWidth < tga.options.minWindowWidth) {
+		if (tga && window.innerWidth < tga.config.minWindowWidth) {
 			tip.content(
 				isFrame
 					? 'Twitch Giveaways'
@@ -55,7 +55,7 @@ require('./boot/styles').onload = function () {
 						+ '<small>'
 							+ 'Stretch the width of the window to accommodate the UI. '
 							+ 'Has to be at least '
-							+ '<strong>' + tga.options.minWindowWidth + '</strong> '
+							+ '<strong>' + tga.config.minWindowWidth + '</strong> '
 							+ 'pixels wide.'
 						+ '</small>'
 			);

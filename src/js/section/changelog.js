@@ -17,7 +17,7 @@ function Controller() {
 	// mark this version as read
 	if (this.isNewVersion) {
 		this.setter('isNewVersion')(false);
-		this.setter('cfg.lastReadChangelog')(this.version);
+		this.setter('options.lastReadChangelog')(this.version);
 	}
 }
 

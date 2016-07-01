@@ -53,8 +53,8 @@ function view(ctrl) {
 			m('legend', {config: animate('fadein', 100)}, 'Sponsor Twitch Giveaways'),
 			m('p', [
 				'To sponsor Twitch Giveaways, email: ',
-				m('a', {href: 'mailto:' + require('../component/sponsors').cfg.email}, [
-					require('../component/sponsors').cfg.email
+				m('a', {href: 'mailto:' + ctrl.config.sponsorshipEmail}, [
+					ctrl.config.sponsorshipEmail
 				])
 			]),
 			m('p', ['You\'ll get:']),

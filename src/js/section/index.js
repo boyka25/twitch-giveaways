@@ -101,7 +101,7 @@ tabs.active = {
 		return 'Roll from all active people'
 			+ '<br>'
 			+ '<small>'
-			+ 'People that posted something in a last ' + ctrl.cfg.activeTimeout + ' minutes.'
+			+ 'People that posted something in a last ' + ctrl.options.activeTimeout + ' minutes.'
 			+ '</small>';
 	},
 	view: function () {

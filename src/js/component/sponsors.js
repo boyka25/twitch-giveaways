@@ -3,23 +3,19 @@ var e = require('e');
 var Tooltip = require('tooltip');
 var animate = require('../lib/animate');
 
-var cfg = {
-	email: 'sponsorship@darsa.in'
-};
 var sponsors = require('tga/data/sponsors.json').filter(activeSponsors);
 
 module.exports = {
 	name: 'sponsors',
-	view: view,
-	cfg: cfg
+	view: view
 };
 
 function view(ctrl) {
 	var s = sponsors;
 
 	return m('.sponsors', [
-		s[0] ? sponsor(s[0]) : placeholder(),
-		s[1] ? sponsor(s[1]) : placeholder()
+		s[0] ? sponsor(s[0]) : placeholder(ctrl.config),
+		s[1] ? sponsor(s[1]) : placeholder(ctrl.config)
 	]);
 }
 
@@ -37,13 +33,13 @@ function sponsor(sponsor) {
 	]);
 }
 
-function placeholder() {
+function placeholder(config) {
 	var dummySponsor = {
 		name: 'Your name',
 		description: 'And description, leading to your custom URL...'
 	};
 	var linkProps = {
-		href: 'mailto:' + cfg.email,
+		href: 'mailto:' + config.sponsorshipEmail,
 		target: '_blank',
 		config: tooltip(dummySponsor)
 	};
