@@ -12,7 +12,7 @@ var twitch = module.exports = {
 			url: twitch.api + resource,
 			background: true,
 			config: function (xhr) {
-				xhr.setRequestHeader('Accept', 'application/vnd.twitchtv.v2+json');
+				xhr.setRequestHeader('Accept', 'application/vnd.twitchtv.v3+json');
 				setTimeout(xhr.abort.bind(xhr), twitch.timeout);
 			}
 		});
