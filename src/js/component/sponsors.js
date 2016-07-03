@@ -13,9 +13,9 @@ module.exports = {
 function view(ctrl) {
 	var s = sponsors;
 
-	return m('.sponsors', [
-		s[0] ? sponsor(s[0]) : placeholder(ctrl.config),
-		s[1] ? sponsor(s[1]) : placeholder(ctrl.config)
+	return m('.sponsors', s[0] && s[0].double ? [sponsor(s[0])] : [
+			s[0] ? sponsor(s[0]) : placeholder(ctrl.config),
+			s[1] ? sponsor(s[1]) : placeholder(ctrl.config)
 	]);
 }
 
@@ -23,6 +23,7 @@ function sponsor(sponsor) {
 	var anchorProps = {
 		href: sponsor.url,
 		target: '_blank',
+		class: sponsor.double ? 'double' : '',
 		config: tooltip(sponsor)
 	};
 
