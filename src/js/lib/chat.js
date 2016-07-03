@@ -33,44 +33,72 @@ chat.post = function (message) {
 
 // chat messages observer
 var chatObserver = new MutationObserver(function processMutations(mutations) {
-	var addedNodes, i, l, node, line, name, html, text;
+	var addedNodes, i, l, node, line, message;
 	for (var m = 0, ml = mutations.length; m < ml; m++) {
 		addedNodes = mutations[m].addedNodes;
 		for (i = 0, l = addedNodes.length; i < l; i++) {
 			node = addedNodes[i];
-			line = node.querySelector && node.querySelector('.chat-line');
-			if (!line && node.matches && node.matches('.chat-line'))
-				line = node;  // BTTV fix;
-			if (!line) continue;
-			name = query('.from', line);
-			name = name && name.textContent.trim();
-			if (!name) continue;
-			if (query('.deleted', line)) continue;
-			html = query('.message', line).innerHTML.trim();
-			text = textify(html);
-			chat.emit('message', {
-				user: {
-					name: name,
-					badges: slice(query.all('.badge', line)).map(getBadge).filter(truthy),
-				},
-				html: html,
-				text: text,
-				time: new Date()
-			});
+			line = node.matches && node.matches('.chat-line')
+				? node
+				: node.querySelector && node.querySelector('.chat-line');
+			message = parseLine(line);
+			if (!message) continue;
+			chat.emit('message', message);
 		}
 	}
 });
 
-function getBadge(el) {
+// start observing mutations on chat messages
+chatObserver.observe(chatContainer, { childList: true });
+
+function parseLine(line) {
+	if (!line) return;
+	var message = {};
+
+	// ignore deleted lines
+	if (query('.deleted', line)) return;
+
+	// get name
+	var nameEl = query('.from', line);
+	var name = nameEl && nameEl.textContent.trim();
+	if (!name) return;
+
+	// get html & text
+	var html = query('.message', line).innerHTML.trim();
+	var text = textify(html);
+
+	return {
+		user: {
+			name: name,
+			badges: slice(query.all('.badge', line)).map(getBadgeName).filter(truthy),
+		},
+		html: html,
+		text: text,
+		time: new Date()
+	};
+}
+
+function getBadgeName(el) {
+	return el.nodeName === 'DIV'
+		? getBTTVBadgeName(el)
+		: getTwitchBadgeName(el);
+}
+
+function getTwitchBadgeName(el) {
 	var name = el.getAttribute('original-title').toLowerCase();
 	if (~User.badges.indexOf(name)) {
 		return name;
 	}
 }
 
+function getBTTVBadgeName(el) {
+	for (var i = 0; i < User.badges.length; i++) {
+		if (el.classList.contains(User.badges[i])) {
+			return User.badges[i];
+		}
+	}
+}
+
 function truthy(group) {
 	return group;
 }
-
-// start observing mutations on chat messages
-chatObserver.observe(chatContainer, { childList: true });
