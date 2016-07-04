@@ -1,5 +1,15 @@
 [
 	{
+		"version": "2.6.0",
+		"date": "Jul 4, 2016",
+		"new": [
+			"Function to announce winner in chat. You can also set up a custom announcement template!"
+		],
+		"fixed": [
+			"TGA is now compatible with BTTV. I'm also working on a small refactoring to ensure it never breaks again."
+		]
+	},
+	{
 		"version": "2.5.1",
 		"date": "Jun 30, 2016",
 		"fixed": [
