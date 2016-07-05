@@ -47,7 +47,7 @@ function view(ctrl) {
 					m('label[for=subscriber-luck]', 'Subscriber luck'),
 					m('input[type=range]#subscriber-luck', {
 						min: 1,
-						max: ctrl.options.maxSubscriberLuck,
+						max: ctrl.config.maxSubscriberLuck,
 						oninput: m.withAttr('value', ctrl.setter('rolling.subscriberLuck').type('number')),
 						value: ctrl.rolling.subscriberLuck
 					}),
