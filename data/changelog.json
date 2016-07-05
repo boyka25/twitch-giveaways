@@ -1,5 +1,12 @@
 [
 	{
+		"version": "2.6.1",
+		"date": "Jul 5, 2016",
+		"fixed": [
+			"Max subscriber luck value was not being set, and defaulted to 100. Back to 10 now."
+		]
+	},
+	{
 		"version": "2.6.0",
 		"date": "Jul 4, 2016",
 		"new": [
