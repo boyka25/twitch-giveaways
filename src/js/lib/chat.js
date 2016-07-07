@@ -85,7 +85,7 @@ function getBadgeName(el) {
 }
 
 function getTwitchBadgeName(el) {
-	var name = el.getAttribute('original-title').toLowerCase();
+	var name = el.getAttribute('title').toLowerCase();
 	if (~User.badges.indexOf(name)) {
 		return name;
 	}
