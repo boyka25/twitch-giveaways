@@ -1,5 +1,12 @@
 [
 	{
+		"version": "2.6.4",
+		"date": "Jul 27, 2016",
+		"fixed": [
+			"Subs not being recognized again due to another Twitch DOM change. Yeah, message tapping rewrite still not done :'("
+		]
+	},
+	{
 		"version": "2.6.3",
 		"date": "Jul 7, 2016",
 		"fixed": [
