@@ -36,14 +36,11 @@ function stylesStream() {
 function mainStylesStream() {
 	var stylus = require('gulp-stylus');
 	var autoprefixer = require('gulp-autoprefixer');
-	var minifyCSS = require('gulp-minify-css');
 	var rename = require('gulp-rename');
-	var gulpif = require('gulp-if');
 	return gulp.src('src/styl/main.styl')
 		.pipe(stylus({ errors: false })).on('error', handleError)
 		.pipe(rename('main.css'))
-		.pipe(autoprefixer('last 2 Chrome versions')).on('error', handleError)
-		.pipe(gulpif(argv.production, minifyCSS({ noAdvanced: true })));
+		.pipe(autoprefixer('last 2 Chrome versions')).on('error', handleError);
 }
 
 function scriptsStream() {
