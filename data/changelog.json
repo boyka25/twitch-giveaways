@@ -1,5 +1,16 @@
 [
 	{
+		"version": "2.7.0",
+		"date": "Oct 15, 2016",
+		"description": [
+			"Twitch changed something and it caused TGA to break all poped out chats. Bummer :("
+		],
+		"changed": [
+			"This update rewrites how TGA opens, where it opens, and how it connects to the chat.",
+			"TGA is now 100% isolated from Twitch so something like this will never happen again."
+		]
+	},
+	{
 		"version": "2.6.4",
 		"date": "Jul 27, 2016",
 		"fixed": [
