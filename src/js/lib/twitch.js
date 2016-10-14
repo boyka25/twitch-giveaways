@@ -25,6 +25,7 @@ var twitch = module.exports = {
 	following: function (username, channel) {
 		channel = twitch.toID(channel);
 		username = twitch.toID(username);
+		console.log('follow request:', '/users/' + username + '/follows/channels/' + channel);
 		return twitch.request('/users/' + username + '/follows/channels/' + channel);
 	},
 	profile: function (username) {
@@ -32,7 +33,7 @@ var twitch = module.exports = {
 		return twitch.request('/users/' + username);
 	},
 	currentChannel: function () {
-		var match = window.location.pathname.match(/^\/([^\/]+)\/chat\/?$/i);
+		var match = window.location.search.match(/channel=([^&]+)(&|$)/);
 		if (!match) return false;
 		var ogTitle = query('head meta[property="og:title"]');
 		return {

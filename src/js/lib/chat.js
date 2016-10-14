@@ -1,6 +1,5 @@
 var emitter = require('emitter');
-var match = window.location.search.match(/channel=([^&]+)(&|$)/);
-var channel = match ? match[1].toLowerCase() : null;
+var channel = require('./channel');
 
 var chat = module.exports = {};
 
@@ -9,7 +8,7 @@ emitter(chat);
 
 // listen for new chat-message events sent by content script
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-	if (message.name === 'chat-message' && message.data.channel === channel) {
+	if (message.name === 'chat-message' && message.data.channel === channel.id) {
 		chat.tab = sender.tab;
 		chat.emit('message', message.data);
 	}
