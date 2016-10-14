@@ -5,6 +5,7 @@ var query = require('query');
 
 var twitch = module.exports = {
 	api: 'https://api.twitch.tv/kraken',
+	clientID: 'h9v0ctx2gn0uchv227fq2q2daimfkol',
 	timeout: 10000,
 	request: function request(resource) {
 		return m.request({
@@ -12,6 +13,7 @@ var twitch = module.exports = {
 			url: twitch.api + resource,
 			background: true,
 			config: function (xhr) {
+				xhr.setRequestHeader('Client-ID', twitch.clientID);
 				xhr.setRequestHeader('Accept', 'application/vnd.twitchtv.v3+json');
 				setTimeout(xhr.abort.bind(xhr), twitch.timeout);
 			}

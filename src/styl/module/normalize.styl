@@ -1,107 +1,103 @@
-{namespace}
-	cursor: default
+// box sizing
+*,
+*:before,
+*:after
+	box-sizing: border-box
 
-	// box sizing
-	&,
-	*,
-	*:before,
-	*:after
-		box-sizing: border-box
+// fonts
+&,
+button,
+input,
+textarea,
+select
+	font-family: sans-serif
+	font-size: fontSize
 
-	// fonts
-	&,
-	button,
-	input,
-	textarea,
-	select
-		font-family: sans-serif
-		font-size: fontSize
+input[type=email],
+input[type=date],
+input[type=datetime],
+input[type=month],
+input[type=number],
+input[type=password],
+input[type=search],
+input[type=tel],
+input[type=text],
+input[type=time],
+input[type=url],
+input[type=week],
+textarea
+	cursor: text
 
-	input[type=email],
-	input[type=date],
-	input[type=datetime],
-	input[type=month],
-	input[type=number],
-	input[type=password],
-	input[type=search],
-	input[type=tel],
-	input[type=text],
-	input[type=time],
-	input[type=url],
-	input[type=week],
-	textarea
-		cursor: text
+// scrollbars
+::-webkit-scrollbar
+	width: 6px
+	height: 6px
+	margin: 1px
 
-	// scrollbars
-	::-webkit-scrollbar
-		width: 6px
-		height: 6px
-		margin: 1px
+::-webkit-scrollbar-track
+	background: transparent
 
-	::-webkit-scrollbar-track
-		background: transparent
+::-webkit-scrollbar-thumb
+	background: colors.light
 
-	::-webkit-scrollbar-thumb
-		background: colors.light
+	&:hover
+		background: colors.dark
 
-		&:hover
-			background: colors.dark
+// headings
+h2, h3
+	font-family: sans-serif
 
-	// headings
-	h2, h3
-		font-family: sans-serif
+// links
+a
+	color: colors.primary
 
-	// links
-	a
-		color: colors.primary
+	&:hover
+		color: colors.primaryLight
+		text-decoration: none
 
-		&:hover
-			color: colors.primaryLight
-			text-decoration: none
+// other
+strong
+	font-weight: bold
 
-	// other
-	strong
-		font-weight: bold
+code
+	padding: 0 .3em
+	background: colors.lightest
+	border-radius: 2px
 
-	code
-		padding: 0 .3em
-		background: colors.lightest
-		border-radius: 2px
+// ordered list
+ol
+	list-style: none
+	margin: 0
+	padding: 0
+	counter-reset: listNo
 
-	// ordered list
-	ol
-		list-style: none
+	li
 		margin: 0
-		padding: 0
-		counter-reset: listNo
+		margin-bottom: .5em
+		padding-left: 1.5em
 
-		li
-			margin: 0
-			margin-bottom: .5em
-			padding-left: 1.5em
+		&:last-child
+			margin-bottom: 0
 
-			&:last-child
-				margin-bottom: 0
+		&:before
+			counter-increment: listNo
+			content: counter(listNo) "."
+			display: inline-block
+			min-width: @padding-left
+			margin-left: -@min-width
+			padding-right: 5px
+			text-align: right
 
-			&:before
-				counter-increment: listNo
-				content: counter(listNo) "."
-				display: inline-block
-				min-width: @padding-left
-				margin-left: -@min-width
-				padding-right: 5px
-				text-align: right
+ul
+	list-style: initial
+	margin: 0
+	padding: 0
+	border: 0
 
-	ul
-		list-style: initial
-		margin: 0
+	li
+		list-style-position: outside
+		margin: 0 0 .5em 1.2em
 		padding: 0
 		border: 0
-
-		li
-			list-style-position: outside
-			margin: 0 0 .5em 1.2em
-			padding: 0
-			border: 0
-			border-bottom: 0
-			overflow: visible
+		border-bottom: 0
+		overflow: visible

@@ -5,6 +5,7 @@ var animate = require('../lib/animate');
 var morpher = require('../lib/morpher');
 var extend = require('extend');
 var withKey = require('../lib/withkey');
+var releaseNames = ['new', 'added', 'removed', 'changed', 'fixed'];
 
 module.exports = {
 	name: 'changelog',
@@ -35,8 +36,7 @@ function view(ctrl) {
 		var description = [];
 		if (!release.collapsed()) {
 			if (release.description) description = description.concat(release.description.map(toP));
-			['new', 'added', 'removed', 'changed', 'fixed'].forEach(function (name) {
-				if (!release[name]) return;
+			Object.keys(release).filter(isReleaseName).forEach(function (name) {
 				description.push(m('h2.changestype.' + name, ucfirst(name)));
 				description.push(m('ul.' + name, release[name].map(toLI)));
 			});
@@ -56,4 +56,8 @@ function view(ctrl) {
 			description.length ? m('.description.fadein', description) : null
 		]);
 	});
+}
+
+function isReleaseName(name) {
+	return releaseNames.indexOf(name) !== -1;
 }

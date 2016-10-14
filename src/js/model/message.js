@@ -6,12 +6,13 @@ module.exports = Message;
 /**
  * User model constructor.
  *
- * @param {String} name
+ * @param {Object} message
  */
-function Message(string) {
+function Message(message) {
 	Model.call(this);
 	this.time = new Date();
-	this.html = string;
+	this.html = message.html;
+	this.text = message.text;
 }
 
 inherit(Message, Model);

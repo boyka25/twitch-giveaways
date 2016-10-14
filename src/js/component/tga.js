@@ -44,7 +44,6 @@ function Controller(container, config) {
 	var self = this;
 	this.app = this;
 	this.container = container;
-	this.isOpen = false;
 	this.setter = setters(this);
 
 	// session data
@@ -117,7 +116,7 @@ function Controller(container, config) {
 			self.users.insert(user);
 		}
 		user.lastMessage = new Date();
-		if (self.winner === user) user.messages.push(new Message(message.html));
+		if (self.winner === user) user.messages.push(new Message(message));
 		if (self.keyword && message.text.indexOf(self.keyword) === 0) {
 			if (self.options.keywordAntispam && user.keyword === self.keyword) {
 				user.keywordEntries++;
@@ -264,31 +263,6 @@ function Controller(container, config) {
 
 	// also clean users when ignore list has changed
 	this.setter.on('options.ignoreList', throttle(this.cleanUsers, 1000));
-
-	// open & close logic
-	this.windowWidth = window.innerWidth;
-
-	// close on window resize when window is too small
-	evt.bind(window, 'resize', throttle(function () {
-		self.windowWidth = window.innerWidth;
-		if (self.windowWidth < self.config.minWindowWidth) self.close();
-	}, 100));
-
-	this.open = function () {
-		if (self.windowWidth < self.config.minWindowWidth) return;
-		self.isOpen = true;
-		self.container.classList.add('open');
-	};
-
-	this.close = function () {
-		self.isOpen = false;
-		self.container.classList.remove('open');
-	};
-
-	this.toggle = function () {
-		if (self.isOpen) self.close();
-		else self.open();
-	};
 }
 
 function view(ctrl) {

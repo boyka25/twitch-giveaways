@@ -188,6 +188,7 @@ function messageToLi(message) {
 	var elapsed = timespan(message.time - user.respondedAt, 2);
 	return m('li', [
 		m('span.time', elapsed.minutes + ':' + String('00' + elapsed.seconds).substr(-2)),
-		m('span.content', m.trust(message.html))
+		// m('span.content', m.trust(message.html)) // figure out why are the emoticons failing
+		m('span.content', message.text)
 	]);
 }

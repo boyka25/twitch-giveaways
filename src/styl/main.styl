@@ -15,32 +15,16 @@
 @import 'vendor/*.styl'
 
 @import 'component/*.styl'
-@import 'tga.styl'
 @import 'section/*.styl'
 
-// twitch chat
-.ember-chat-container
-	position: relative
-	width: auto
-	z-index: 2
-	transition: margin tga.transition.duration tga.transition.easing
-	box-shadow: -1px 0 0 black(.25)
+html, body
+	min-width: tga.width + 300px
 
-	{namespace}.open ~ &
-		margin-left: tga.width
+.page-container
+	display: flex
+	width: 100%
+	height: 100%
+	overflow: hidden
 
-// match selector specificity :/
-.ember-chat .chat-interface .chat-buttons-container .tga-button
-	color: colors.primary
-
-	&:hover
-		color: colors.primaryDark
-
-	&.disabled
-		color: colors.grey
-		cursor: default
-
-	.icon
-		display: block
-		margin: 4px .7em
-		size: 20px
+	> iframe
+		flex: 1

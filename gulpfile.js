@@ -30,10 +30,10 @@ function handleError(err) {
 }
 
 function stylesStream() {
-	return contentStylesStream();
+	return mainStylesStream();
 }
 
-function contentStylesStream() {
+function mainStylesStream() {
 	var stylus = require('gulp-stylus');
 	var autoprefixer = require('gulp-autoprefixer');
 	var minifyCSS = require('gulp-minify-css');
@@ -41,16 +41,35 @@ function contentStylesStream() {
 	var gulpif = require('gulp-if');
 	return gulp.src('src/styl/main.styl')
 		.pipe(stylus({ errors: false })).on('error', handleError)
-		.pipe(rename('content.css'))
+		.pipe(rename('main.css'))
 		.pipe(autoprefixer('last 2 Chrome versions')).on('error', handleError)
 		.pipe(gulpif(argv.production, minifyCSS({ noAdvanced: true })));
 }
 
 function scriptsStream() {
-	return contentScriptsStream();
+	var streamqueue = require('streamqueue');
+	return streamqueue({ objectMode: true },
+		contentScriptStream(),
+		injectScriptStream(),
+		mainScriptStream()
+	);
 }
 
-function contentScriptsStream() {
+function contentScriptStream() {
+	var gulpif = require('gulp-if');
+	var uglify = require('gulp-uglify');
+	return gulp.src('./src/js/content.js', {base: './src/js'})
+		.pipe(gulpif(argv.production, uglify()));
+}
+
+function injectScriptStream() {
+	var gulpif = require('gulp-if');
+	var uglify = require('gulp-uglify');
+	return gulp.src('./src/js/inject.js', {base: './src/js'})
+		.pipe(gulpif(argv.production, uglify()));
+}
+
+function mainScriptStream() {
 	var resolve = require('component-resolver');
 	var Builder = require('component-build');
 	var gulpif = require('gulp-if');
@@ -60,14 +79,14 @@ function contentScriptsStream() {
 	var done = false;
 	stream._read = function () {
 		if (done) return stream.push(null);
-		resolve('.', { development: !argv.production }, build);
+		resolve('.', { development: false }, build);
 	};
 	function build(err, tree) {
 		done = true;
 		if (err) return stream.emit('error', err);
 		new Builder(tree, {
 			autorequire: true,
-			development: !argv.production
+			development: false
 		}).scripts(pushFile);
 	}
 	function pushFile(err, string) {
@@ -75,7 +94,7 @@ function contentScriptsStream() {
 		stream.push(new File({
 			cwd: '/',
 			base: '/',
-			path: '/content.js',
+			path: '/main.js',
 			contents: new Buffer(string)
 		}));
 	}
@@ -104,8 +123,27 @@ function assetsStream() {
 	);
 }
 
+function buildStream() {
+	var streamqueue = require('streamqueue');
+	return streamqueue({ objectMode: true },
+		assetsStream(),
+		htmlStream(),
+		iconsStream(),
+		scriptsStream(),
+		stylesStream()
+	);
+}
+
+function htmlStream() {
+	return gulp.src('src/html/*.html');
+}
+
 gulp.task('assets', function () {
 	return assetsStream().pipe(gulp.dest(destination));
+});
+
+gulp.task('html', function () {
+	return htmlStream().pipe(gulp.dest(destination));
 });
 
 gulp.task('icons', function () {
@@ -117,19 +155,27 @@ gulp.task('clean', function (cb) {
 });
 
 gulp.task('scripts:content', function () {
-	return contentScriptsStream().pipe(gulp.dest(destination));
+	return contentScriptStream().pipe(gulp.dest(destination));
 });
 
-gulp.task('scripts', ['scripts:content']);
-
-gulp.task('styles:content', function () {
-	return contentStylesStream().pipe(gulp.dest(destination));
+gulp.task('scripts:inject', function () {
+	return injectScriptStream().pipe(gulp.dest(destination));
 });
 
-gulp.task('styles', ['styles:content']);
+gulp.task('scripts:main', function () {
+	return mainScriptStream().pipe(gulp.dest(destination));
+});
+
+gulp.task('scripts', ['scripts:content', 'scripts:inject', 'scripts:main']);
+
+gulp.task('styles:main', function () {
+	return mainStylesStream().pipe(gulp.dest(destination));
+});
+
+gulp.task('styles', ['styles:main']);
 
 gulp.task('build', ['clean'], function () {
-	gulp.start('assets', 'icons', 'scripts', 'styles');
+	return buildStream().pipe(gulp.dest(destination));
 });
 
 gulp.task('bump', function () {
@@ -143,15 +189,9 @@ gulp.task('bump', function () {
 
 gulp.task('package', function () {
 	var version = require('./manifest.json').version;
-	var streamqueue = require('streamqueue');
 	var zip = require('gulp-zip');
 	argv.production = true;
-	return streamqueue({ objectMode: true },
-		assetsStream(),
-		iconsStream(),
-		scriptsStream(),
-		stylesStream()
-	).pipe(zip('tga-' + version + '.zip')).pipe(gulp.dest('.'));
+	return buildStream().pipe(zip('tga-' + version + '.zip')).pipe(gulp.dest('.'));
 });
 
 gulp.task('release', ['bump'], function () {
@@ -160,6 +200,7 @@ gulp.task('release', ['bump'], function () {
 
 gulp.task('watch', function () {
 	gulp.watch(['manifest.json', 'src/img/**/*', 'banner/*'], ['assets']);
+	gulp.watch(['src/html/*.html'], ['html']);
 	gulp.watch(['component.json', 'data/*.json', 'src/js/**/*.js'], ['scripts']);
 	gulp.watch('src/styl/**/*.styl', ['styles']);
 	gulp.watch(['src/icon/*.svg'], ['icons']);

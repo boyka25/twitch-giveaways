@@ -9,7 +9,8 @@
     "128": "icon_128.png"
   },
   "permissions": [
-    "*://*.twitch.tv/*"
+    "*://*.twitch.tv/*",
+    "*://*.jtvnw.net/*"
   ],
   "content_scripts": [
     {
@@ -24,9 +25,11 @@
     }
   ],
   "web_accessible_resources": [
-    "content.css",
+    "main.html",
+    "main.css",
     "bitcoin.png",
     "icons.svg",
+    "inject.js",
     "banner/*"
   ]
 }
