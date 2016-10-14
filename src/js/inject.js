@@ -68,7 +68,7 @@ function parseLine(line) {
 
 	// get html & text
 	var msgEl = line.querySelector('.message').cloneNode(true);
-	var text = msgEl.textContent;
+	var text = String(msgEl.textContent).trim();
 	Array.from(msgEl.querySelectorAll('.balloon')).forEach(function (el) {
 		el.parentNode.removeChild(el);
 	});
