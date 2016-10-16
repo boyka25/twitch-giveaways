@@ -34,7 +34,7 @@ function processMessage(message) {
 	}
 
 	const tags = message.tags;
-	const bits = 0;
+	let bits = 0;
 	const badges = tags._badges.map(obj => {
 		if (obj.id === 'bits') {
 			bits = obj.version;
