@@ -29,7 +29,7 @@ window.addEventListener('load', function () {
 
 function processMessage(message) {
 	// Ignore notifications and other non-messages.
-	if (message.command !== 'PRIVMSG' || message.style === 'notification' || message.style === 'action') {
+	if (message.command !== 'PRIVMSG' || message.style === 'notification') {
 		return;
 	}
 
