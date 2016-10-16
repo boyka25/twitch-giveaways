@@ -38,7 +38,7 @@ function ODB(model, options) {
 
 inherit(ODB, SortedList);
 
-var slProto = SortedList.prototype;
+var superProto = SortedList.prototype;
 
 definer(ODB.prototype)
 	.type('m')
@@ -60,14 +60,14 @@ definer(ODB.prototype)
 		compareFn: null
 	});
 
-function insert (props) {
+function insert(props) {
 	var item = props instanceof this._model ? props : new this._model(props);
 	if (this.exists(item.id)) {
 		item = this.get(item.id).extend(props);
 		this.emit('change', item);
 	} else {
 		item = this.keystore[this.key(item.id)] = item;
-		slProto.insert.call(this, item);
+		superProto.insert.call(this, item);
 		this.emit('insert', item);
 	}
 	return item;
@@ -138,5 +138,5 @@ function findAll(needle, limit) {
 function reset() {
 	delete this.keystore;
 	this.keystore = {};
-	slProto.reset.call(this);
+	superProto.reset.call(this);
 }

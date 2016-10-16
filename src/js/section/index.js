@@ -27,14 +27,16 @@ function Controller() {
 	};
 
 	this.resetEligible = function () {
-		for (var i = 0, user; (user = self.users[i++]);) delete user.eligible;
+		for (var i = 0, user; (user = self.users[i++]);) {
+			user.eligible = true;
+		}
 	};
 }
 
 function view(ctrl) {
 	var i = 0;
 	return [
-		m('fieldset', [
+		m('fieldset.sponsored-by', [
 			m('legend', 'Sponsored by'),
 			require('../component/sponsors').view(ctrl)
 		]),

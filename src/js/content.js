@@ -54,11 +54,11 @@ function loadObserver() {
 			var data = JSON.parse(message);
 			chrome.runtime.sendMessage({name: 'chat-message', data: data});
 		} catch(err) {
-			console.log('TGA: can\'t parse postman message: ', message);
+			console.log('Twitch Giveaways: Can\'t parse postman message: ', message);
 		}
 	});
 
-	observer.observe(postman, { attributes: true });
+	observer.observe(postman, {attributes: true});
 }
 
 // post message to the chat
@@ -67,7 +67,7 @@ function postMessage(message) {
 	var chatSubmit = document.querySelector('.chat-room .js-chat-buttons__submit');
 
 	if (!chatTextarea || !chatSubmit) {
-		console.log('TGA: Message not sent. Can\' find the needed elements.');
+		console.log('Twitch Giveaways: Message not sent. Can\' find the needed elements.');
 		return;
 	}
 

@@ -4,7 +4,7 @@ var inherit = require('inherit');
 module.exports = Message;
 
 /**
- * User model constructor.
+ * Message model constructor.
  *
  * @param {Object} message
  */

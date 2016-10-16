@@ -1,124 +1,62 @@
-var channel = getChannelName();
 var postman = document.createElement('div');
 postman.id = 'twitch-giveaways-message-passing';
 postman.style.display = 'none';
 
 document.body.appendChild(postman);
 
-var userBadges = ['broadcaster', 'staff', 'admin', 'moderator', 'user', 'subscriber'];
-// chat messages observer
-var chatObserver = new MutationObserver(processMutations);
-
-// load observer when chat gets loaded
+// Wait for TMI to load, than bind message listener to it.
 window.addEventListener('load', function () {
-	var start = Date.now();
-	var documentObserver = new MutationObserver(function () {
-		var chatContainer = document.querySelector('.chat-room .chat-lines');
-		if (chatContainer) {
-			console.log('TGA: Chat container found, disconnecting document observer.');
-			documentObserver.disconnect();
-			startObserving(chatContainer);
-			console.log('TGA: Observing chat started.');
-		}
-		if (start < Date.now() - 5000) {
-			console.log('TGA: Chat not found after 5 seconds, disconnecting document observer.');
-			documentObserver.disconnect();
-		}
-	});
+	const start = Date.now();
+	const interval = 50;
+	const timeout = 5000;
 
-	documentObserver.observe(document.body, { childList: true });
+	checkForTMI();
+
+	function checkForTMI() {
+		const sessions = TMI && TMI._sessions && TMI._sessions[0];
+		const mainConnection = sessions && sessions._connections && sessions._connections.main;
+
+		if (mainConnection) {
+			mainConnection.on('message', processMessage);
+			console.log('Twitch Giveaways: Listening on chat started.');
+		} else if (start < Date.now() - timeout) {
+			console.log('Twitch Giveaways: TMI interface not found after 5 seconds, giving up.');
+		} else {
+			setTimeout(checkForTMI, interval);
+		}
+	}
 });
 
-function getChannelName() {
-	var match = window.location.pathname.match(/^\/([^\/]+)\/chat\/?$/);
-	return match ? match[1].toLowerCase() : null;
-}
-
-function startObserving(chatContainer) {
-	chatObserver.observe(chatContainer, { childList: true });
-}
-
-function processMutations(mutations) {
-	var addedNodes, i, l, node, line, message;
-	for (var m = 0, ml = mutations.length; m < ml; m++) {
-		addedNodes = mutations[m].addedNodes;
-		for (i = 0, l = addedNodes.length; i < l; i++) {
-			node = addedNodes[i];
-			line = node.matches && node.matches('.chat-line')
-				? node
-				: node.querySelector && node.querySelector('.chat-line');
-			message = parseLine(line);
-			if (!message) continue;
-			postman.setAttribute('data-message', JSON.stringify(message));
-		}
+function processMessage(message) {
+	// Ignore notifications and other non-messages.
+	if (message.command !== 'PRIVMSG' || message.style === 'notification' || message.style === 'action') {
+		return;
 	}
-}
 
-function parseLine(line) {
-	if (!line) return;
-	var message = {};
-
-	// ignore deleted lines
-	if (line.querySelector('.deleted')) return;
-
-	// get name
-	var nameEl = line.querySelector('.from');
-	var name = nameEl && nameEl.textContent.trim();
-	if (!name) return;
-
-	// get html & text
-	var msgEl = line.querySelector('.message').cloneNode(true);
-	var text = String(msgEl.textContent).trim();
-	Array.from(msgEl.querySelectorAll('.balloon')).forEach(function (el) {
-		el.parentNode.removeChild(el);
+	const tags = message.tags;
+	const bits = 0;
+	const badges = tags._badges.map(obj => {
+		if (obj.id === 'bits') {
+			bits = obj.version;
+		}
+		return obj.id;
 	});
-	var html = msgEl.innerHTML.trim();
 
-	return {
-		channel: channel,
+	postman.setAttribute('data-message', JSON.stringify({
+		channel: message.target.match(/#?(.+)/)[1],
 		user: {
-			name: name,
-			badges: Array.from(line.querySelectorAll('.badge')).map(getBadgeName).filter(truthy),
+			name: message.sender,
+			displayName: tags['display-name'],
+			badges: badges,
+			staff: ~badges.indexOf('staff'),
+			admin: ~badges.indexOf('admin'),
+			broadcaster: ~badges.indexOf('broadcaster'),
+			subscriber: tags.subscriber,
+			mod: tags.mod,
+			turbo: tags.turbo,
+			bits: bits
 		},
-		html: html,
-		text: text,
-		time: new Date()
-	};
-}
-
-function textify(html) {
-	textify.root.innerHTML = html && html.nodeType === 1 ? html.outerHTML : html + '';
-	var imgs = textify.root.querySelectorAll('img');
-	for (var i = 0, l = imgs.length; i < l; i++) imgs[i].outerHTML = imgs[i].getAttribute('alt');
-	return textify.root.textContent || textify.root.innerText;
-}
-textify.root = document.createElement('div');
-
-function getBadgeName(el) {
-	return el.nodeName === 'DIV'
-		? getBTTVBadgeName(el)
-		: getTwitchBadgeName(el);
-}
-
-function getTwitchBadgeName(el) {
-	var name = el.getAttribute('alt').toLowerCase();
-	if (~userBadges.indexOf(name)) {
-		return name;
-	}
-}
-
-function getBTTVBadgeName(el) {
-	for (var i = 0; i < userBadges.length; i++) {
-		if (el.classList.contains(userBadges[i])) {
-			return userBadges[i];
-		}
-	}
-}
-
-function truthy(group) {
-	return group;
-}
-
-function handleMessage(message) {
-	postman.setAttribute('data-message', JSON.stringify(message));
+		text: message.message,
+		html: message.message
+	}));
 }

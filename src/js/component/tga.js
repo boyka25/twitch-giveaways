@@ -63,7 +63,7 @@ function Controller(container, config) {
 		groups: {
 			staff: true,
 			admin: true,
-			moderator: true,
+			mod: true,
 			user: true
 		}
 	};

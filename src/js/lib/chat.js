@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 // post message to the chat
 chat.post = function (message) {
 	if (!chat.tab) {
-		console.log('TGA: Can\'t send the message, don\'t know where to :(');
+		console.log('Twitch Giveaways: Can\'t send the message, don\'t know where to :(');
 		return;
 	}
 

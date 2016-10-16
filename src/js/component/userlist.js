@@ -82,8 +82,8 @@ function userToLi(user) {
 	return m('li', {key: user.id, class: user.eligible ? 'checked' : '', 'data-id': user.id}, [
 		m('span.eligible'),
 		m('span.name', this.query
-			? m.trust(user.name.replace(this.query, '<span class="query">$1</span>'))
-			: user.name),
+			? m.trust(user.displayName.replace(this.query, '<span class="query">$1</span>'))
+			: user.displayName),
 		user.subscriber ? icon('star', 'subscriber') : null,
 		groupIcon ? icon(groupIcon, user.group) : null
 	]);

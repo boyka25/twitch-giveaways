@@ -1,7 +1,7 @@
 var Model = require('./model');
 var inherit = require('inherit');
 var twitch = require('../lib/twitch');
-var twitchURL = 'http://twitch.tv';
+var twitchURL = 'https://twitch.tv';
 
 module.exports = User;
 
@@ -12,8 +12,20 @@ module.exports = User;
  */
 function User(props) {
 	Model.call(this);
+
+	this.group = 'user';
+	this.eligible = true;
+	this.badges = [];
+	this.staff = false;
+	this.admin = false;
+	this.subscriber = false;
+	this.mod = false;
+	this.turbo = false;
+	this.bits = 0;
+
 	this.extend(props);
-	this.id = User.getID(this);
+
+	this.id = this.name;
 	this.channelURL = twitchURL + '/' + this.id;
 	this.profileURL = this.channelURL + '/profile';
 	this.messageURL = twitchURL + '/message/compose?to=' + this.id;
@@ -23,52 +35,54 @@ function User(props) {
 inherit(User, Model);
 
 var proto = User.prototype;
-var mProto = Model.prototype;
-
-proto.group = 'user';
-proto.subscriber = false;
-proto.eligible = true;
+var superProto = Model.prototype;
 
 /**
- * Extracts group & subscriber status from badges.
- *
- * @param  {Array} badges
- * @return {User}
- */
-proto.decoration = function (badges) {
-	if (!badges || !badges.length) return this;
-	for (var i = 0; i < badges.length; i++)
-		if (badges[i] === 'subscriber') this.subscriber = true;
-		else if (User.isGroup(badges[i])) this.group = badges[i];
-	return this;
-};
-
-/**
- * Extend current model with new data.
+ * Extend current object with new data.
  *
  * @param  {Object} props
  * @return {User}
  */
 proto.extend = function (props) {
-	if (props && props.badges) {
-		this.decoration(props.badges);
-		delete props.badges;
+	this.name = props.name ? String(props.name).trim().toLowerCase() : this.name;
+	delete props.name;
+
+	if (!this.name) {
+		throw new Errror('User object requires name property.');
 	}
-	return mProto.extend.call(this, props);
+
+	this.displayName = String(props.displayName).toLowerCase() === this.name ? props.displayName : this.displayName || this.name;
+	delete props.displayName;
+
+	this.badges = Array.isArray(props.badges) ? props.badges : this.badges;
+	delete props.badges;
+
+	this.bits = Number.isInteger(props.bits) ? props.bits : this.bits;
+	delete props.bits;
+
+	// Fill up boolean properties.
+	var keys = Object.keys(props);
+	for (var i = 0; i < keys.length; i++) {
+		this[keys[i]] = !!props[keys[i]];
+	}
+
+	// Decide group.
+	for (var group in User.groups) {
+		if (this[group]) {
+			this.group = group;
+			break;
+		}
+	}
+
+	if (!this.group) {
+		this.group = 'user';
+	}
+
+	return this;
 };
 
 User.isGroup = function (group) {
 	return group in User.groups;
-};
-
-/**
- * Returns an ID for a user object.
- *
- * @param  {Object} props
- * @return {String}
- */
-User.getID = function (props) {
-	return props.id || twitch.toID(props.name);
 };
 
 User.groups = {
@@ -84,7 +98,7 @@ User.groups = {
 		order: 3,
 		icon: 'shield-full'
 	},
-	moderator: {
+	mod: {
 		order: 4,
 		icon: 'shield-empty'
 	},
