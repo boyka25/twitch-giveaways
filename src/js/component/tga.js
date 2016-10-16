@@ -246,16 +246,24 @@ function Controller(container, config) {
 
 	// set user cleaning interval
 	this.cleanUsers = function () {
-		var timeout = self.options.activeTimeout
-			? new Date(+new Date() - self.options.activeTimeout * 1000 * 60)
-			: false;
+		// Backwards compatibility.
+		// TODO: remove after some time.
+		if (self.options.activeTimeout + '' === '0') {
+			self.setter('options.activeCleanup')(false);
+			self.setter('options.activeTimeout')(app.options.activeTimeout);
+		}
+
+		if (!self.options.activeCleanup) {
+			return;
+		}
+		var timeout = new Date(+new Date() - self.options.activeTimeout * 1000 * 60);
 		var removed = 0;
 		for (var i = 0, user; user = self.users[i], i < self.users.length; i++) {
-			var timedOut = timeout && user.lastMessage < timeout;
-			if (timedOut || ~self.options.ignoreList.indexOf(user.id)) {
-				self.users.remove(user);
-				i--; removed++;
+			if (user.lastMessage > timeout) {
+				continue;
 			}
+			self.users.remove(user);
+			i--; removed++;
 		}
 		if (removed) m.redraw();
 	};

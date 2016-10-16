@@ -28,19 +28,21 @@ function view(ctrl) {
 			key: 'option-active-timeout',
 			config: animate('slideinleft', 50 * i++)
 		}, [
-			m('label[for=option-active-timeout]', 'Active timeout'),
-			m('input[type=range]#option-active-timeout', {
-				min: 0,
-				max: 60,
+			m('label', {onmousedown: withKey(1, ctrl.setter('options.activeCleanup').to(!ctrl.options.activeCleanup))}, 'Active timeout'),
+			icon(ctrl.options.activeCleanup ? 'check' : 'close', {
+				class: 'checkbox' + (ctrl.options.activeCleanup ? ' checked' : ''),
+				onmousedown: withKey(1, ctrl.setter('options.activeCleanup').to(!ctrl.options.activeCleanup))
+			}),
+			ctrl.options.activeCleanup ? m('input[type=range]', {
+				min: 1,
+				max: ctrl.config.maxActiveTimeout,
 				oninput: m.withAttr('value', ctrl.setter('options.activeTimeout').type('number')),
 				value: ctrl.options.activeTimeout
-			}),
-			m('span.meta', ctrl.options.activeTimeout
-				? [ctrl.options.activeTimeout, ' ', m('em', 'min')]
-				: [m('em', 'disabled')]
-			),
-			m('p.description', 'Time since last message, after which users are no longer considered active and removed from the list. Set to 0 to disable.')
+			}) : null,
+			ctrl.options.activeCleanup ? m('span.meta', [ctrl.options.activeTimeout, ' ', m('em', 'min')]) : null,
+			m('p.description', 'Time since last message after which users are no longer considered active and removed from the list.')
 		]),
+
 		// uncheck winners
 		m('article.option.uncheck-winners', {
 			key: 'option-uncheck-winners',
@@ -53,6 +55,7 @@ function view(ctrl) {
 			}),
 			m('p.description', 'When enabled, winners are automatically unchecked to not win twice.')
 		]),
+
 		// announce winner
 		m('article.option.announce-winner', {
 			key: 'option-announce-winner',
@@ -65,6 +68,7 @@ function view(ctrl) {
 			}),
 			m('p.description', 'Announce winner in chat. You need to be logged in!')
 		]),
+
 		// announce template
 		!ctrl.options.announceWinner ? null : m('article.option.announce-template', {
 			key: 'option-announce-template',
@@ -79,6 +83,7 @@ function view(ctrl) {
 				value: ctrl.options.announceTemplate
 			})
 		]),
+
 		// keyword antispam
 		m('article.option.keyword-antispam', {
 			key: 'option-keyword-antispam',
@@ -98,6 +103,7 @@ function view(ctrl) {
 			ctrl.options.keywordAntispam ? m('span.meta', ctrl.options.keywordAntispamLimit) : null,
 			m('p.description', 'People who enter keyword more than ' + howManyTimes(ctrl.options.keywordAntispamLimit) + ' are automatically unchecked.')
 		]),
+
 		// ignore list
 		m('article.option.ignore-list', {
 			key: 'option-ignore-list',
@@ -113,6 +119,7 @@ function view(ctrl) {
 				value: ctrl.options.ignoreList.join('\n')
 			})
 		]),
+
 		// display tooltips
 		m('article.option.display-tooltips', {
 			key: 'option-display-tooltips',

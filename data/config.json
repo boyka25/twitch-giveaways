@@ -3,6 +3,7 @@
 	"sponsorshipEmail": "sponsorship@darsa.in",
 	"minWindowWidth": 800,
 	"maxSubscriberLuck": 10,
+	"maxActiveTimeout": 60,
 	"tooltips": {
 		"tooltip": {
 			"baseClass": "tgatip",

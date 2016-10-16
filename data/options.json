@@ -1,4 +1,5 @@
 {
+	"activeCleanup": true,
 	"activeTimeout": 15,
 	"lastReadChangelog": "0.0.0",
 	"uncheckWinners": true,
