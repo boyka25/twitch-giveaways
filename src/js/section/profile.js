@@ -159,7 +159,7 @@ function view(ctrl) {
 				])
 			]),
 			m('.title', {config: animate('slideintop', i++ * 50 + 200)}, [
-				m('h1', user.name)
+				m('h1', user.displayName)
 			])
 		]),
 		m('.messages', [
