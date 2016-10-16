@@ -1,5 +1,6 @@
-var channel = getChannelName();
-var button = document.createElement('a');
+let channel = getChannelName();
+const button = document.createElement('a');
+let postman;
 button.className = 'tga-button button button--icon-only float-left';
 button.title = 'Open Twitch Giveaways';
 button.target = '_blank';
@@ -10,10 +11,10 @@ if (window.name === 'tga-embedded-chat') {
 	// inject page context script
 	inject();
 
-	// process DOM manipulation requests
+	// Relay some runtime messages to inject.js.
 	chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-		if (request.name === 'post-message') {
-			postMessage(request.message);
+		if (request.name === 'send-message') {
+			relayToInject(request);
 		}
 	});
 } else {
@@ -47,38 +48,28 @@ function inject() {
 }
 
 function loadObserver() {
-	var postman = document.querySelector('#twitch-giveaways-message-passing');
-	var observer = new MutationObserver(function processMutations() {
-		var message = postman.getAttribute('data-message');
-		try {
-			var data = JSON.parse(message);
-			chrome.runtime.sendMessage({name: 'chat-message', data: data});
-		} catch(err) {
-			console.log('Twitch Giveaways: Can\'t parse postman message: ', message);
+	postman = document.querySelector('#twitch-giveaways-message-passing');
+	const observer = new MutationObserver(function (mutations) {
+		for (const mutation of mutations) {
+			if (mutation.attributeName === 'data-out') {
+				const message = postman.getAttribute('data-out');
+				try {
+					chrome.runtime.sendMessage(JSON.parse(message));
+				} catch (err) {
+					console.log('Twitch Giveaways: Can\'t parse data-out message: ', err.message);
+				}
+			}
 		}
 	});
 
 	observer.observe(postman, {attributes: true});
 }
 
-// post message to the chat
-function postMessage(message) {
-	var chatTextarea = document.querySelector('.chat-room .js-chat_input');
-	var chatSubmit = document.querySelector('.chat-room .js-chat-buttons__submit');
-
-	if (!chatTextarea || !chatSubmit) {
-		console.log('Twitch Giveaways: Message not sent. Can\' find the needed elements.');
+function relayToInject(request) {
+	if (!postman) {
+		console.log('Twitch Giveaways: Can\'t relay to inject.js, postman not loaded yet.');
 		return;
 	}
 
-	chatTextarea.value = String(message);
-
-	// Simulate an input event so ember's data binding picks up the new value,
-	// since changing textarea.value programatically doesn't fire anything.
-	chatTextarea.dispatchEvent(new Event('input', {
-		bubbles: true,
-		cancelable: true
-	}));
-
-	chatSubmit.click();
-};
+	postman.setAttribute('data-in', JSON.stringify(request));
+}

@@ -3,10 +3,10 @@ var channel = require('./channel');
 
 var chat = module.exports = {};
 
-// make chat object an event emitter
+// Make chat object an event emitter.
 emitter(chat);
 
-// listen for new chat-message events sent by content script
+// Listen for new chat-message events sent by content script.
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if (message.name === 'chat-message' && message.data.channel === channel.id) {
 		chat.tab = sender.tab;
@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	}
 });
 
-// post message to the chat
+// Send message to chat.
 chat.post = function (message) {
 	if (!chat.tab) {
 		console.log('Twitch Giveaways: Can\'t send the message, don\'t know where to :(');
@@ -23,7 +23,8 @@ chat.post = function (message) {
 
 	// asks content script to post the message
 	chrome.tabs.sendMessage(chat.tab.id, {
-		name: 'post-message',
+		name: 'send-message',
+		channel: channel.name,
 		message: message
 	});
 };

@@ -6,6 +6,34 @@ const ignoredSenders = ['twitchnotify', 'jtv'];
 
 document.body.appendChild(postman);
 
+// Listen for messages from content script and handle the request
+const requestHandlers = {
+	'send-message': sendMessage
+};
+const observer = new MutationObserver(function (mutations) {
+	for (const mutation of mutations) {
+		if (mutation.attributeName === 'data-in') {
+			const message = postman.getAttribute('data-in');
+			try {
+				const request = JSON.parse(message);
+				const handler = requestHandlers[request.name];
+				if (handler) {
+					handler(request);
+				}
+			} catch (err) {
+				console.log('Twitch Giveaways: Can\'t parse data-in message: ', err.message);
+			}
+		}
+	}
+});
+
+observer.observe(postman, {attributes: true});
+
+// Send message to content.js.
+function sendToContent(request) {
+	postman.setAttribute('data-out', JSON.stringify(request));
+}
+
 // Wait for TMI to load, than bind message listener to it.
 window.addEventListener('load', function () {
 	const start = Date.now();
@@ -44,25 +72,29 @@ function processMessage(obj) {
 		return obj.id;
 	});
 
-	postman.setAttribute('data-message', JSON.stringify({
-		channel: obj.target.match(/#?(.+)/)[1],
-		user: {
-			name: obj.sender,
-			displayName: tags['display-name'],
-			badges: badges,
-			staff: ~badges.indexOf('staff'),
-			admin: ~badges.indexOf('admin'),
-			broadcaster: ~badges.indexOf('broadcaster'),
-			subscriber: tags.subscriber,
-			mod: tags.mod,
-			turbo: tags.turbo,
-			bits: bits
-		},
-		text: obj.message,
-		html: emotify(obj)
-	}));
+	sendToContent({
+		name: 'chat-message',
+		data: {
+			channel: obj.target.match(/#?(.+)/)[1],
+			user: {
+				name: obj.sender,
+				displayName: tags['display-name'],
+				badges: badges,
+				staff: ~badges.indexOf('staff'),
+				admin: ~badges.indexOf('admin'),
+				broadcaster: ~badges.indexOf('broadcaster'),
+				subscriber: tags.subscriber,
+				mod: tags.mod,
+				turbo: tags.turbo,
+				bits: bits
+			},
+			text: obj.message,
+			html: emotify(obj)
+		}
+	});
 }
 
+// Create message HTML string with emotes in it.
 function emotify(obj) {
 	const text = obj.message;
 	const emotes = obj.tags.emotes;
@@ -93,11 +125,43 @@ function emotify(obj) {
 		slices.push(text.slice(i));
 	}
 
-	console.log('emotified: ' + slices.join(''));
-
 	return slices.join('');
 }
 
 function emoteSorter(a, b) {
 	return a.start < b.start ? -1 : 1;
+}
+
+// Send message to chat via Twitch UI.
+function sendMessage(request) {
+	const message = request.message;
+	const chatTextarea = document.querySelector('.chat-room .js-chat_input');
+	const chatSubmit = document.querySelector('.chat-room .js-chat-buttons__submit');
+
+	if (!chatTextarea || !chatSubmit) {
+		console.log('Twitch Giveaways: Message not sent. Can\' find the needed elements.');
+		return;
+	}
+
+	chatTextarea.value = String(message);
+
+	// Simulate an input event so ember's data binding picks up the new value,
+	// since changing textarea.value programatically doesn't fire anything.
+	chatTextarea.dispatchEvent(new Event('input', {
+		bubbles: true,
+		cancelable: true
+	}));
+
+	chatSubmit.click();
+}
+
+// Send message to chat via TMI interface.
+// The disadvantage of this is that sender doesn't see the message he has send,
+// so instead the sendMessage() function above is used.
+function sendMessageTMI(data) {
+	try {
+		TMI._sessions[0]._connections.main._send(`PRIVMSG #${data.channel} :${data.message}`);
+	} catch (err) {
+		console.log('Twitch Giveaways: Couldn\'t send chat message, TMI interface not found.');
+	}
 }

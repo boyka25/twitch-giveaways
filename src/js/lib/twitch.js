@@ -34,10 +34,9 @@ var twitch = module.exports = {
 	currentChannel: function () {
 		var match = window.location.search.match(/channel=([^&]+)(&|$)/);
 		if (!match) return false;
-		var ogTitle = query('head meta[property="og:title"]');
 		return {
 			id: match[1],
-			name: ogTitle ? ogTitle.content : ucfirst(match[1]),
+			name: match[1],
 			hasFollower: function (username, callback) {
 				twitch.following(username, match[1], callback);
 			}
