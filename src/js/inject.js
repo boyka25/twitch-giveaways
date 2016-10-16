@@ -59,6 +59,45 @@ function processMessage(obj) {
 			bits: bits
 		},
 		text: obj.message,
-		html: obj.message
+		html: emotify(obj)
 	}));
+}
+
+function emotify(obj) {
+	const text = obj.message;
+	const emotes = obj.tags.emotes;
+	const slices = [];
+	const serializeEmote = key => ({
+		id: key,
+		start: emotes[key][0][0],
+		end: emotes[key][0][1]
+	});
+
+	let i = 0;
+	for (const emote of Object.keys(emotes).map(serializeEmote).sort(emoteSorter)) {
+		if (emote.start > 0) {
+			slices.push(text.slice(0, emote.start));
+		}
+
+		let alt = text.slice(emote.start, emote.end + 1);
+		slices.push(`<img
+			class="emoticon"
+			src="https://static-cdn.jtvnw.net/emoticons/v1/${emote.id}/1.0"
+			alt="${alt}"
+			title="${alt}"
+		>`);
+		i = emote.end + 1;
+	}
+
+	if (text.length > i) {
+		slices.push(text.slice(i));
+	}
+
+	console.log('emotified: ' + slices.join(''));
+
+	return slices.join('');
+}
+
+function emoteSorter(a, b) {
+	return a.start < b.start ? -1 : 1;
 }
