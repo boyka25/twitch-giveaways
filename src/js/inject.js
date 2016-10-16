@@ -1,6 +1,8 @@
-var postman = document.createElement('div');
+const postman = document.createElement('div');
 postman.id = 'twitch-giveaways-message-passing';
 postman.style.display = 'none';
+
+const ignoredSenders = ['twitchnotify', 'jtv'];
 
 document.body.appendChild(postman);
 
@@ -27,13 +29,13 @@ window.addEventListener('load', function () {
 	}
 });
 
-function processMessage(message) {
+function processMessage(obj) {
 	// Ignore notifications and other non-messages.
-	if (message.command !== 'PRIVMSG' || message.style === 'notification') {
+	if (obj.command !== 'PRIVMSG' || ~ignoredSenders.indexOf(obj.sender) || obj.style === 'notification') {
 		return;
 	}
 
-	const tags = message.tags;
+	const tags = obj.tags;
 	let bits = 0;
 	const badges = tags._badges.map(obj => {
 		if (obj.id === 'bits') {
@@ -43,9 +45,9 @@ function processMessage(message) {
 	});
 
 	postman.setAttribute('data-message', JSON.stringify({
-		channel: message.target.match(/#?(.+)/)[1],
+		channel: obj.target.match(/#?(.+)/)[1],
 		user: {
-			name: message.sender,
+			name: obj.sender,
 			displayName: tags['display-name'],
 			badges: badges,
 			staff: ~badges.indexOf('staff'),
@@ -56,7 +58,7 @@ function processMessage(message) {
 			turbo: tags.turbo,
 			bits: bits
 		},
-		text: message.message,
-		html: message.message
+		text: obj.message,
+		html: obj.message
 	}));
 }
