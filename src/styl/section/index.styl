@@ -2,10 +2,13 @@
 	display: flex
 	flex-flow: column
 
+	.sponsored-by
+		margin: spacing spacing 0
+
 	.controls
 		flex: 1
 		background: scrollshadows
-		overflow: scroll
+		overflow: auto
 		overflow-x: hidden
 
 	.block
@@ -97,10 +100,14 @@
 
 		.btn
 			justify-content: flex-start
-			min-width: 60px
+			flex: 1
+			margin-right: (spacing/2)
 			color: colors.grey
 			background: colors.lightest
 			border: 0
+
+			&:last-child
+				margin-right: 0
 
 			&:hover
 				color: colors.lighter
@@ -115,7 +122,7 @@
 					background: colors.success
 
 			.Icon
-				margin-right: 2px
+				margin-right: 4px
 				font-size: .8em
 
 	.actions
