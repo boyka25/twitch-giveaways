@@ -78,11 +78,12 @@ function view(ctrl) {
 						value: ctrl.rolling.subscriberLuck
 					}),
 					m('span.meta', ctrl.rolling.subscriberLuck),
-					m('p.description', 'Subscribers '
-						+ (ctrl.rolling.subscriberLuck > 1
-							? 'are ' + ctrl.rolling.subscriberLuck + ' times more likely to win'
-							: 'get no special treatment')
-						+ '. Details in FAQ.')
+					m('p.description', [
+						'Subscribers ',
+						ctrl.rolling.subscriberLuck > 1
+							? ['are ', m('strong', ctrl.rolling.subscriberLuck), ' times more likely to win']
+							: ['get no special treatment'],
+						'. Details in FAQ.'])
 				])
 			]),
 			m('.block.actions', [
