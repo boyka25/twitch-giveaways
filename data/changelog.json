@@ -1,5 +1,24 @@
 [
 	{
+		"version": "2.8.0",
+		"date": "Oct 17, 2016",
+		"new": [
+			"TGA now tracks cheering."
+		],
+		"added": [
+			"Cheering rolling filter.",
+			"Cheering chat search filter. See search filters FAQ."
+		],
+		"changed": [
+			"TGA now taps into chat via TMI interface instead of parsing the DOM. This means way more reliable chat interface which will no longer break when Twitch changes their DOM structure. It'll only break when they change their own chat API interface, which is way less likely to happen.",
+			"Active timeout option is now a toggle."
+		],
+		"fixed": [
+			"Emoticons not displaying in winner messages.",
+			"Tons of other small code and styling fixes and tweaks."
+		]
+	},
+	{
 		"version": "2.7.0",
 		"date": "Oct 15, 2016",
 		"description": [
