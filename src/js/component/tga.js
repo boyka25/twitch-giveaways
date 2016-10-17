@@ -54,8 +54,7 @@ function Controller(container, config) {
 	this.options = extend(true, {}, app.options, savedOptions);
 	this.version = require('tga/data/changelog.json')[0].version;
 	this.isNewVersion = this.options.lastReadChangelog !== this.version;
-	this.users = new Users();
-	window.users = this.users;
+	this.users = window.users = new Users();
 	this.selectedUsers = new Users();
 	this.rolling = {
 		type: 'active',

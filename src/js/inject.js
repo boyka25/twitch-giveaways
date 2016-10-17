@@ -97,23 +97,28 @@ function processMessage(obj) {
 // Create message HTML string with emotes in it.
 function emotify(obj) {
 	var text = obj.message;
-	var emotes = obj.tags.emotes;
+	var emotes = [];
 	var slices = [];
-	var serializeEmote = function (key) {
-		return {
-			id: key,
-			start: emotes[key][0][0],
-			end: emotes[key][0][1]
-		};
-	};
 
+	// Serialize emotes into easily walkable array.
+	Object.keys(obj.tags.emotes).forEach(function (key) {
+		for (var i = 0; i < obj.tags.emotes[key].length; i++) {
+			emotes.push({
+				id: key,
+				start: obj.tags.emotes[key][i][0],
+				end: obj.tags.emotes[key][i][1]
+			});
+		}
+	});
+	emotes.sort(emoteSorter);
+
+	// Generate HTML with emotes.
 	var i = 0;
-	var emotes = Object.keys(emotes).map(serializeEmote).sort(emoteSorter);
 	for (var e = 0; e < emotes.length; e++) {
 		var emote = emotes[e];
 
 		if (emote.start > 0) {
-			slices.push(text.slice(0, emote.start));
+			slices.push(text.slice(i, emote.start));
 		}
 
 		var alt = text.slice(emote.start, emote.end + 1);
