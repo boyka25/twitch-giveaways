@@ -1,5 +1,20 @@
 [
 	{
+		"version": "2.8.1",
+		"date": "Oct 17, 2016",
+		"description": [
+			"This got released the same day as 2.8.0, so be sure to unroll the changelog below to see the new stuff that came with it."
+		],
+		"added": [
+			"Toggle whether the keyword matching should be case sensitive or not.",
+			"Support for display names with asian characters.",
+			"You can now also search for people using asian characters."
+		],
+		"fixed": [
+			"Emotification of winner messages was misbehaving."
+		]
+	},
+	{
 		"version": "2.8.0",
 		"date": "Oct 17, 2016",
 		"new": [
@@ -10,7 +25,7 @@
 			"Cheering chat search filter. See search filters FAQ."
 		],
 		"changed": [
-			"TGA now taps into chat via TMI interface instead of parsing the DOM. This means way more reliable chat interface which will no longer break when Twitch changes their DOM structure. It'll only break when they change their own chat API interface, which is way less likely to happen.",
+			"TGA now taps into chat via TMI interface instead of parsing the DOM. This means way more reliable message events which will no longer break when Twitch changes their DOM structure. It'll only break when they change their own chat API interface, which is way less likely to happen.",
 			"Active timeout option is now a toggle."
 		],
 		"fixed": [
