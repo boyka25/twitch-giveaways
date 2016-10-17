@@ -42,7 +42,7 @@ var Message = require('../model/message');
 
 function Controller(container, config) {
 	var self = this;
-	this.app = this;
+	this.app = window.app = this;
 	this.container = container;
 	this.setter = setters(this);
 
@@ -54,7 +54,7 @@ function Controller(container, config) {
 	this.options = extend(true, {}, app.options, savedOptions);
 	this.version = require('tga/data/changelog.json')[0].version;
 	this.isNewVersion = this.options.lastReadChangelog !== this.version;
-	this.users = window.users = new Users();
+	this.users = new Users();
 	this.selectedUsers = new Users();
 	this.rolling = {
 		type: 'active',
@@ -140,8 +140,8 @@ function Controller(container, config) {
 				} else {
 					user.keyword = self.rolling.keyword;
 					user.keywordEntries = 1;
-					self.selectedUsers.insert(user);
 				}
+				requestUpdateSelectedUsers();
 			}
 		}
 		if (self.winner && self.winner === user && !self.winner.respondedAt)
