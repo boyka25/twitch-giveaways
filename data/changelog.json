@@ -1,5 +1,16 @@
 [
 	{
+		"version": "2.8.2",
+		"date": "Oct 17, 2016",
+		"description": [
+			"3rd release in a day! Again, be sure to unroll the changelogs below to not miss the changes."
+		],
+		"fixed": [
+			"Keyword + Min bits rolling filters were not playing well together.",
+			"Added workaround handling for Chrome rendering bug with focused range inputs."
+		]
+	},
+	{
 		"version": "2.8.1",
 		"date": "Oct 17, 2016",
 		"description": [
