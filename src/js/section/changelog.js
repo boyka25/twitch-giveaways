@@ -43,7 +43,7 @@ function view(ctrl) {
 		}
 		return m('article.release', {
 			key: 'release-' + release.version,
-			config: animate('slideinleft', 50 * i)
+			config: animate('slideinleft', 25 * i)
 		}, [
 			m('h1.version', {
 				onmousedown: withKey(1, release.collapsed.bind(null, !release.collapsed()))
