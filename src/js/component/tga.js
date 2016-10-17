@@ -172,6 +172,15 @@ function Controller(container, config) {
 
 	// rolling function
 	this.roll = function () {
+		// Blur active element, since there is a chrome rendering bug this.
+		// When section changes while some of the range inputs is focused,
+		// Chrome will not clear the old index.js section from raster,
+		// although it is no longer in DOM. This was causing loading indicator
+		// to be overlayed on the old section while spinning.
+		if (document.activeElement && document.activeElement.blur) {
+			document.activeElement.blur();
+		}
+
 		self.messages.clear();
 
 		var pool = [];
