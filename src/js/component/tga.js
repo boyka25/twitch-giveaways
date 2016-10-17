@@ -60,6 +60,7 @@ function Controller(container, config) {
 		type: 'active',
 		types: ['active', 'keyword'],
 		subscriberLuck: 1,
+		minBits: 0,
 		groups: {
 			staff: true,
 			admin: true,
@@ -90,7 +91,16 @@ function Controller(container, config) {
 	function selectedFilter(user) {
 		if (!self.rolling.groups[user.group]) return false;
 		if (self.rolling.subscriberLuck > self.config.maxSubscriberLuck && !user.subscriber) return false;
-		if (self.searchFilter && user[self.searchFilter.prop] !== self.searchFilter.value) return false;
+		if (self.rolling.minBits && self.rolling.minBits > user.bits) return false;
+		if (self.searchFilter) {
+			if (self.searchFilter.value === 'truthy') {
+				if (!user[self.searchFilter.prop]) return false;
+			} else if (self.searchFilter.value === 'falsy') {
+				if (user[self.searchFilter.prop]) return false;
+			} else {
+				if (self.searchFilter.value !== user[self.searchFilter.prop]) return false;
+			}
+		}
 		if (self.searchQuery && !~user.id.indexOf(self.searchQuery)) return false;
 		if (self.rolling.type === 'keyword' && self.keyword && self.keyword !== user.keyword) return false;
 		return true;
@@ -137,6 +147,7 @@ function Controller(container, config) {
 	});
 	this.users.on('remove', self.selectedUsers.remove.bind(self.selectedUsers));
 
+	this.setter.on('rolling.minBits', requestUpdateSelectedUsers);
 	this.setter.on('rolling.type', this.updateSelectedUsers);
 	this.setter.on('rolling.groups', this.updateSelectedUsers);
 

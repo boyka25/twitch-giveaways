@@ -51,7 +51,7 @@ function view(ctrl) {
 				release.version,
 				m('small', release.date),
 				m('.spacer'),
-				icon(release.collapsed() ? 'chevron-down' : 'chevron-up', {class: 'chevron'})
+				icon(release.collapsed() ? 'chevron-down' : 'chevron-up', 'chevron')
 			]),
 			description.length ? m('.description.fadein', description) : null
 		]);

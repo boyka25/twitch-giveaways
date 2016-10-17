@@ -123,7 +123,7 @@ function find(needle) {
 
 function findAll(needle, limit) {
 	var type = typeof needle;
-	if (type === 'string') return this.get(needle);
+	if (type === 'string') return [this.get(needle)];
 	var matches = type === 'function' ? needle : where(needle);
 	var result = [];
 	for (var i = 0; i < this.length; i++) {

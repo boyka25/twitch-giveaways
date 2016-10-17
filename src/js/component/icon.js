@@ -16,7 +16,7 @@ function icon(name, classes, props) {
 		else props.class = classes;
 	}
 	props.role = 'img';
-	return m('svg.Icon.-icon-' + name, props, [
+	return m('svg.Icon.-' + name, props, [
 		m('use', {'href': '#' + icon.svgPrefix + '-' + name})
 	]);
 }

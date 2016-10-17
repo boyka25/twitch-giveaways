@@ -3,6 +3,7 @@ var icon = require('../component/icon');
 var ucFirst = require('to-sentence-case');
 var withKey = require('../lib/withkey');
 var animate = require('../lib/animate');
+var config = require('tga/data/config.json');
 
 module.exports = {
 	name: 'index',
@@ -19,6 +20,11 @@ function Controller() {
 			delete user.keywordEntries;
 		}
 		self.updateSelectedUsers();
+	};
+
+	this.minBitsSeter = this.setter('rolling.minBits');
+	this.setMinBits = function (val) {
+		self.minBitsSeter(valToBits(val));
 	};
 
 	this.cancelKeyword = function () {
@@ -45,6 +51,24 @@ function view(ctrl) {
 			m('ul.block.rolltypes', {config: animate('slideinleft', 50 * i++)}, ctrl.rolling.types.map(typeToTab, ctrl)),
 			m('.block.options', [
 				tabs[ctrl.rolling.type].view(ctrl),
+				m('.option', {key: 'min-bits', config: animate('slideinleft', 50 * i++)}, [
+					m('label[for=min-bits]', 'Min bits'),
+					m('input[type=range]#min-bits', {
+						min: 0,
+						max: config.cheerBreakpoints.length,
+						step: 1,
+						oninput: m.withAttr('value', ctrl.setMinBits),
+						value: bitsToVal(ctrl.rolling.minBits)
+					}),
+					m('span.meta', ctrl.rolling.minBits.toLocaleString()),
+					m('p.description', ctrl.rolling.minBits > 0
+						? [
+							'Only users who cheered at least ',
+							m('strong', ctrl.rolling.minBits.toLocaleString()),
+							' bits.'
+						]
+						: ['No cheering required.'])
+				]),
 				m('.option', {key: 'subscriber-luck', config: animate('slideinleft', 50 * i++)}, [
 					m('label[for=subscriber-luck]', 'Subscriber luck'),
 					m('input[type=range]#subscriber-luck', {
@@ -59,7 +83,7 @@ function view(ctrl) {
 							? 'are ' + ctrl.rolling.subscriberLuck + ' times more likely to win'
 							: 'get no special treatment')
 						+ '. Details in FAQ.')
-				]),
+				])
 			]),
 			m('.block.actions', [
 				m('.btn.btn-info.reset', {
@@ -74,6 +98,16 @@ function view(ctrl) {
 			]),
 		])
 	];
+}
+
+function valToBits(val) {
+	val = val|0;
+	if (val === 0) return 0;
+	return config.cheerBreakpoints[val - 1];
+}
+
+function bitsToVal(bits) {
+	return config.cheerBreakpoints.indexOf(bits|0) + 1;
 }
 
 function groupToToggle(name, i) {

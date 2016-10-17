@@ -57,7 +57,7 @@ proto.extend = function (props) {
 	this.badges = Array.isArray(props.badges) ? props.badges : this.badges;
 	delete props.badges;
 
-	this.bits = Number.isInteger(props.bits) ? props.bits : this.bits;
+	this.bits = 'bits' in props ? props.bits|0 : this.bits;
 	delete props.bits;
 
 	// Fill up boolean properties.

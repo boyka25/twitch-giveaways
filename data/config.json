@@ -4,6 +4,7 @@
 	"minWindowWidth": 800,
 	"maxSubscriberLuck": 10,
 	"maxActiveTimeout": 60,
+	"cheerBreakpoints": [1, 100, 1000, 5000, 10000, 100000],
 	"tooltips": {
 		"tooltip": {
 			"baseClass": "tgatip",
@@ -21,6 +22,10 @@
 		"*": {
 			"prop": "subscriber",
 			"value": true
+		},
+		"^": {
+			"prop": "bits",
+			"value": "truthy"
 		}
 	}
 }

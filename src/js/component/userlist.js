@@ -6,6 +6,7 @@ var closest = require('closest');
 var throttle = require('throttle');
 var withKey = require('../lib/withkey');
 var escapeRegexp = require('escape-regexp');
+var config = require('tga/data/config.json');
 
 var userlist = module.exports = {
 	name: 'userlist',
@@ -84,7 +85,16 @@ function userToLi(user) {
 		m('span.name', this.query
 			? m.trust(user.displayName.replace(this.query, '<span class="query">$1</span>'))
 			: user.displayName),
-		user.subscriber ? icon('star', 'subscriber') : null,
-		groupIcon ? icon(groupIcon, user.group) : null
+		cheerIcon(user),
+		user.subscriber ? icon('star', '-subscriber') : null,
+		groupIcon ? icon(groupIcon, '-' + user.group) : null
 	]);
+}
+
+function cheerIcon(user) {
+	if (!Number.isInteger(user.bits) || user.bits < 1) return null;
+	for (var i = config.cheerBreakpoints.length - 1; i >= 0; i--) {
+		if (user.bits < config.cheerBreakpoints[i]) continue;
+		return icon('cheer-' + config.cheerBreakpoints[i]);
+	}
 }

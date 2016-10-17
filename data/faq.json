@@ -29,6 +29,7 @@
 			"Available search filters are:",
 			"<strong><code>!</code></strong> - Only ineligible users.",
 			"<strong><code>*</code></strong> - Only subscribers.",
+			"<strong><code>^</code></strong> - Only people who cheered.",
 			"For example, searching for <code><strong>*</strong></code> will find all subscribers, and searching for <code><strong>*</strong>foo</code> will find subscribers with name containing <em>foo<em>.",
 			"<em>Search is always real time and doesn't need to be updated by re-searching.</em>"
 		]
