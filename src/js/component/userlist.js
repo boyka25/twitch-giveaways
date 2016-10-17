@@ -80,7 +80,12 @@ function view(ctrl) {
 
 function userToLi(user) {
 	var groupIcon = groups[user.group].icon;
-	return m('li', {key: user.id, class: user.eligible ? 'checked' : '', 'data-id': user.id}, [
+	return m('li', {
+		key: user.id,
+		class: user.eligible ? 'checked' : '',
+		'data-id': user.id,
+		title: user.displayName
+	}, [
 		m('span.eligible'),
 		m('span.name', this.query
 			? m.trust(user.displayName.replace(this.query, '<span class="query">$1</span>'))

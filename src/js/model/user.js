@@ -51,7 +51,12 @@ proto.extend = function (props) {
 		throw new Errror('User object requires name property.');
 	}
 
-	this.displayName = String(props.displayName).toLowerCase() === this.name ? props.displayName : this.displayName || this.name;
+	// Special formatting for special characters.
+	if (/[^a-z0-9_\-]/i.test(props.displayName)) {
+		this.displayName = props.displayName + ' (' + this.name + ')';
+	} else {
+		this.displayName = props.displayName || this.displayName || this.name;
+	}
 	delete props.displayName;
 
 	this.badges = Array.isArray(props.badges) ? props.badges : this.badges;

@@ -104,7 +104,7 @@ function Controller(container, config) {
 				if (self.searchFilter.value !== user[self.searchFilter.prop]) return false;
 			}
 		}
-		if (self.searchQuery && !~user.id.indexOf(self.searchQuery)) return false;
+		if (self.searchQuery && !~user.name.indexOf(self.searchQuery) && !~user.displayName.indexOf(self.searchQuery)) return false;
 		if (self.rolling.type === 'keyword' && self.rolling.keyword && self.rolling.keyword !== user.keyword) return false;
 		return true;
 	}
