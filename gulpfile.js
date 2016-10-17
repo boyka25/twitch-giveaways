@@ -56,14 +56,16 @@ function contentScriptStream() {
 	var gulpif = require('gulp-if');
 	var uglify = require('gulp-uglify');
 	return gulp.src('./src/js/content.js', {base: './src/js'})
-		.pipe(gulpif(argv.production, uglify()));
+		.pipe(gulpif(argv.production, uglify()))
+		.on('error', handleError);
 }
 
 function injectScriptStream() {
 	var gulpif = require('gulp-if');
 	var uglify = require('gulp-uglify');
 	return gulp.src('./src/js/inject.js', {base: './src/js'})
-		.pipe(gulpif(argv.production, uglify()));
+		.pipe(gulpif(argv.production, uglify()))
+		.on('error', handleError);
 }
 
 function mainScriptStream() {

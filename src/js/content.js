@@ -1,6 +1,6 @@
-let channel = getChannelName();
-const button = document.createElement('a');
-let postman;
+var channel = getChannelName();
+var button = document.createElement('a');
+var postman;
 button.className = 'tga-button button button--icon-only float-left';
 button.title = 'Open Twitch Giveaways';
 button.target = '_blank';
@@ -12,7 +12,7 @@ if (window.name === 'tga-embedded-chat') {
 	inject();
 
 	// Relay some runtime messages to inject.js.
-	chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		if (request.name === 'send-message') {
 			relayToInject(request);
 		}
@@ -49,10 +49,11 @@ function inject() {
 
 function loadObserver() {
 	postman = document.querySelector('#twitch-giveaways-message-passing');
-	const observer = new MutationObserver(function (mutations) {
-		for (const mutation of mutations) {
+	var observer = new MutationObserver(function (mutations) {
+		for (var i = 0; i < mutations.length; i++) {
+			var mutation = mutations[i];
 			if (mutation.attributeName === 'data-out') {
-				const message = postman.getAttribute('data-out');
+				var message = postman.getAttribute('data-out');
 				try {
 					chrome.runtime.sendMessage(JSON.parse(message));
 				} catch (err) {
