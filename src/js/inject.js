@@ -63,7 +63,6 @@ function processMessage(obj) {
 	if (obj.command !== 'PRIVMSG' || ~ignoredSenders.indexOf(obj.sender) || obj.style === 'notification') {
 		return;
 	}
-
 	var tags = obj.tags;
 	var bits = 0;
 	var badges = tags._badges.map(function (obj) {
@@ -89,8 +88,8 @@ function processMessage(obj) {
 				turbo: tags.turbo,
 				bits: bits
 			},
-			text: obj.message,
-			html: emotify(obj)
+			text: obj.message.trim(),
+			html: emotify(obj).trim()
 		}
 	});
 }

@@ -55,10 +55,13 @@ function Controller(container, config) {
 	this.version = require('tga/data/changelog.json')[0].version;
 	this.isNewVersion = this.options.lastReadChangelog !== this.version;
 	this.users = new Users();
+	window.users = this.users;
 	this.selectedUsers = new Users();
 	this.rolling = {
 		type: 'active',
 		types: ['active', 'keyword'],
+		keyword: null,
+		caseSensitive: true,
 		subscriberLuck: 1,
 		minBits: 0,
 		groups: {
@@ -102,7 +105,7 @@ function Controller(container, config) {
 			}
 		}
 		if (self.searchQuery && !~user.id.indexOf(self.searchQuery)) return false;
-		if (self.rolling.type === 'keyword' && self.keyword && self.keyword !== user.keyword) return false;
+		if (self.rolling.type === 'keyword' && self.rolling.keyword && self.rolling.keyword !== user.keyword) return false;
 		return true;
 	}
 
@@ -127,14 +130,19 @@ function Controller(container, config) {
 		}
 		user.lastMessage = new Date();
 		if (self.winner === user) user.messages.push(new Message(message));
-		if (self.keyword && message.text.indexOf(self.keyword) === 0) {
-			if (self.options.keywordAntispam && user.keyword === self.keyword) {
-				user.keywordEntries++;
-				if (user.keywordEntries > self.options.keywordAntispamLimit) user.eligible = false;
-			} else {
-				user.keyword = self.keyword;
-				user.keywordEntries = 1;
-				self.selectedUsers.insert(user);
+		if (self.rolling.keyword) {
+			var keywordIndex = self.rolling.caseSensitive
+				? message.text.indexOf(self.rolling.keyword)
+				: message.text.toLowerCase().indexOf(self.rolling.keyword.toLowerCase());
+			if (keywordIndex === 0) {
+				if (self.options.keywordAntispam && user.keyword === self.rolling.keyword) {
+					user.keywordEntries++;
+					if (user.keywordEntries > self.options.keywordAntispamLimit) user.eligible = false;
+				} else {
+					user.keyword = self.rolling.keyword;
+					user.keywordEntries = 1;
+					self.selectedUsers.insert(user);
+				}
 			}
 		}
 		if (self.winner && self.winner === user && !self.winner.respondedAt)
@@ -147,9 +155,10 @@ function Controller(container, config) {
 	});
 	this.users.on('remove', self.selectedUsers.remove.bind(self.selectedUsers));
 
-	this.setter.on('rolling.minBits', requestUpdateSelectedUsers);
-	this.setter.on('rolling.type', this.updateSelectedUsers);
 	this.setter.on('rolling.groups', this.updateSelectedUsers);
+	this.setter.on('rolling.type', this.updateSelectedUsers);
+	this.setter.on('rolling.keyword', requestUpdateSelectedUsers);
+	this.setter.on('rolling.minBits', requestUpdateSelectedUsers);
 
 	// search
 	this.search = '';
@@ -161,10 +170,6 @@ function Controller(container, config) {
 		self.searchQuery = self.searchFilter ? self.search.substr(1).trim() : self.search;
 	});
 	this.setter.on('search', requestUpdateSelectedUsers);
-
-	// keyword
-	this.keyword = '';
-	this.setter.on('keyword', requestUpdateSelectedUsers);
 
 	// rolling function
 	this.roll = function () {

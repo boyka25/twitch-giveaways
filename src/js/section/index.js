@@ -28,7 +28,7 @@ function Controller() {
 	};
 
 	this.cancelKeyword = function () {
-		self.setter('keyword')('');
+		self.setter('rolling.keyword')('');
 		self.cleanEntries();
 	};
 
@@ -152,21 +152,38 @@ tabs.keyword = {
 		return 'Keyword to enter<br><small>Only people who write the keyword will get in the list.</small>';
 	},
 	view: function (ctrl) {
-		return m('.keyword' + (ctrl.keyword ? '.active' : ''), {key: 'keyword', config: animate('slideinleft', 50)}, [
-			m('input[type=text].word', {
-				value: ctrl.keyword,
-				placeholder: 'Enter keyword ...',
-				oninput: m.withAttr('value', ctrl.setter('keyword')),
-				onkeydown: withKey(27, ctrl.cancelKeyword)
-			}),
-			m('.btn.clean', {
-				onmousedown: withKey(1, ctrl.cleanEntries),
-				'data-tip': 'Clean all entries<br><small>Makes people enter the keyword again.</small>'
-			}, [icon('trash')]),
-			m('.btn.cancel', {
-				onmousedown: withKey(1, ctrl.cancelKeyword),
-				'data-tip': 'Cancel keyword <kbd>ESC</kbd>'
-			}, [icon('close')])
-		]);
+		return [
+			m('.option.keyword' + (ctrl.rolling.keyword ? '.active' : ''), {key: 'keyword', config: animate('slideinleft', 0)}, [
+				m('input[type=text].word', {
+					value: ctrl.rolling.keyword,
+					placeholder: 'Enter keyword ...',
+					oninput: m.withAttr('value', ctrl.setter('rolling.keyword')),
+					onkeydown: withKey(27, ctrl.cancelKeyword)
+				}),
+				m('.btn.clean', {
+					onmousedown: withKey(1, ctrl.cleanEntries),
+					'data-tip': 'Clean all entries<br><small>Makes people enter the keyword again.</small>'
+				}, [icon('trash')]),
+				m('.btn.cancel', {
+					onmousedown: withKey(1, ctrl.cancelKeyword),
+					'data-tip': 'Cancel keyword <kbd>ESC</kbd>'
+				}, [icon('close')])
+			]),
+			m('.option.case-sensitive', {key: 'case-sensitive', config: animate('slideinleft', 100)}, [
+				m('label', {
+					onmousedown: withKey(1, ctrl.setter('rolling.caseSensitive').to(!ctrl.rolling.caseSensitive))
+				}, 'Case sensitive'),
+				icon(ctrl.rolling.caseSensitive ? 'check' : 'close', {
+					class: 'checkbox' + (ctrl.rolling.caseSensitive ? ' checked' : ''),
+					onmousedown: withKey(1, ctrl.setter('rolling.caseSensitive').to(!ctrl.rolling.caseSensitive))
+				}),
+				m('p.description', [
+					'Casing ',
+					ctrl.rolling.caseSensitive
+						? m('strong', 'matters!')
+						: m('strong', 'doesn\'t matter!')
+				])
+			]),
+		];
 	}
 };
