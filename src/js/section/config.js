@@ -72,7 +72,7 @@ function view(ctrl) {
 		]),
 
 		// announce template
-		!ctrl.options.announceWinner ? null : m('article.option.announce-template', {
+		m('article.option.announce-template', {
 			key: 'option-announce-template',
 			config: animate('slideinleft', 50 * i++)
 		}, [

@@ -53,7 +53,10 @@ function view(ctrl) {
 			m('.block.groups', Object.keys(ctrl.rolling.groups).map(groupToToggle, ctrl)),
 			m('ul.block.rolltypes', {config: animate('slideinleft', 50 * i++)}, ctrl.rolling.types.map(typeToTab, ctrl)),
 			m('.block.options', [
+				// roll type specific options block
 				tabs[ctrl.rolling.type].view(ctrl),
+
+				// min bits
 				m('.option', {key: 'min-bits', config: animate('slideinleft', 50 * i++)}, [
 					m('label[for=min-bits]', 'Min bits'),
 					m('input[type=range]#min-bits', {
@@ -63,15 +66,10 @@ function view(ctrl) {
 						oninput: m.withAttr('value', ctrl.setMinBits),
 						value: bitsToVal(ctrl.rolling.minBits)
 					}),
-					m('span.meta', ctrl.rolling.minBits.toLocaleString()),
-					m('p.description', ctrl.rolling.minBits > 0
-						? [
-							'Only users who cheered at least ',
-							m('strong', ctrl.rolling.minBits.toLocaleString()),
-							' bits.'
-						]
-						: ['No cheering required.'])
+					m('span.meta', ctrl.rolling.minBits.toLocaleString())
 				]),
+
+				// subscriber luck
 				m('.option', {key: 'subscriber-luck', config: animate('slideinleft', 50 * i++)}, [
 					m('label[for=subscriber-luck]', 'Subscriber luck'),
 					m('input[type=range]#subscriber-luck', {
@@ -86,8 +84,36 @@ function view(ctrl) {
 						ctrl.rolling.subscriberLuck > 1
 							? ['are ', m('strong', ctrl.rolling.subscriberLuck), ' times more likely to win']
 							: ['get no special treatment'],
-						'. Details in FAQ.'])
+						'. Details in ',
+						m('a[href="#"]', {onmousedown: ctrl.toSection('config')}, 'FAQ'),
+						'.'
+					])
+				]),
+
+				// uncheck winners
+				m('.option', {key: 'uncheck-winners', config: animate('slideinleft', 50 * i++)}, [
+					m('label', {onmousedown: withKey(1, ctrl.setter('options.uncheckWinners').to(!ctrl.options.uncheckWinners))}, 'Uncheck winner'),
+					icon(ctrl.options.uncheckWinners ? 'check' : 'close', {
+						class: 'checkbox' + (ctrl.options.uncheckWinners ? ' checked' : ''),
+						onmousedown: withKey(1, ctrl.setter('options.uncheckWinners').to(!ctrl.options.uncheckWinners))
+					}),
+					m('p.description.sameline', '… from the list to not win twice.')
+				]),
+
+				// announce winner
+				m('.option', {key: 'announce-winner', config: animate('slideinleft', 50 * i++)}, [
+					m('label', {onmousedown: withKey(1, ctrl.setter('options.announceWinner').to(!ctrl.options.announceWinner))}, 'Announce winner'),
+					icon(ctrl.options.announceWinner ? 'check' : 'close', {
+						class: 'checkbox' + (ctrl.options.announceWinner ? ' checked' : ''),
+						onmousedown: withKey(1, ctrl.setter('options.announceWinner').to(!ctrl.options.announceWinner))
+					}),
+					m('p.description.sameline', [
+						'Change template in ',
+						m('a[href="#"]', {onmousedown: ctrl.toSection('config')}, 'Settings'),
+						'.'
+					])
 				])
+
 			]),
 			m('.block.actions', [
 				m('.btn.btn-info.reset', {
@@ -180,7 +206,7 @@ tabs.keyword = {
 					class: 'checkbox' + (ctrl.rolling.caseSensitive ? ' checked' : ''),
 					onmousedown: withKey(1, ctrl.setter('rolling.caseSensitive').to(!ctrl.rolling.caseSensitive))
 				}),
-				m('p.description', [
+				m('p.description.sameline', [
 					'Casing ',
 					ctrl.rolling.caseSensitive
 						? m('strong', 'matters!')
