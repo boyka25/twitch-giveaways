@@ -59,8 +59,9 @@ function Controller(container, config) {
 	this.users = new Users();
 	this.selectedUsers = new Users();
 	this.rolling = {
-		type: 'active',
-		types: ['active', 'keyword'],
+		type: 'all',
+		types: ['all', 'active', 'keyword'],
+		activeTimeout: 20 * 1000 * 60,
 		keyword: null,
 		caseSensitive: true,
 		subscriberLuck: 1,
@@ -84,20 +85,41 @@ function Controller(container, config) {
 	// selected users abstraction
 	this.updateSelectedUsers = function () {
 		self.selectedUsers.reset();
-		for (var i = 0, user; user = self.users[i], i < self.users.length; i++)
-			if (selectedFilter(user)) self.selectedUsers.insert(user);
+		for (var i = 0, user; user = self.users[i], i < self.users.length; i++) {
+			if (selectedFilter(user)) {
+				self.selectedUsers.insert(user);
+			}
+		}
 	};
 
-	var requestUpdateSelectedUsers = throttle(function () {
+	this.requestUpdateSelectedUsers = throttle(function () {
 		self.updateSelectedUsers();
 		setTimeout(m.redraw);
-	}, 100);
+	}, 150);
+
+	// create and periodically update updateActiveCutoffTime so we don't have
+	// to recreate this object tens of thousands of times on each selected
+	// users filter event
+	this.activeCutoffTime;
+	function updateActiveCutoffTime() {
+		self.activeCutoffTime = new Date(Date.now() - self.rolling.activeTimeout);
+	}
+	updateActiveCutoffTime();
+	setInterval(updateActiveCutoffTime, 1000);
+
+	// set activeTimeout user cleaning interval
+	setInterval(function () {
+		if (self.rolling.type === 'active') {
+			self.requestUpdateSelectedUsers();
+		}
+	}, 1000 * 10);
 
 	function selectedFilter(user) {
-		if (!self.rolling.groups[user.group]) return false;
-		if (self.rolling.subscriberLuck > self.config.maxSubscriberLuck && !user.subscriber) return false;
-		if (self.rolling.minBits && self.rolling.minBits > user.bits) return false;
-		if (self.rolling.subscribedTime && self.rolling.subscribedTime > user.subscribedTime) return false;
+		var rol = self.rolling;
+		if (!rol.groups[user.group]) return false;
+		if (rol.subscriberLuck > self.config.maxSubscriberLuck && !user.subscriber) return false;
+		if (rol.minBits && rol.minBits > user.bits) return false;
+		if (rol.subscribedTime && rol.subscribedTime > user.subscribedTime) return false;
 		if (self.searchFilter) {
 			if (self.searchFilter.value === 'truthy') {
 				if (!user[self.searchFilter.prop]) return false;
@@ -108,7 +130,9 @@ function Controller(container, config) {
 			}
 		}
 		if (self.searchQuery && !~user.name.indexOf(self.searchQuery) && !~user.displayName.indexOf(self.searchQuery)) return false;
-		if (self.rolling.type === 'keyword' && self.rolling.keyword && self.rolling.keyword !== user.keyword) return false;
+		if (rol.type === 'all') return true;
+		if (rol.type === 'active' && self.activeCutoffTime > user.lastMessage) return false;
+		if (rol.type === 'keyword' && rol.keyword && rol.keyword !== user.keyword) return false;
 		return true;
 	}
 
@@ -145,7 +169,7 @@ function Controller(container, config) {
 					user.keyword = self.rolling.keyword;
 					user.keywordEntries = 1;
 				}
-				requestUpdateSelectedUsers();
+				self.requestUpdateSelectedUsers();
 			}
 		}
 		if (self.winner && self.winner === user && !self.winner.respondedAt)
@@ -160,9 +184,11 @@ function Controller(container, config) {
 
 	this.setter.on('rolling.groups', this.updateSelectedUsers);
 	this.setter.on('rolling.type', this.updateSelectedUsers);
-	this.setter.on('rolling.keyword', requestUpdateSelectedUsers);
-	this.setter.on('rolling.minBits', requestUpdateSelectedUsers);
-	this.setter.on('rolling.subscribedTime', requestUpdateSelectedUsers);
+	this.setter.on('rolling.activeTimeout', updateActiveCutoffTime);
+	this.setter.on('rolling.activeTimeout', self.requestUpdateSelectedUsers);
+	this.setter.on('rolling.keyword', self.requestUpdateSelectedUsers);
+	this.setter.on('rolling.minBits', self.requestUpdateSelectedUsers);
+	this.setter.on('rolling.subscribedTime', self.requestUpdateSelectedUsers);
 
 	// search
 	this.search = '';
@@ -173,7 +199,7 @@ function Controller(container, config) {
 		self.searchFilter = self.config.searchFilters[self.search[0]];
 		self.searchQuery = self.searchFilter ? self.search.substr(1).trim() : self.search;
 	});
-	this.setter.on('search', requestUpdateSelectedUsers);
+	this.setter.on('search', self.requestUpdateSelectedUsers);
 
 	// rolling function
 	this.roll = function () {
@@ -281,31 +307,6 @@ function Controller(container, config) {
 			self.tooltips = false;
 		}
 	}
-
-	// set user cleaning interval
-	this.cleanUsers = function () {
-		// Backwards compatibility.
-		// TODO: remove after some time.
-		if (self.options.activeTimeout + '' === '0') {
-			self.setter('options.activeCleanup')(false);
-			self.setter('options.activeTimeout')(app.options.activeTimeout);
-		}
-
-		if (!self.options.activeCleanup) {
-			return;
-		}
-		var timeout = new Date(+new Date() - self.options.activeTimeout * 1000 * 60);
-		var removed = 0;
-		for (var i = 0, user; user = self.users[i], i < self.users.length; i++) {
-			if (user.lastMessage > timeout) {
-				continue;
-			}
-			self.users.remove(user);
-			i--; removed++;
-		}
-		if (removed) m.redraw();
-	};
-	this.userCleanIntervalID = setInterval(this.cleanUsers, 1000 * 10);
 
 	// also clean users when ignore list has changed
 	this.setter.on('options.ignoreList', throttle(this.cleanUsers, 1000));

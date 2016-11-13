@@ -25,26 +25,6 @@ function Controller() {
 function view(ctrl) {
 	var i = 0;
 	return [
-		// active timeout
-		m('article.option.active-timeout', {
-			key: 'option-active-timeout',
-			config: animate('slideinleft', 50 * i++)
-		}, [
-			m('label', {onmousedown: withKey(1, ctrl.setter('options.activeCleanup').to(!ctrl.options.activeCleanup))}, 'Active timeout'),
-			icon(ctrl.options.activeCleanup ? 'check' : 'close', {
-				class: 'checkbox' + (ctrl.options.activeCleanup ? ' checked' : ''),
-				onmousedown: withKey(1, ctrl.setter('options.activeCleanup').to(!ctrl.options.activeCleanup))
-			}),
-			ctrl.options.activeCleanup ? m('input[type=range]', {
-				min: 1,
-				max: ctrl.config.maxActiveTimeout,
-				oninput: m.withAttr('value', ctrl.setter('options.activeTimeout').type('number')),
-				value: ctrl.options.activeTimeout
-			}) : null,
-			ctrl.options.activeCleanup ? m('span.meta', [ctrl.options.activeTimeout, ' ', m('em', 'min')]) : null,
-			m('p.description', 'Time since last message after which users are no longer considered active and removed from the list. Affects ', m('strong', 'all'), ' rolling types.')
-		]),
-
 		// uncheck winners
 		m('article.option.uncheck-winners', {
 			key: 'option-uncheck-winners',

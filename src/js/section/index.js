@@ -100,14 +100,14 @@ function view(ctrl) {
 						value: ctrl.rolling.subscriberLuck,
 						disabled: ctrl.rolling.subscribedTime > 0
 					}),
-					m('span.meta', ctrl.rolling.subscriberLuck, ' ', m('em', '×')),
+					m('span.meta', [ctrl.rolling.subscriberLuck, m('em', '×')]),
 					m('p.description', [
 						'Subscribers ',
 						ctrl.rolling.subscriberLuck > 1
 							? ['are ', m('strong', ctrl.rolling.subscriberLuck), ' times more likely to win']
 							: ['get no special treatment'],
 						'. Details in ',
-						m('a[href="#"]', {onmousedown: ctrl.toSection('config')}, 'FAQ'),
+						m('a[href="#"]', {onmousedown: ctrl.toSection('about')}, 'FAQ'),
 						'.'
 					])
 				]),
@@ -156,6 +156,15 @@ function rangeValToStep(steps, val) {
 	return steps[Math.min(Math.max(0, val|0), steps.length - 1)];
 }
 
+function msToTime(ms) {
+	var seconds = Math.floor(ms / 1000);
+	var hours = Math.floor(seconds / 3600);
+	var minutes = Math.floor((seconds - hours * 3600) / 60);
+	return hours > 0
+		? [hours, m('small', 'h'), ' ', minutes, m('small', 'm')]
+		: [minutes, m('small', 'm')];
+}
+
 function groupToToggle(name, i) {
 	return m('.btn', {
 			class: this.rolling.groups[name] ? 'checked' : '',
@@ -177,17 +186,47 @@ function typeToTab(name) {
 
 var tabs = {};
 
-tabs.active = {
-	name: 'active',
-	tip: function (ctrl) {
-		return 'Roll from all active people'
+tabs.all = {
+	name: 'all',
+	tip: function () {
+		return 'Roll from all'
 			+ '<br>'
 			+ '<small>'
-			+ 'People that posted something in a last ' + ctrl.options.activeTimeout + ' minutes.'
+			+ 'People that spoke in chat since you loaded Twitch Giveaways.'
 			+ '</small>';
 	},
 	view: function () {
 		return null;
+	}
+}
+
+tabs.active = {
+	name: 'active',
+	tip: function (ctrl) {
+		return 'Roll from active people'
+			+ '<br>'
+			+ '<small>'
+			+ 'People who spoke in chat recently, configurable by <strong>Active timeout</strong>.'
+			+ '</small>';
+	},
+	view: function (ctrl) {
+		// active timeout
+		return m('.option', {key: 'active-timeout', config: animate('slideinleft', 0)}, [
+			m('label[for=active-timeout]', 'Active timeout'),
+			m('input[type=range]#active-timeout', {
+				min: 1000 * 60,
+				max: ctrl.config.maxActiveTimeout,
+				step: 1000 * 60,
+				oninput: m.withAttr('value', ctrl.setter('rolling.activeTimeout').type('number')),
+				value: ctrl.rolling.activeTimeout
+			}),
+			m('span.meta', msToTime(ctrl.rolling.activeTimeout)),
+			m('p.description', [
+				'Only people who spoke in the last ',
+				msToTime(ctrl.rolling.activeTimeout),
+				'.'
+			])
+		]);
 	}
 };
 
