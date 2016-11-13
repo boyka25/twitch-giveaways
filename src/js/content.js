@@ -8,16 +8,19 @@ button.innerHTML = '<svg width="20" height="20" viewBox="0 0 512 512" style="mar
 
 // check if we are running in an extension page
 if (window.name === 'tga-embedded-chat') {
-	// inject page context script
-	inject();
+	// inject chat listener
+	inject({
+		onload: loadObserver,
+		src: chrome.extension.getURL('chat-listener.js')
+	});
 
-	// Relay some runtime messages to inject.js.
+	// Relay some runtime messages to chat listener.
 	chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		if (request.name === 'send-message') {
 			relayToInject(request);
 		}
 	});
-} else {
+} else if (['www.twitch.tv', 'twitch.tv'].indexOf(window.location.hostname) > -1) {
 	// Keep updating TGA button
 	setInterval(function (callback) {
 		var container = document.querySelector('.chat-buttons-container');
@@ -29,6 +32,8 @@ if (window.name === 'tga-embedded-chat') {
 		button.href = chrome.extension.getURL('main.html?channel=' + channel);
 		if (button.parentNode !== container) container.appendChild(button);
 	}, 1000);
+	// content analytics
+	inject({src: chrome.extension.getURL('content-analytics.js')});
 }
 
 function getChannelName() {
@@ -36,15 +41,11 @@ function getChannelName() {
 	return match ? match[1].toLowerCase() : null;
 }
 
-function inject() {
+function inject(props) {
 	var script = document.createElement('script');
-	Object.assign(script, {
-		id: 'twitch-giveaways-inject-script',
-		onload: loadObserver,
-		src: chrome.extension.getURL('inject.js')
-	});
-
+	Object.assign(script, props);
 	document.body.appendChild(script);
+	document.body.removeChild(script);
 }
 
 function loadObserver() {
@@ -68,7 +69,7 @@ function loadObserver() {
 
 function relayToInject(request) {
 	if (!postman) {
-		console.log('Twitch Giveaways: Can\'t relay to inject.js, postman not loaded yet.');
+		console.log('Twitch Giveaways: Can\'t relay to chat listener, postman not loaded yet.');
 		return;
 	}
 

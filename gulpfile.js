@@ -46,24 +46,21 @@ function mainStylesStream() {
 function scriptsStream() {
 	var streamqueue = require('streamqueue');
 	return streamqueue({ objectMode: true },
-		contentScriptStream(),
-		injectScriptStream(),
+		staticScriptStream(),
 		mainScriptStream()
 	);
 }
 
-function contentScriptStream() {
+function staticScriptStream() {
 	var gulpif = require('gulp-if');
 	var uglify = require('gulp-uglify');
-	return gulp.src('./src/js/content.js', {base: './src/js'})
-		.pipe(gulpif(argv.production, uglify()))
-		.on('error', handleError);
-}
-
-function injectScriptStream() {
-	var gulpif = require('gulp-if');
-	var uglify = require('gulp-uglify');
-	return gulp.src('./src/js/inject.js', {base: './src/js'})
+	var files = [
+		'./src/js/background.js',
+		'./src/js/content.js',
+		'./src/js/content-analytics.js',
+		'./src/js/chat-listener.js'
+	];
+	return gulp.src(files, {base: './src/js'})
 		.pipe(gulpif(argv.production, uglify()))
 		.on('error', handleError);
 }
@@ -153,19 +150,15 @@ gulp.task('clean', function (cb) {
 	require('rimraf')(destination, cb);
 });
 
-gulp.task('scripts:content', function () {
-	return contentScriptStream().pipe(gulp.dest(destination));
-});
-
-gulp.task('scripts:inject', function () {
-	return injectScriptStream().pipe(gulp.dest(destination));
+gulp.task('scripts:static', function () {
+	return staticScriptStream().pipe(gulp.dest(destination));
 });
 
 gulp.task('scripts:main', function () {
 	return mainScriptStream().pipe(gulp.dest(destination));
 });
 
-gulp.task('scripts', ['scripts:content', 'scripts:inject', 'scripts:main']);
+gulp.task('scripts', ['scripts:static', 'scripts:main']);
 
 gulp.task('styles:main', function () {
 	return mainStylesStream().pipe(gulp.dest(destination));

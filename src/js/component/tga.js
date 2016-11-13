@@ -9,6 +9,7 @@ var Section = require('../lib/section');
 var setters = require('../lib/setters');
 var twitch = require('../lib/twitch');
 var chat = require('../lib/chat');
+var channel = require('../lib/channel');
 var evt = require('event');
 var extend = require('extend');
 
@@ -203,6 +204,15 @@ function Controller(container, config) {
 			delete self.winner.respondedAt;
 			delete self.winner.messages;
 		}
+
+		// send 'roll' event
+		ga('send', 'event', {
+			eventCategory: 'app',
+			eventAction: 'roll',
+			eventLabel: channel.name,
+			eventValue: pool.length,
+			nonInteraction: true
+		});
 
 		// prick random winner from array of eligible users
 		var winner = pool[Math.random() * pool.length | 0];

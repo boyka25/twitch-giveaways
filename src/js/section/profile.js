@@ -110,6 +110,9 @@ function Controller(user) {
 	this.onunload = function () {
 		clearInterval(clockID);
 	};
+
+	// send page view
+	ga('send', 'pageview', '/app/profile');
 }
 
 function view(ctrl) {

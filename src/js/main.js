@@ -1,3 +1,6 @@
+// load analytics.
+require('./boot/analytics');
+
 // load chat iframe.
 require('./boot/chat');
 

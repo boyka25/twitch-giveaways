@@ -37,6 +37,9 @@ function Controller() {
 			user.eligible = true;
 		}
 	};
+
+	// send page view
+	ga('send', 'pageview', '/app');
 }
 
 function view(ctrl) {

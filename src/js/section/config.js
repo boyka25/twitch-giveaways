@@ -18,6 +18,8 @@ function Controller() {
 	this.updateIgnoreList = function (list) {
 		self.setter('options.ignoreList')(list.split('\n').map(formatIngoreListItem));
 	};
+	// send page view
+	ga('send', 'pageview', '/app/settings');
 }
 
 function view(ctrl) {
