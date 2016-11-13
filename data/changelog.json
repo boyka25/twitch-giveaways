@@ -1,5 +1,19 @@
 [
 	{
+		"version": "2.9.0",
+		"date": "Nov 13, 2016",
+		"new": [
+			"<strong>Active</strong> rolling type has been split into <strong>All</strong> & <strong>Active</strong>, which makes more sense and gives you more control over rolling pool."
+		],
+		"added": [
+			"<strong>Subscribed time</strong> rolling filter. You can now roll only people who have been subscribed to you for more than X months. It depends on subscriber loyality badges though, so you need to seet them up!",
+			"Proper channel subscriber badges in the user list."
+		],
+		"changed": [
+			"Quick access to some rolling relevant settings have been added to the rolling screen."
+		]
+	},
+	{
 		"version": "2.8.2",
 		"date": "Oct 17, 2016",
 		"description": [
