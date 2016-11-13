@@ -184,8 +184,10 @@ function Controller(container, config) {
 
 	this.setter.on('rolling.groups', this.updateSelectedUsers);
 	this.setter.on('rolling.type', this.updateSelectedUsers);
-	this.setter.on('rolling.activeTimeout', updateActiveCutoffTime);
-	this.setter.on('rolling.activeTimeout', self.requestUpdateSelectedUsers);
+	this.setter.on('rolling.activeTimeout', function () {
+		updateActiveCutoffTime();
+		self.requestUpdateSelectedUsers();
+	});
 	this.setter.on('rolling.keyword', self.requestUpdateSelectedUsers);
 	this.setter.on('rolling.minBits', self.requestUpdateSelectedUsers);
 	this.setter.on('rolling.subscribedTime', self.requestUpdateSelectedUsers);
