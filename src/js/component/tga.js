@@ -44,6 +44,7 @@ var Message = require('../model/message');
 function Controller(container, config) {
 	var self = this;
 	this.app = window.app = this;
+	this.channel = channel;
 	this.container = container;
 	this.setter = setters(this);
 
@@ -64,6 +65,7 @@ function Controller(container, config) {
 		caseSensitive: true,
 		subscriberLuck: 1,
 		minBits: 0,
+		subscribedTime: 0,
 		groups: {
 			staff: true,
 			admin: true,
@@ -95,6 +97,7 @@ function Controller(container, config) {
 		if (!self.rolling.groups[user.group]) return false;
 		if (self.rolling.subscriberLuck > self.config.maxSubscriberLuck && !user.subscriber) return false;
 		if (self.rolling.minBits && self.rolling.minBits > user.bits) return false;
+		if (self.rolling.subscribedTime && self.rolling.subscribedTime > user.subscribedTime) return false;
 		if (self.searchFilter) {
 			if (self.searchFilter.value === 'truthy') {
 				if (!user[self.searchFilter.prop]) return false;
@@ -159,6 +162,7 @@ function Controller(container, config) {
 	this.setter.on('rolling.type', this.updateSelectedUsers);
 	this.setter.on('rolling.keyword', requestUpdateSelectedUsers);
 	this.setter.on('rolling.minBits', requestUpdateSelectedUsers);
+	this.setter.on('rolling.subscribedTime', requestUpdateSelectedUsers);
 
 	// search
 	this.search = '';

@@ -22,6 +22,7 @@ function User(props) {
 	this.mod = false;
 	this.turbo = false;
 	this.bits = 0;
+	this.subscribedTime = 0;
 
 	this.extend(props);
 
@@ -64,6 +65,9 @@ proto.extend = function (props) {
 
 	this.bits = 'bits' in props ? props.bits|0 : this.bits;
 	delete props.bits;
+
+	this.subscribedTime = 'subscribedTime' in props ? props.subscribedTime|0 : this.subscribedTime;
+	delete props.subscribedTime;
 
 	// Fill up boolean properties.
 	var keys = Object.keys(props);

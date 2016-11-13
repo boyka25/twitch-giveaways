@@ -28,11 +28,11 @@ function Controller(user) {
 
 	// following status
 	if (user.hasOwnProperty('following')) followingDone();
-	else twitch.following(user.id, channel.id).then(setFollowing, setFollowing);
+	else twitch.following(user.name, channel.name).then(setFollowing, setFollowing);
 
 	// profile
 	if (user.hasOwnProperty('profile')) profileDone();
-	else twitch.profile(user.id).then(setProfile, setProfile);
+	else twitch.profile(user.name).then(setProfile, setProfile);
 
 	function setFollowing(res) {
 		if (res)
@@ -42,7 +42,7 @@ function Controller(user) {
 	}
 
 	function setProfile(res) {
-		if (res && res.name === user.id) {
+		if (res && res.name === user.name) {
 			user.profile = res;
 			if (!res.logo) {
 				user.avatar = null;

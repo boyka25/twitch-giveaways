@@ -15,11 +15,18 @@
 		]
 	},
 	{
+		"question": "Subscribed time",
+		"answer": [
+			"Rolling filter to select only people that have been subscribed for more than 1, 3, 6, 12, or 24 months.",
+			"This filter works on subscriber badges, so you need to have those set up.",
+			"You can still select <code>Subscribed time 1 month</code> as a subscribers only filter even without them."
+		]
+	},
+	{
 		"question": "Subscriber luck, how does it work?",
 		"answer": [
 			"Subscriber luck specifies how many times are subscribers likely to win as opposed to regular users.",
-			"For example, Subscriber luck 3 is the same as if every subscriber was in the list 3 times.",
-			"You can still roll only from subscribers by using the <strong><code>*</code></strong> search filter described below."
+			"For example, Subscriber luck 3 is the same as if every subscriber was in the list 3 times."
 		]
 	},
 	{

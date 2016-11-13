@@ -42,7 +42,7 @@ function view(ctrl) {
 				value: ctrl.options.activeTimeout
 			}) : null,
 			ctrl.options.activeCleanup ? m('span.meta', [ctrl.options.activeTimeout, ' ', m('em', 'min')]) : null,
-			m('p.description', 'Time since last message after which users are no longer considered active and removed from the list.')
+			m('p.description', 'Time since last message after which users are no longer considered active and removed from the list. Affects ', m('strong', 'all'), ' rolling types.')
 		]),
 
 		// uncheck winners

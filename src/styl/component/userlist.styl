@@ -50,17 +50,34 @@
 		color: colors.info
 		border-bottom: 1px solid colors.infoLight
 
-	.Icon
-		size: 1.2em
+	.badge
+		display: block
+		size: 18px
 		transition: color 100ms linear
-
-		&:last-child
-			margin-right: 4px
+		margin-left: 2px
 
 		&.staff
 			font-size: 1.2em
-		&.subscriber
-			font-size: 1em
+
+	.subscriber.-placeholder
+		position: relative
+		size: 22px
+
+		.Icon
+			display: block
+			size: @width
+
+		.time
+			display: flex
+			justify-content: center
+			align-items: center
+			position: absolute
+			top: 0
+			left: 0
+			size: @width
+			font-size: 60%
+			color: #fff
+			text-shadow: -1px -1px 0 rgba(#000, .2)
 
 	.checked
 		color: colors.dark

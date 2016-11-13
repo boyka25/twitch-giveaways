@@ -8,7 +8,7 @@ emitter(chat);
 
 // Listen for new chat-message events sent by content script.
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-	if (message.name === 'chat-message' && message.data.channel === channel.id) {
+	if (message.name === 'chat-message' && message.data.channel === channel.name) {
 		chat.tab = sender.tab;
 		chat.emit('message', message.data);
 	}

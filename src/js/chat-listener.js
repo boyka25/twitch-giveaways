@@ -65,9 +65,15 @@ function processMessage(obj) {
 	}
 	var tags = obj.tags;
 	var bits = 0;
+	var subscribedTime = 0;
 	var badges = tags._badges.map(function (obj) {
-		if (obj.id === 'bits') {
-			bits = obj.version;
+		switch (obj.id) {
+			case 'bits':
+				bits = obj.version;
+				break;
+			case 'subscriber':
+				subscribedTime = parseInt(obj.version) || 1;
+				break;
 		}
 		return obj.id;
 	});
@@ -86,6 +92,7 @@ function processMessage(obj) {
 				subscriber: tags.subscriber,
 				mod: tags.mod,
 				turbo: tags.turbo,
+				subscribedTime: subscribedTime,
 				bits: bits
 			},
 			text: obj.message.trim(),

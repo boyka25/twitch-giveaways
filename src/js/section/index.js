@@ -22,9 +22,14 @@ function Controller() {
 		self.updateSelectedUsers();
 	};
 
-	this.minBitsSeter = this.setter('rolling.minBits');
+	var minBitsSeter = this.setter('rolling.minBits');
 	this.setMinBits = function (val) {
-		self.minBitsSeter(valToBits(val));
+		minBitsSeter(rangeValToStep(config.cheerSteps, val));
+	};
+
+	var subscribedTimeSetter = this.setter('rolling.subscribedTime');
+	this.setSubscribedTime = function (val) {
+		subscribedTimeSetter(rangeValToStep(config.subscribedTimeSteps, val));
 	};
 
 	this.cancelKeyword = function () {
@@ -61,24 +66,41 @@ function view(ctrl) {
 					m('label[for=min-bits]', 'Min bits'),
 					m('input[type=range]#min-bits', {
 						min: 0,
-						max: config.cheerBreakpoints.length,
+						max: config.cheerSteps.length - 1,
 						step: 1,
 						oninput: m.withAttr('value', ctrl.setMinBits),
-						value: bitsToVal(ctrl.rolling.minBits)
+						value: config.cheerSteps.indexOf(ctrl.rolling.minBits)
 					}),
 					m('span.meta', ctrl.rolling.minBits.toLocaleString())
 				]),
 
+				// subscribed time
+				m('.option', {key: 'subscribed-time', config: animate('slideinleft', 50 * i++)}, [
+					m('label[for=subscribed-time]', 'Subscribed time'),
+					m('input[type=range]#subscribed-time', {
+						min: 0,
+						max: ctrl.config.subscribedTimeSteps.length - 1,
+						oninput: m.withAttr('value', ctrl.setSubscribedTime),
+						value: ctrl.config.subscribedTimeSteps.indexOf(ctrl.rolling.subscribedTime)
+					}),
+					m('span.meta', [ctrl.rolling.subscribedTime, ' ', icon('moon')])
+				]),
+
 				// subscriber luck
-				m('.option', {key: 'subscriber-luck', config: animate('slideinleft', 50 * i++)}, [
+				m('.option', {
+					key: 'subscriber-luck',
+					config: animate('slideinleft', 50 * i++),
+					className: ctrl.rolling.subscribedTime > 0 ? 'disabled' : ''
+				}, [
 					m('label[for=subscriber-luck]', 'Subscriber luck'),
 					m('input[type=range]#subscriber-luck', {
 						min: 1,
 						max: ctrl.config.maxSubscriberLuck,
 						oninput: m.withAttr('value', ctrl.setter('rolling.subscriberLuck').type('number')),
-						value: ctrl.rolling.subscriberLuck
+						value: ctrl.rolling.subscriberLuck,
+						disabled: ctrl.rolling.subscribedTime > 0
 					}),
-					m('span.meta', ctrl.rolling.subscriberLuck),
+					m('span.meta', ctrl.rolling.subscriberLuck, ' ', m('em', '×')),
 					m('p.description', [
 						'Subscribers ',
 						ctrl.rolling.subscriberLuck > 1
@@ -130,14 +152,8 @@ function view(ctrl) {
 	];
 }
 
-function valToBits(val) {
-	val = val|0;
-	if (val === 0) return 0;
-	return config.cheerBreakpoints[val - 1];
-}
-
-function bitsToVal(bits) {
-	return config.cheerBreakpoints.indexOf(bits|0) + 1;
+function rangeValToStep(steps, val) {
+	return steps[Math.min(Math.max(0, val|0), steps.length - 1)];
 }
 
 function groupToToggle(name, i) {

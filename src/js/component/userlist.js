@@ -5,6 +5,7 @@ var ucFirst = require('to-sentence-case');
 var closest = require('closest');
 var throttle = require('throttle');
 var withKey = require('../lib/withkey');
+var channel = require('../lib/channel');
 var escapeRegexp = require('escape-regexp');
 var config = require('tga/data/config.json');
 
@@ -79,7 +80,6 @@ function view(ctrl) {
 }
 
 function userToLi(user) {
-	var groupIcon = groups[user.group].icon;
 	return m('li', {
 		key: user.id,
 		class: user.eligible ? 'checked' : '',
@@ -91,15 +91,38 @@ function userToLi(user) {
 			? m.trust(user.displayName.replace(this.query, '<span class="query">$1</span>'))
 			: user.displayName),
 		cheerIcon(user),
-		user.subscriber ? icon('star', '-subscriber') : null,
-		groupIcon ? icon(groupIcon, '-' + user.group) : null
+		subscribedIcon(user),
+		groupIcon(user)
 	]);
 }
 
 function cheerIcon(user) {
 	if (!Number.isInteger(user.bits) || user.bits < 1) return null;
-	for (var i = config.cheerBreakpoints.length - 1; i >= 0; i--) {
-		if (user.bits < config.cheerBreakpoints[i]) continue;
-		return icon('cheer-' + config.cheerBreakpoints[i]);
+	for (var i = config.cheerSteps.length - 1; i >= 0; i--) {
+		if (user.bits < config.cheerSteps[i]) continue;
+		return icon('cheer-' + config.cheerSteps[i], 'badge');
 	}
+}
+
+function subscribedIcon(user) {
+	if (!user.subscriber) {
+		return null;
+	}
+
+	var subBadgeVersionID = user.subscribedTime/1 === 1 ? 0 : user.subscribedTime;
+	var subBadgeURL = user.subscriber && channel.badges
+		? channel.badges.subscriber.versions[subBadgeVersionID].image_url_2x
+		: false;
+
+	return subBadgeURL
+		? m('img.badge.subscriber.-custom', {src: subBadgeURL})
+		: m('.badge.subscriber.-placeholder', [
+			icon('star'),
+			m('.time', user.subscribedTime)
+		]);
+}
+
+function groupIcon(user) {
+	var groupIcon = groups[user.group].icon;
+	return !groupIcon ? null : icon(groupIcon, 'badge -' + user.group);
 }
