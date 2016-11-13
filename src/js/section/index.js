@@ -3,6 +3,7 @@ var icon = require('../component/icon');
 var ucFirst = require('to-sentence-case');
 var withKey = require('../lib/withkey');
 var animate = require('../lib/animate');
+var manyTimes = require('../lib/many-times');
 var config = require('tga/data/config.json');
 
 module.exports = {
@@ -268,6 +269,24 @@ tabs.keyword = {
 						: m('strong', 'doesn\'t matter!')
 				])
 			]),
+			m('.option.keyword-antispam', {
+				key: 'option-keyword-antispam',
+				config: animate('slideinleft', 150)
+			}, [
+				m('label', {onmousedown: withKey(1, ctrl.setter('options.keywordAntispam').to(!ctrl.options.keywordAntispam))}, 'Keyword antispam'),
+				icon(ctrl.options.keywordAntispam ? 'check' : 'close', {
+					class: 'checkbox' + (ctrl.options.keywordAntispam ? ' checked' : ''),
+					onmousedown: withKey(1, ctrl.setter('options.keywordAntispam').to(!ctrl.options.keywordAntispam))
+				}),
+				ctrl.options.keywordAntispam ? m('input[type=range]', {
+					min: 1,
+					max: 5,
+					oninput: m.withAttr('value', ctrl.setter('options.keywordAntispamLimit').type('number')),
+					value: ctrl.options.keywordAntispamLimit
+				}) : null,
+				ctrl.options.keywordAntispam ? m('span.meta', ctrl.options.keywordAntispamLimit) : null,
+				m('p.description', 'Uncheck people who enter keyword more than ' + manyTimes(ctrl.options.keywordAntispamLimit) + '.')
+			])
 		];
 	}
 };

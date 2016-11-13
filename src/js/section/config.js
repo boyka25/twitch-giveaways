@@ -2,6 +2,7 @@ var m = require('mithril');
 var icon = require('../component/icon');
 var animate = require('../lib/animate');
 var withKey = require('../lib/withkey');
+var manyTimes = require('../lib/many-times');
 
 module.exports = {
 	name: 'config',
@@ -83,7 +84,7 @@ function view(ctrl) {
 				value: ctrl.options.keywordAntispamLimit
 			}) : null,
 			ctrl.options.keywordAntispam ? m('span.meta', ctrl.options.keywordAntispamLimit) : null,
-			m('p.description', 'People who enter keyword more than ' + howManyTimes(ctrl.options.keywordAntispamLimit) + ' are automatically unchecked.')
+			m('p.description', 'People who enter keyword more than ' + manyTimes(ctrl.options.keywordAntispamLimit) + ' are automatically unchecked.')
 		]),
 
 		// ignore list
@@ -115,13 +116,4 @@ function view(ctrl) {
 			m('p.description', 'Hide tooltips if you already know what is what.')
 		])
 	];
-}
-
-function howManyTimes(number) {
-	number = number | 0;
-	switch (number) {
-		case 1: return 'once';
-		case 2: return 'twice';
-		default: return number + ' times';
-	}
 }
