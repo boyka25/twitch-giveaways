@@ -18,6 +18,9 @@ var channel = module.exports = !match ? false : {
 		return twitch.requestBadges('/channels/' + channel.id)
 			.then(setupBadges, retryBadges);
 	},
+	stream: function () {
+		return twitch.stream(channel.name);
+	},
 	hasFollower: function (username, callback) {
 		twitch.following(username, match[1], callback);
 	}

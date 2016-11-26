@@ -47,6 +47,11 @@ var twitch = module.exports = {
 		username = twitch.toID(username);
 		return twitch.request('/users/' + username);
 	},
+	stream: function (name) {
+		return twitch.request('/streams/' + name).then(function (res) {
+			return res.stream;
+		});
+	},
 	pageType: function () {
 		var path = window.location.pathname;
 		if (path.match(/^\/([^\/]+)\/chat\/?$/i))

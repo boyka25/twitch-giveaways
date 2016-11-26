@@ -43,7 +43,8 @@ var Message = require('../model/message');
 
 function Controller(container, config) {
 	var self = this;
-	this.app = window.app = this;
+	window.app = this;
+	this.twitch = twitch;
 	this.channel = channel;
 	this.container = container;
 	this.setter = setters(this);
@@ -244,6 +245,20 @@ function Controller(container, config) {
 			eventLabel: channel.name,
 			eventValue: pool.length,
 			nonInteraction: true
+		});
+
+		// send 'viewers' event
+		channel.stream().then(function (stream) {
+			// stream is null when channel is not streaming
+			if (stream) ga('send', 'event', {
+				eventCategory: 'app',
+				eventAction: 'viewers',
+				eventLabel: stream.channel.name,
+				eventValue: stream.viewers,
+				nonInteraction: true
+			});
+		}, function (err) {
+			console.error(err);
 		});
 
 		// prick random winner from array of eligible users
