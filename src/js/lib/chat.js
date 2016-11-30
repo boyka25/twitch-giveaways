@@ -8,9 +8,21 @@ emitter(chat);
 
 // Listen for new chat-message events sent by content script.
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-	if (message.name === 'chat-message' && message.data.channel === channel.name) {
-		chat.tab = sender.tab;
-		chat.emit('message', message.data);
+	if (message && message.meta && message.meta.channel !== channel.name) {
+		return;
+	}
+
+	chat.tab = sender.tab;
+
+	switch (message.type) {
+		case 'chat-message':
+			chat.emit('message', message.payload);
+			break;
+
+		case 'chat-user':
+			chat.user = message.payload;
+			console.log(chat.user);
+			break;
 	}
 });
 
@@ -23,9 +35,11 @@ chat.post = function (message) {
 
 	// asks content script to post the message
 	chrome.tabs.sendMessage(chat.tab.id, {
-		name: 'send-message',
-		channel: channel.name,
-		message: message
+		type: 'send-message',
+		payload: message,
+		meta: {
+			channel: channel.name
+		}
 	});
 };
 

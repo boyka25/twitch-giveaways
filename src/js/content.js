@@ -16,7 +16,7 @@ if (window.name === 'tga-embedded-chat') {
 
 	// Relay some runtime messages to chat listener.
 	chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-		if (request.name === 'send-message') {
+		if (request.type === 'send-message') {
 			relayToInject(request);
 		}
 	});

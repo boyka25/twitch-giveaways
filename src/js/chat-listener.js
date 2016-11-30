@@ -1,4 +1,6 @@
+var channelname = location.pathname.match(/^\/([^\/]+)\//)[1].toLowerCase();
 var postman = document.createElement('div');
+var ctrl = window.ctrl = window.App.__container__.lookup('controller:chat');
 postman.id = 'twitch-giveaways-message-passing';
 postman.style.display = 'none';
 
@@ -17,7 +19,7 @@ var observer = new MutationObserver(function (mutations) {
 			var message = postman.getAttribute('data-in');
 			try {
 				var request = JSON.parse(message);
-				var handler = requestHandlers[request.name];
+				var handler = requestHandlers[request.type];
 				if (handler) {
 					handler(request);
 				}
@@ -35,28 +37,73 @@ function sendToContent(request) {
 	postman.setAttribute('data-out', JSON.stringify(request));
 }
 
-// Wait for TMI to load, than bind message listener to it.
-window.addEventListener('load', function () {
-	var start = Date.now();
-	var interval = 50;
-	var timeout = 5000;
+// Promise that calls retriever until it returns something not null/undefined.
+function getLater(retriever, timeout) {
+	var timeout = Date.now() + (timeout || 5000);
+	var interval = 100;
+	return new Promise(function (resolve, reject) {
+		check();
 
-	checkForTMI();
-
-	function checkForTMI() {
-		var sessions = TMI && TMI._sessions && TMI._sessions[0];
-		var mainConnection = sessions && sessions._connections && sessions._connections.main;
-
-		if (mainConnection) {
-			mainConnection.on('message', processMessage);
-			console.log('Twitch Giveaways: Listening on chat started.');
-		} else if (start < Date.now() - timeout) {
-			console.log('Twitch Giveaways: TMI interface not found after 5 seconds, giving up.');
-		} else {
-			setTimeout(checkForTMI, interval);
+		function check() {
+			try {
+				var result = retriever();
+				if (result === null || result === undefined) {
+					return endOrTimeout();
+				}
+				resolve(result);
+			} catch (err) {
+				endOrTimeout();
+			}
 		}
-	}
-});
+
+		function endOrTimeout() {
+			if (Date.now() > timeout) {
+				reject(new Error(retriever.name + ' could\'t be resolve in time, giving up'));
+			} else {
+				setTimeout(check, interval)
+			}
+		}
+	});
+}
+
+getLater(() => TMI._sessions[0]._connections.main)
+	// Tap into TMI message event.
+	.then(function (main) {
+		main.on('message', processMessage);
+		console.log('Twitch Giveaways: Listening on chat started.');
+
+		return getLater(() => TMI._sessions[0]._rooms[channelname])
+			.then(function (room) {
+				return {username: main.nickname, room: room};
+			});
+	})
+	// Get current user data and capabilities
+	.then(function (data) {
+		var room = data.room;
+		var user = {
+			name: data.username,
+			canManage: false
+		};
+		var meta = {channel: data.room.name};
+
+		// Initial chat-user event since the listener below won't trigger
+		// for people with no badges
+		sendToContent({type: 'chat-user', payload: user, meta: meta});
+
+		// Listen for badge changes and update user object.
+		room.on('badgeschanged', function badgeschanged(name) {
+			if (name !== user.name) {
+				return;
+			}
+
+			user.canManage = (room._roomUserBadges[user.name] || []).findIndex(function (x) {
+				user[x.id] = true;
+				return x.id === 'broadcaster' || x.id === 'moderator';
+			}) > -1;
+			sendToContent({type: 'chat-user', payload: user, meta: meta});
+		});
+	})
+	.catch(console.log);
 
 function processMessage(obj) {
 	// Ignore notifications and other non-messages.
@@ -79,9 +126,8 @@ function processMessage(obj) {
 	});
 
 	sendToContent({
-		name: 'chat-message',
-		data: {
-			channel: obj.target.match(/#?(.+)/)[1],
+		type: 'chat-message',
+		payload: {
 			user: {
 				name: obj.sender,
 				displayName: tags['display-name'],
@@ -97,6 +143,9 @@ function processMessage(obj) {
 			},
 			text: obj.message.trim(),
 			html: emotify(obj).trim()
+		},
+		meta: {
+			channel: obj.target.match(/#?(.+)/)[1]
 		}
 	});
 }
@@ -147,7 +196,7 @@ function emoteSorter(a, b) {
 
 // Send message to chat via Twitch UI.
 function sendMessage(request) {
-	var message = request.message;
+	var message = request.payload;
 	var chatTextarea = document.querySelector('.chat-room .js-chat_input');
 	var chatSubmit = document.querySelector('.chat-room .js-chat-buttons__submit');
 
