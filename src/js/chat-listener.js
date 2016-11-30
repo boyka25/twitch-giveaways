@@ -66,13 +66,13 @@ function getLater(retriever, timeout) {
 	});
 }
 
-getLater(() => TMI._sessions[0]._connections.main)
+getLater(function () { return TMI._sessions[0]._connections.main; })
 	// Tap into TMI message event.
 	.then(function (main) {
 		main.on('message', processMessage);
 		console.log('Twitch Giveaways: Listening on chat started.');
 
-		return getLater(() => TMI._sessions[0]._rooms[channelname])
+		return getLater(function () { return TMI._sessions[0]._rooms[channelname]; })
 			.then(function (room) {
 				return {username: main.nickname, room: room};
 			});
