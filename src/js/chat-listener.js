@@ -196,9 +196,8 @@ function emoteSorter(a, b) {
 function sendMessage(request) {
 	var message = request.payload;
 	var chatTextarea = document.querySelector('.chat-room .js-chat_input');
-	var chatSubmit = document.querySelector('.chat-room .js-chat-buttons__submit');
 
-	if (!chatTextarea || !chatSubmit) {
+	if (!chatTextarea) {
 		console.log('Twitch Giveaways: Message not sent. Can\' find the needed elements.');
 		return;
 	}
@@ -212,7 +211,22 @@ function sendMessage(request) {
 		cancelable: true
 	}));
 
-	chatSubmit.click();
+	// Fire Enter keyboard event on textarea to send the message.
+	fireKeyEvent('keydown');
+	fireKeyEvent('keypress');
+
+	function fireKeyEvent(name) {
+		// This is such a not well thought out, i.e. retarded interface...
+		var enterEvent = new KeyboardEvent('keydown', {
+			bubbles: true,
+			cancelable: true,
+			key: "Enter",
+			code: "Enter"
+		});
+		Object.defineProperty(enterEvent, 'keyCode', {value: 13});
+		Object.defineProperty(enterEvent, 'which', {value: 13});
+		chatTextarea.dispatchEvent(enterEvent);
+	}
 }
 
 // Send message to chat via TMI interface.
