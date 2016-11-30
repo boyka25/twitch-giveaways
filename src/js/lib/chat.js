@@ -1,7 +1,9 @@
 var emitter = require('emitter');
 var channel = require('./channel');
 
-var chat = module.exports = {};
+var chat = module.exports = {
+	user: {}
+};
 
 // Make chat object an event emitter.
 emitter(chat);
@@ -21,7 +23,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
 		case 'chat-user':
 			chat.user = message.payload;
-			console.log(chat.user);
 			break;
 	}
 });

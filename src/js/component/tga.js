@@ -46,6 +46,7 @@ function Controller(container, config) {
 	window.app = this;
 	this.twitch = twitch;
 	this.channel = channel;
+	this.chat = chat;
 	this.container = container;
 	this.setter = setters(this);
 
@@ -238,30 +239,38 @@ function Controller(container, config) {
 			delete self.winner.messages;
 		}
 
-		// send 'roll' event
-		ga('send', 'event', {
-			eventCategory: 'app',
-			eventAction: 'roll',
-			eventLabel: channel.name,
-			eventValue: pool.length,
-			nonInteraction: true
-		});
+		// send viewers + entered tracking events if user has management rights
+		// on the channel
+		if (chat.user.broadcaster || chat.user.moderator) {
+			try {
+				// send 'entered' event
+				ga('send', 'event', {
+					eventCategory: 'entered',
+					eventAction: 'roll',
+					eventLabel: channel.name,
+					eventValue: pool.length,
+					nonInteraction: true
+				});
+			} catch (err) {
+				console.log(err);
+			}
 
-		// send 'viewers' event
-		channel.stream().then(function (stream) {
-			// stream is null when channel is not streaming
-			if (stream) ga('send', 'event', {
-				eventCategory: 'app',
-				eventAction: 'viewers',
-				eventLabel: stream.channel.name,
-				eventValue: stream.viewers,
-				nonInteraction: true
+			// send 'viewers' event
+			channel.stream().then(function (stream) {
+				// stream is null when channel is not streaming
+				if (stream) ga('send', 'event', {
+					eventCategory: 'viewers',
+					eventAction: 'roll',
+					eventLabel: stream.channel.name,
+					eventValue: stream.viewers,
+					nonInteraction: true
+				});
+			}, function (err) {
+				console.error(err);
 			});
-		}, function (err) {
-			console.error(err);
-		});
+		}
 
-		// prick random winner from array of eligible users
+		// pick random winner from array of eligible users
 		var winner = pool[Math.random() * pool.length | 0];
 		winner.messages = [];
 		winner.rolledAt = new Date();

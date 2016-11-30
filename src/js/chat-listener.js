@@ -81,8 +81,7 @@ getLater(() => TMI._sessions[0]._connections.main)
 	.then(function (data) {
 		var room = data.room;
 		var user = {
-			name: data.username,
-			canManage: false
+			name: data.username
 		};
 		var meta = {channel: data.room.name};
 
@@ -96,9 +95,8 @@ getLater(() => TMI._sessions[0]._connections.main)
 				return;
 			}
 
-			user.canManage = (room._roomUserBadges[user.name] || []).findIndex(function (x) {
+			(room._roomUserBadges[user.name] || []).forEach(function (x) {
 				user[x.id] = true;
-				return x.id === 'broadcaster' || x.id === 'moderator';
 			}) > -1;
 			sendToContent({type: 'chat-user', payload: user, meta: meta});
 		});
