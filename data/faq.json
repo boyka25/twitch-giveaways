@@ -49,6 +49,15 @@
 		]
 	},
 	{
+		"question": "Past winners",
+		"answer": [
+			"List of all the people you've rolled in the past. The list is persistent (stays between page reloads), but attached to the current browser, so it won't migrate to other machines.",
+			"You have 5 MB of storage available, so be sure to keep an eye on the used data statistic (bottom of the list), and clear the oldest records when it start approaching the limit.",
+			"5 MB gives you space for 20.000+ records.",
+			"You can clear the oldest records by selecting the date cutoff as a \"To\" time filter, and clicking on the \"Clear selected\" button at the bottom."
+		]
+	},
+	{
 		"question": "Followers only filter?",
 		"answer": [
 			"Unfortunately, there is no way how to get the following status of each user without getting you banned from api.twitch.tv for making too many requests :(",
