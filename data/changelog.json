@@ -1,5 +1,16 @@
 [
 	{
+		"version": "2.10.0",
+		"date": "Feb 5, 2017",
+		"new": [
+			"<strong>Past winners</strong> - new section to see all of the winners you've rolled in the pased."
+		],
+		"fixed": [
+			"Fixed scrolling issue cause by Chrome bug when you try to render scrollbar at the left side :/",
+			"Fixed \"Subscribed time\" filter selecting people who might have been in the past, but are no longer subscribed now."
+		]
+	},
+	{
 		"version": "2.9.0",
 		"date": "Nov 13, 2016",
 		"new": [
