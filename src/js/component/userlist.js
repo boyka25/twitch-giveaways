@@ -8,6 +8,7 @@ var withKey = require('../lib/withkey');
 var channel = require('../lib/channel');
 var escapeRegexp = require('escape-regexp');
 var config = require('tga/data/config.json');
+var virtualList = require('./virtual-list');
 
 var userlist = module.exports = {
 	name: 'userlist',
@@ -29,6 +30,8 @@ function Controller(users, options) {
 	this.scrollTop = 0;
 	this.limit = Math.ceil(window.innerHeight / this.itemSize);
 
+	this.virtualList = virtualList();
+
 	this.scroll = function () {
 		self.scrollTop = this.scrollTop;
 	};
@@ -40,60 +43,32 @@ function Controller(users, options) {
 		var user = self.users().get(id);
 		if (user) user.eligible = !user.eligible;
 	};
-
-	this.syncHeight = function (element, isInit, ctx) {
-		if (isInit) return;
-		var resize = throttle(function () {
-			updateLimit();
-			m.redraw();
-		}, 300);
-		window.addEventListener('resize', resize);
-		ctx.onunload = unload;
-		updateLimit();
-		function updateLimit() {
-			self.limit = Math.ceil(element.clientHeight / self.itemSize) + 1;
-		}
-		function unload() {
-			window.removeEventListener('resize', resize);
-		}
-	};
 }
 
 function view(ctrl) {
 	var users = ctrl.users();
-	var start = Math.max(Math.min(ctrl.scrollTop / ctrl.itemSize | 0, users.length - ctrl.limit), 0);
-	var end = Math.min(start + ctrl.limit, users.length);
-	return m('.userlist', {
-			onscroll: ctrl.scroll,
-			onmousedown: withKey(1, ctrl.toggleUser),
-			config: ctrl.syncHeight
-		}, [
-		m('ul', {
-			style: {
-				height: (users.length * ctrl.itemSize) + 'px',
-				paddingTop: (start * ctrl.itemSize) + 'px'
-			}
-		}, users.slice(start, end).map(userToLi, {
-			query: ctrl.searchQuery ? new RegExp('(' + escapeRegexp(ctrl.searchQuery) + ')', 'i') : null
-		}))
-	]);
-}
+	var query = ctrl.searchQuery ? new RegExp('(' + escapeRegexp(ctrl.searchQuery) + ')', 'i') : null;
 
-function userToLi(user) {
-	return m('li', {
-		key: user.id,
-		class: user.eligible ? 'checked' : '',
-		'data-id': user.id,
-		title: user.displayName
-	}, [
-		m('span.eligible'),
-		m('span.name', this.query
-			? m.trust(user.displayName.replace(this.query, '<span class="query">$1</span>'))
-			: user.displayName),
-		cheerIcon(user),
-		subscribedIcon(user),
-		groupIcon(user)
-	]);
+	return ctrl.virtualList(
+		{props: {class: 'userlist', onclick: withKey(1, ctrl.toggleUser)}, itemSize: 30, itemsCount: users.length},
+		function (i) {
+			var user = users[i];
+			return m('.user', {
+				key: user.id,
+				class: user.eligible ? 'checked' : '',
+				'data-id': user.id,
+				title: user.displayName
+			}, [
+				m('span.eligible'),
+				m('span.name', query
+					? m.trust(user.displayName.replace(query, '<span class="query">$1</span>'))
+					: user.displayName),
+				cheerIcon(user),
+				subscribedIcon(user),
+				groupIcon(user)
+			]);
+		}
+	)
 }
 
 function cheerIcon(user) {

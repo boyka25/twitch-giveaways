@@ -34,19 +34,22 @@ input[type=date]::-webkit-calendar-picker-indicator
 	cursor: pointer
 
 // scrollbars
-::-webkit-scrollbar
-	width: 6px
-	height: 6px
-	margin: 1px
+*
+	&::-webkit-scrollbar
+		width: 6px
+		height: 6px
+		margin: 1px
 
-::-webkit-scrollbar-track
-	background: transparent
+	&::-webkit-scrollbar-track
+		background: transparent
 
-::-webkit-scrollbar-thumb
-	background: colors.light
+	&::-webkit-scrollbar-thumb
+		background: colors.lighter
+	*:hover::-webkit-scrollbar-thumb
+		background: colors.light
 
-	&:hover
-		background: colors.dark
+		&:hover
+			background: colors.dark
 
 // headings
 h2, h3

@@ -7,7 +7,7 @@
 		display: flex
 		margin-top: 10px
 		height: 40px
-		border-bottom: 1px solid colors.lighter
+		border-bottom: 1px solid colors.lighter - 20
 
 		> select
 			size: 120px @height
@@ -52,7 +52,7 @@
 		display: flex
 		align-items: center
 		height: 50px
-		border-top: 1px solid colors.lighter
+		border-top: 1px solid colors.lighter - 20
 
 		.stat
 			display: flex
@@ -98,13 +98,13 @@
 		flex: 1
 		overflow-x: hidden
 		overflow-y: scroll
+		background: scrollshadows
 
 		> .record
 			position: relative
 			z-index: 1
 			height: 50px
 			border-bottom: 1px solid colors.lighter
-			background: colors.background
 
 			.query
 				color: colors.info
@@ -129,9 +129,9 @@
 				width: 100%
 				height: 1em * 1.6
 				padding: 0 50px 10px leftSpacing
-				color: @background - 100
+				color: colors.background - 100
 				font-size: .9em
-				background: @background
+				background: colors.background
 				overflow: hidden
 
 			&:hover

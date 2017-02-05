@@ -56,6 +56,6 @@ function VirtualList() {
 		}
 		items.push(m('.end-spacer', {key: 'end-spacer', style: endSpacerStyle}));
 
-		return m('div', {class: props.className || props.class, config: config}, items);
+		return m('div', Object.assign(props.props || {}, {config: config}), items);
 	};
 }

@@ -71,7 +71,7 @@ function view(ctrl) {
 			])
 		]),
 		ctrl.virtualList(
-			{class: 'winners', itemSize: 50, itemsCount: ctrl.winners.selected.length},
+			{props: {class: 'winners'}, itemSize: 50, itemsCount: ctrl.winners.selected.length},
 			function (i) {
 				var record = ctrl.winners.selected[ctrl.winners.selected.length - i - 1];
 				return m('.record', {key: record.id}, [
