@@ -49,26 +49,29 @@ function view(ctrl) {
 	var users = ctrl.users();
 	var query = ctrl.searchQuery ? new RegExp('(' + escapeRegexp(ctrl.searchQuery) + ')', 'i') : null;
 
-	return ctrl.virtualList(
-		{props: {class: 'userlist', onclick: withKey(1, ctrl.toggleUser)}, itemSize: 30, itemsCount: users.length},
-		function (i) {
-			var user = users[i];
-			return m('.user', {
-				key: user.id,
-				class: user.eligible ? 'checked' : '',
-				'data-id': user.id,
-				title: user.displayName
-			}, [
-				m('span.eligible'),
-				m('span.name', query
-					? m.trust(user.displayName.replace(query, '<span class="query">$1</span>'))
-					: user.displayName),
-				cheerIcon(user),
-				subscribedIcon(user),
-				groupIcon(user)
-			]);
-		}
-	)
+	function renderUser(i) {
+		var user = users[i];
+		return m('.user', {
+			key: user.id,
+			class: user.eligible ? 'checked' : '',
+			'data-id': user.id,
+			title: user.displayName
+		}, [
+			m('span.eligible'),
+			m('span.name', query
+				? m.trust(user.displayName.replace(query, '<span class="query">$1</span>'))
+				: user.displayName),
+			cheerIcon(user),
+			subscribedIcon(user),
+			groupIcon(user)
+		]);
+	}
+
+	return ctrl.virtualList({
+		listName: 'userlist',
+		props: {class: 'userlist', onclick: withKey(1, ctrl.toggleUser)},
+		itemSize: 30, itemsCount: users.length, renderItem: renderUser
+	});
 }
 
 function cheerIcon(user) {

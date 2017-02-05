@@ -17,7 +17,8 @@ function VirtualList() {
 			container.removeEventListener('scroll', update);
 		};
 
-		update();
+		// page crashes without timeout here. no idea...
+		setTimeout(update, 100);
 	}
 
 	function update() {
@@ -28,7 +29,7 @@ function VirtualList() {
 		m.redraw();
 	}
 
-	return function (props, render) {
+	return function (props) {
 		var v = !props.horizontal;
 		var pos = v ? scrollTop : scrollLeft;
 		var viewSize = v ? height : width;
@@ -50,12 +51,16 @@ function VirtualList() {
 		};
 		var items = [];
 
-		items.push(m('.start-spacer', {key: 'start-spacer', style: startSpacerStyle}));
-		for (var i = startIndex; i <= endIndex; i++) {
-			items.push(render(i));
+		if (props.itemsCount === 0) {
+			if (props.renderEmpty) items.push(props.renderEmpty());
+		} else {
+			items.push(m('.start-spacer', {key: 'start-spacer', style: startSpacerStyle}));
+			for (var i = startIndex; i <= endIndex; i++) {
+				items.push(props.renderItem(i));
+			}
+			items.push(m('.end-spacer', {key: 'end-spacer', style: endSpacerStyle}));
 		}
-		items.push(m('.end-spacer', {key: 'end-spacer', style: endSpacerStyle}));
 
-		return m('div', Object.assign(props.props || {}, {config: config}), items);
+		return m('div', Object.assign({}, props.props, {style: containerStyle, config: config}), items);
 	};
 }

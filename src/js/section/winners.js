@@ -46,6 +46,28 @@ function view(ctrl) {
 		? new RegExp('(' + escapeRegexp(ctrl.winners.searchTerm) + ')', 'i')
 		: false;
 
+	function renderRecord(i) {
+		var record = ctrl.winners.selected[ctrl.winners.selected.length - i - 1];
+		return m('.record', {key: record.id}, [
+			m('.name', search
+				? m.trust(record.displayName.replace(search, '<span class="query">$1</span>'))
+				: record.displayName),
+			m('.time', formatTime(record.time)),
+			m('.title', search
+				? m.trust(record.title.replace(search, '<span class="query">$1</span>'))
+				: record.title),
+			m('button.delete', {onclick: deleteRecord(record.id)}, [icon('trash')])
+		]);
+	}
+
+	function renderEmpty() {
+		return m('.empty', {key: 'empty-list-placeholder'}, [
+			m('h2', 'Past winners'),
+			m('p', 'Persistent list of all the users that have been rolled in the past.'),
+			m('p', 'Currently empty.')
+		]);
+	}
+
 	return [
 		m('.controls', [
 			m('input[type=search]', {
@@ -71,22 +93,11 @@ function view(ctrl) {
 				]),
 			])
 		]),
-		ctrl.virtualList(
-			{props: {class: 'winners'}, itemSize: 50, itemsCount: ctrl.winners.selected.length},
-			function (i) {
-				var record = ctrl.winners.selected[ctrl.winners.selected.length - i - 1];
-				return m('.record', {key: record.id}, [
-					m('.name', search
-						? m.trust(record.displayName.replace(search, '<span class="query">$1</span>'))
-						: record.displayName),
-					m('.time', formatTime(record.time)),
-					m('.title', search
-						? m.trust(record.title.replace(search, '<span class="query">$1</span>'))
-						: record.title),
-					m('button.delete', {onclick: deleteRecord(record.id)}, [icon('trash')])
-				]);
-			}
-		),
+		ctrl.virtualList({
+			props: {class: 'winners'},
+			itemSize: 50, itemsCount: ctrl.winners.selected.length,
+			renderItem: renderRecord, renderEmpty: renderEmpty
+		}),
 		m('.stats', [
 			m('.stat', {'data-tip': 'Number of selected records'}, [
 				m('span.title', 'selected'),

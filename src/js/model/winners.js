@@ -38,6 +38,7 @@ Winners.prototype.connect = function () {
 	var self = this;
 	if (self.connected) return Promise.resolve();
 	if (self.connecting) return self.connecting;
+	chrome.storage.onChanged.addListener(self.sync);
 	self.connecting = new Promise(function (resolve, reject) {
 		chrome.storage.local.get(self.storageKey, function (items) {
 			self.reload(items[self.storageKey]);
@@ -46,9 +47,9 @@ Winners.prototype.connect = function () {
 	}).then(function () {
 		self.connected = true;
 		self.connecting = false;
+		self.updateUsed();
 	});
-	chrome.storage.onChanged.addListener(self.sync);
-	return Promise.all([self.connecting, self.updateUsed()]);
+	return self.connecting;
 };
 
 Winners.prototype.reload = function (json) {
@@ -62,7 +63,6 @@ Winners.prototype.reload = function (json) {
 	else self.channels = obj.channels;
 	self.storeChanged();
 	self.reselect();
-	if (self.options.onsync) self.options.onsync();
 	return self;
 };
 

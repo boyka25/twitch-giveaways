@@ -61,7 +61,7 @@ function Controller(container, config) {
 	this.isNewVersion = this.options.lastReadChangelog !== this.version;
 	this.users = new Users();
 	this.selectedUsers = new Users();
-	this.winners = new Winners(channel.name, {onsync: m.redraw()});
+	this.winners = new Winners(channel.name, {onsync: m.redraw});
 	this.rolling = {
 		type: 'all',
 		types: ['all', 'active', 'keyword'],
