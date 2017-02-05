@@ -1,7 +1,8 @@
-function uid(size = 10) {
+function uid(size) {
+	size = Number(size) || 10;
 	return Array(size)
 		.fill(0)
-		.map(() => Math.floor(Math.random() * 36).toString(36))
+		.map(function () {return Math.floor(Math.random() * 36).toString(36)})
 		.join('');
 }
 

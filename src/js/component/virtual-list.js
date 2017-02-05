@@ -34,8 +34,8 @@ function VirtualList() {
 		var viewSize = v ? height : width;
 		var startIndex = Math.floor(pos / props.itemSize);
 		var endIndex = Math.min(startIndex + Math.ceil(viewSize / props.itemSize), props.itemsCount - 1);
-		var startSpacing = `${startIndex * props.itemSize}px`;
-		var endSpacing = `${(props.itemsCount - endIndex - 1) * props.itemSize}px`;
+		var startSpacing = (startIndex * props.itemSize) + 'px';
+		var endSpacing = ((props.itemsCount - endIndex - 1) * props.itemSize) + 'px';
 		var containerStyle = {
 			overflowX: v ? 'hidden' : 'auto',
 			overflowY: v ? 'auto' : 'hidden'
@@ -51,7 +51,7 @@ function VirtualList() {
 		var items = [];
 
 		items.push(m('.start-spacer', {key: 'start-spacer', style: startSpacerStyle}));
-		for (let i = startIndex; i <= endIndex; i++) {
+		for (var i = startIndex; i <= endIndex; i++) {
 			items.push(render(i));
 		}
 		items.push(m('.end-spacer', {key: 'end-spacer', style: endSpacerStyle}));

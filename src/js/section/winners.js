@@ -19,6 +19,7 @@ function Controller() {
 
 function view(ctrl) {
 	var formatTime = makeFormatTime();
+
 	function mockAdd() {
 		if (ctrl.winners.searchTerm.indexOf('mock') !== 0) return;
 		var count = Number(ctrl.winners.searchTerm.slice(4)) || 10;
@@ -119,14 +120,14 @@ function countAllRecords(winners) {
 	}, 0);
 }
 
-const sizeUnits = ['B', 'KB', 'MB', 'GB', 'TB'];
+var sizeUnits = ['B', 'KB', 'MB', 'GB', 'TB'];
 function formatSize(size) {
-	let i = 0;
+	var i = 0;
 	while (size >= 1000) {
 		size /= 1024;
 		i++;
 	}
-	return `${size % 1 ? size.toFixed(1) : size} ${sizeUnits[i]}`;
+	return (size % 1 ? size.toFixed(1) : size) + ' ' + sizeUnits[i];
 }
 
 function makeFormatTime() {
@@ -153,6 +154,5 @@ function makeFormatTime() {
 				+ ' ' + date.toLocaleString(navigator.language, {day: '2-digit'});
 		}
 		return date.toLocaleDateString();
-
 	}
 }
