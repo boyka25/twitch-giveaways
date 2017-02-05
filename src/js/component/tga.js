@@ -415,10 +415,7 @@ function view(ctrl) {
 					class: ctrl.classWhenActive('about', 'button index', 'active'),
 					onmousedown: ctrl.toSection('about'),
 					'data-tip': 'About + FAQ'
-				}, [icon('help')]),
-				m('.button.close', {
-					onmousedown: ctrl.close, 'data-tip': 'Close Giveaways'
-				}, [icon('close')])
+				}, [icon('help')])
 			]),
 			ctrl.messages.render(),
 			m('section.section.' + ctrl.section.active, {key: 'section-' + ctrl.section.active}, ctrl.section.render()),
