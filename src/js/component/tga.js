@@ -126,7 +126,7 @@ function Controller(container, config) {
 		if (!rol.groups[user.group]) return false;
 		if (rol.subscriberLuck > self.config.maxSubscriberLuck && !user.subscriber) return false;
 		if (rol.minBits && rol.minBits > user.bits) return false;
-		if (rol.subscribedTime && rol.subscribedTime > user.subscribedTime) return false;
+		if (rol.subscribedTime && (!user.subscriber || rol.subscribedTime > user.subscribedTime)) return false;
 		if (self.searchFilter) {
 			if (self.searchFilter.value === 'truthy') {
 				if (!user[self.searchFilter.prop]) return false;
