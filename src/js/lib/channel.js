@@ -18,6 +18,9 @@ var channel = module.exports = !match ? false : {
 		return twitch.requestBadges('/channels/' + channel.id)
 			.then(setupBadges, retryBadges);
 	},
+	channel: function () {
+		return twitch.channel(channel.name);
+	},
 	stream: function () {
 		return twitch.stream(channel.name);
 	},

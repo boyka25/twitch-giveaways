@@ -40,6 +40,7 @@ app.init = function (container) {
 var User = require('../model/user');
 var Users = require('../model/users');
 var Message = require('../model/message');
+var Winners = require('../model/winners');
 
 function Controller(container, config) {
 	var self = this;
@@ -60,6 +61,7 @@ function Controller(container, config) {
 	this.isNewVersion = this.options.lastReadChangelog !== this.version;
 	this.users = new Users();
 	this.selectedUsers = new Users();
+	this.winners = new Winners(channel.name, {onsync: m.redraw()});
 	this.rolling = {
 		type: 'all',
 		types: ['all', 'active', 'keyword'],
@@ -78,6 +80,9 @@ function Controller(container, config) {
 	};
 	this.winner = null;
 	this.messages = new Messages();
+
+	// load past winners
+	this.winners.connect();
 
 	// save config on change
 	this.setter.on('options', function (options) {
@@ -239,6 +244,19 @@ function Controller(container, config) {
 			delete self.winner.messages;
 		}
 
+
+		channel.channel()
+			.then(null, function (err) {
+				console.error(err);
+				return false;
+			}).then(function (stream) {
+				self.winners.add({
+					name: self.winner.name,
+					displayName: self.winner.displayName || self.winner.name,
+					title: stream ? stream.status : 'couldn\'t retrieve stream title'
+				});
+			});
+
 		// send viewers + entered tracking events if user has management rights
 		// on the channel
 		if (chat.user.broadcaster || chat.user.moderator) {
@@ -297,6 +315,7 @@ function Controller(container, config) {
 	// primary section
 	this.section = new Section(this)
 		.use(require('../section/index'))
+		.use(require('../section/winners'))
 		.use(require('../section/config'))
 		.use(require('../section/changelog'))
 		.use(require('../section/about'))
@@ -346,7 +365,7 @@ function view(ctrl) {
 					m('input[type=text]', {
 						oninput: m.withAttr('value', ctrl.setter('search')),
 						onkeydown: withKey(27, ctrl.setter('search').to('')),
-						placeholder: 'Search...',
+						placeholder: 'search...',
 						required: true,
 						value: ctrl.search
 					}),
@@ -374,6 +393,11 @@ function view(ctrl) {
 					: null
 				,
 				m('.spacer'),
+				m('div', {
+					class: ctrl.classWhenActive('winners', 'button winners', 'active'),
+					onmousedown: ctrl.toSection('winners'),
+					'data-tip': 'Past winners'
+				}, [icon('trophy-list')]),
 				m('div', {
 					class: ctrl.classWhenActive('config', 'button config', 'active'),
 					onmousedown: ctrl.toSection('config'),

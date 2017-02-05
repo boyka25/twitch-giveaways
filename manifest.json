@@ -9,7 +9,8 @@
     "128": "icon_128.png"
   },
   "permissions": [
-    "*://*.twitch.tv/*"
+    "*://*.twitch.tv/*",
+    "storage"
   ],
   "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
   "background": {

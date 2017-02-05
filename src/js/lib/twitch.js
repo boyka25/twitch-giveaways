@@ -47,6 +47,9 @@ var twitch = module.exports = {
 		username = twitch.toID(username);
 		return twitch.request('/users/' + username);
 	},
+	channel: function (name) {
+		return twitch.request('/channels/' + name);
+	},
 	stream: function (name) {
 		return twitch.request('/streams/' + name).then(function (res) {
 			return res.stream;
