@@ -64,7 +64,7 @@ function view(ctrl) {
 					target: '_blank',
 					title: 'Message user'
 				}, icon('envelope')),
-				m('.time', formatTime(record.time)),
+				m('.time', {title: new Date(record.time).toLocaleString()}, formatTime(record.time)),
 			]),
 			m('.title', search
 				? m.trust(record.title.replace(search, '<span class="query">$1</span>'))
@@ -98,11 +98,21 @@ function view(ctrl) {
 			m('.time', [
 				m('.from', [
 					m('span', 'From:'),
-					m('input[type=date]', {oninput: m.withAttr('value', ctrl.winners.from)})
+					m('input[type=date]', {
+						oninput: m.withAttr('value', ctrl.winners.from),
+						value: ctrl.winners.fromTime
+							? new Date(ctrl.winners.fromTime).toISOString().substr(0, 10)
+							: null
+					})
 				]),
 				m('.to', [
 					m('span', 'To:'),
-					m('input[type=date]', {oninput: m.withAttr('value', ctrl.winners.to)})
+					m('input[type=date]', {
+						oninput: m.withAttr('value', ctrl.winners.to),
+						value: ctrl.winners.toTime
+							? new Date(ctrl.winners.toTime).toISOString().substr(0, 10)
+							: null
+					})
 				]),
 			])
 		]),

@@ -16,6 +16,8 @@ function Winners(channel, options) {
 	self.selectedChannel = channel;
 	self.storageKey = 'past-winners';
 	self.searchTerm = '';
+	self.fromTime = null;
+	self.toTime = null;
 	self.selected = [];
 	self.channels = {};  // channelName->records map
 	self.sig;            // channel state signature, used by reload to ignore own changes
