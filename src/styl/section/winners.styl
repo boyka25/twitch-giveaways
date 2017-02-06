@@ -10,10 +10,10 @@
 		border-bottom: 1px solid colors.lighter - 20
 
 		> select
-			size: 120px @height
+			size: 130px @height
 			border: 0
 
-		> input[type=search]
+		> input.term
 			flex: 1 1 0
 			size: 0 @height
 			padding: 0 leftSpacing
@@ -22,31 +22,32 @@
 			border: 0
 
 		> .time
-			width: 140px
+			width: 130px
 
 			.from,
 			.to
 				display: flex
 				align-items: center
 
-				span
-					display: inline-block
-					width: 36px
-					padding: 0 4px
-					text-align: right
-					font-size: .8em
+			span
+				display: inline-block
+				width: 36px
+				padding: 0 4px
+				text-align: right
+				font-size: .85em
 
-				input[type=date]
-					flex: 1
-					height: 22px
-					font-size: .8em
-					border: 0
+			input.date
+				flex: 1
+				size: 80px 22px
+				font-size: .85em
+				padding: 0 4px
+				border: 0
 
-					&::-webkit-inner-spin-button
-						display: none
-					&::-webkit-clear-button,
-					&::-webkit-calendar-picker-indicator
-						size: 10px
+				&::-webkit-inner-spin-button
+					display: none
+				&::-webkit-clear-button,
+				&::-webkit-calendar-picker-indicator
+					size: 10px
 
 	> .stats
 		display: flex

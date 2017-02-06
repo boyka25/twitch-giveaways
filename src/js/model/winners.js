@@ -180,7 +180,8 @@ Winners.prototype.from = function (time) {
 };
 
 Winners.prototype.to = function (time) {
-	this.toTime = time ? new Date(time) : null;
+	// adds a day to make the date inclusive
+	this.toTime = time ? new Date(new Date(time).getTime() + 60000 * 60 * 23.99) : null;
 	this.reselect();
 };
 

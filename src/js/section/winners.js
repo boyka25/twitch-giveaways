@@ -1,6 +1,7 @@
 var m = require('mithril');
 var icon = require('../component/icon');
 var withKey = require('../lib/withkey');
+var makeDatePicker = require('../lib/datepicker');
 var escapeRegexp = require('escape-regexp');
 var virtualList = require('../component/virtual-list');
 var releaseNames = ['new', 'added', 'removed', 'changed', 'fixed'];
@@ -19,6 +20,7 @@ function Controller() {
 
 function view(ctrl) {
 	var formatTime = makeFormatTime();
+	var datePicker = makeDatePicker();
 
 	function mockAdd() {
 		if (ctrl.winners.searchTerm.indexOf('mock') !== 0) return;
@@ -83,7 +85,7 @@ function view(ctrl) {
 
 	return [
 		m('.controls', [
-			m('input[type=search]', {
+			m('input[type=search].term', {
 				placeholder: 'search...',
 				value: ctrl.winners.searchTerm,
 				oninput: m.withAttr('value', ctrl.winners.search),
@@ -98,19 +100,25 @@ function view(ctrl) {
 			m('.time', [
 				m('.from', [
 					m('span', 'From:'),
-					m('input[type=date]', {
+					m('input[type=search].date', {
 						oninput: m.withAttr('value', ctrl.winners.from),
+						onkeydown: withKey(27, ctrl.winners.from.bind(null, null)),
+						config: datePicker,
+						placeholder: 'date',
 						value: ctrl.winners.fromTime
-							? new Date(ctrl.winners.fromTime).toISOString().substr(0, 10)
+							? new Date(ctrl.winners.fromTime).toLocaleDateString()
 							: null
 					})
 				]),
 				m('.to', [
 					m('span', 'To:'),
-					m('input[type=date]', {
+					m('input[type=search].date', {
 						oninput: m.withAttr('value', ctrl.winners.to),
+						onkeydown: withKey(27, ctrl.winners.to.bind(null, null)),
+						config: datePicker,
+						placeholder: 'date',
 						value: ctrl.winners.toTime
-							? new Date(ctrl.winners.toTime).toISOString().substr(0, 10)
+							? new Date(ctrl.winners.toTime).toLocaleDateString()
 							: null
 					})
 				]),
