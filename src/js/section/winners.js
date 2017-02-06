@@ -54,8 +54,16 @@ function view(ctrl) {
 		return m('.record', {key: record.id}, [
 			m('header', [
 				m('.name', {href: 'https://www.twitch.tv/' + record.name}, displayName),
-				m('a.profile', {href: 'https://www.twitch.tv/' + record.name, title: 'Profile'}, icon('user')),
-				m('a.message', {href: 'https://www.twitch.tv/message/compose?to=' + record.name, title: 'Message user'}, icon('envelope')),
+				m('a.profile', {
+					href: 'https://www.twitch.tv/' + record.name,
+					target: '_blank',
+					title: 'Profile'
+				}, icon('user')),
+				m('a.message', {
+					href: 'https://www.twitch.tv/message/compose?to=' + record.name,
+					target: '_blank',
+					title: 'Message user'
+				}, icon('envelope')),
 				m('.time', formatTime(record.time)),
 			]),
 			m('.title', search
