@@ -48,11 +48,16 @@ function view(ctrl) {
 
 	function renderRecord(i) {
 		var record = ctrl.winners.selected[ctrl.winners.selected.length - i - 1];
-		return m('.record', {key: record.id}, [
-			m('.name', search
+		var displayName = search
 				? m.trust(record.displayName.replace(search, '<span class="query">$1</span>'))
-				: record.displayName),
-			m('.time', formatTime(record.time)),
+				: record.displayName;
+		return m('.record', {key: record.id}, [
+			m('header', [
+				m('.name', {href: 'https://www.twitch.tv/' + record.name}, displayName),
+				m('a.profile', {href: 'https://www.twitch.tv/' + record.name, title: 'Profile'}, icon('user')),
+				m('a.message', {href: 'https://www.twitch.tv/message/compose?to=' + record.name, title: 'Message user'}, icon('envelope')),
+				m('.time', formatTime(record.time)),
+			]),
 			m('.title', search
 				? m.trust(record.title.replace(search, '<span class="query">$1</span>'))
 				: record.title),

@@ -87,6 +87,7 @@
 			font-size: .85em
 			font-family: monospace
 			opacity: .5
+			cursor: pointer
 
 			&:hover
 				opacity: 1
@@ -116,18 +117,29 @@
 				color: colors.info
 				border-bottom: 1px solid colors.infoLight
 
-			> .name
-				absolute: top 4px left leftSpacing
-				flex-shrink: 0
-				font-weight: bold
-				color: colors.dark
+			> header
+				absolute: top 4px left leftSpacing right 50px
+				display: flex
+				align-items: center
 
-			> .time
-				absolute: top 6px left 140px
-				font-size: .85em
-				font-style: italic
-				white-space: nowrap
-				flex-shrink: 0
+				> .name
+					flex: 1
+					font-weight: bold
+					color: colors.dark
+					overflow: ellipsis
+
+				> .profile,
+				> .message,
+				> .time
+					margin-left: 10px
+					font-size: 0.8em
+
+				> .time
+					width: 80px
+					font-size: .85em
+					font-style: italic
+					white-space: nowrap
+					flex-shrink: 0
 
 			> .title
 				absolute: top 24px left
@@ -158,6 +170,7 @@
 				background: transparent
 				border: 0
 				opacity: .2
+				cursor: pointer
 
 				&:hover
 					color: colors.danger

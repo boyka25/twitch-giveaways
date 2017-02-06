@@ -141,7 +141,7 @@ Winners.prototype.mockAdd = function (size, timeStep) {
 	var time = Date.now() - (size * timeStep);
 	var name;
 	for (var i = 0; i < size; i++) {
-		name = uid().toLowerCase();
+		name = uid(Math.round(Math.random() * 26 + 4)).toLowerCase();
 		list.push({
 			id: uid(),
 			name: name,
