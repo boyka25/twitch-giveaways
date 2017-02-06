@@ -164,6 +164,7 @@ function formatSize(size) {
 	return (size % 1 ? size.toFixed(1) : size) + ' ' + sizeUnits[i];
 }
 
+var floor = Math.floor;
 function makeFormatTime() {
 	var second = 1000;
 	var minute = second * 60;
@@ -178,10 +179,11 @@ function makeFormatTime() {
 	var currentYear = new Date().getFullYear();
 
 	return function (time) {
-		if (time > minuteAgo) return Math.floor((now - time) / second) + ' seconds ago';
-		if (time > hourAgo) return Math.floor((now - time) / minute) + ' minutes ago';
-		if (time > dayAgo) return Math.floor((now - time) / hour) + ' hours ago';
-		if (time > weekAgo) return Math.floor((now - time) / day) + ' days ago';
+		var num;
+		if (time > minuteAgo) return relativeAgo(floor((now - time) / second), 'second');
+		if (time > hourAgo) return relativeAgo(floor((now - time) / minute), 'minute');
+		if (time > dayAgo) return relativeAgo(floor((now - time) / hour), 'hour');
+		if (time > weekAgo) return relativeAgo(floor((now - time) / day), 'day');
 		var date = new Date(time);
 		if (date.getFullYear() === currentYear) {
 			return date.toLocaleString(navigator.language, {month: 'short'})
@@ -189,4 +191,8 @@ function makeFormatTime() {
 		}
 		return date.toLocaleDateString();
 	}
+}
+
+function relativeAgo(num, name) {
+	return num + ' ' + name + (num === 1 ? '' : 's') + ' ago';
 }
