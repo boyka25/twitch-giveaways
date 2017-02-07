@@ -5,6 +5,10 @@ var emitter = require('emitter');
 
 module.exports = Section;
 
+function shallowEquals() {
+
+}
+
 function Section(ctx) {
 	if (!(this instanceof Section)) return new Section(ctx);
 	Components.call(this, ctx);
@@ -23,12 +27,13 @@ proto.activate = function (name, data) {
 	var currentActive = this.active;
 	// update active section
 	var old = this.active;
-	if (name === currentActive) return this;
+	var component = this.get(name);
+	if (name === currentActive && component.data === data) return this;
 	this.active = name;
 	this.key = name + '-' + Math.round(Math.random()* 1e16);
 	this.emit('active', name, old);
 	// update data argument when passed
-	if (arguments.length > 1) this.get(name).data = data;
+	if (arguments.length > 1) component.data = data;
 	// abort when unloading already in progress
 	if (this.unloading) return this;
 	// unload previous section
