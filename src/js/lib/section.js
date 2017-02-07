@@ -9,6 +9,7 @@ function Section(ctx) {
 	if (!(this instanceof Section)) return new Section(ctx);
 	Components.call(this, ctx);
 	this.active = 'index';
+	this.key = 'index-0';
 }
 
 inherit(Section, Components);
@@ -22,7 +23,9 @@ proto.activate = function (name, data) {
 	var currentActive = this.active;
 	// update active section
 	var old = this.active;
+	if (name === currentActive) return this;
 	this.active = name;
+	this.key = name + '-' + Math.round(Math.random()* 1e16);
 	this.emit('active', name, old);
 	// update data argument when passed
 	if (arguments.length > 1) this.get(name).data = data;

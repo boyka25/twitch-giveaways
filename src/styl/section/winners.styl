@@ -11,6 +11,7 @@
 
 		> select
 			size: 130px @height
+			font-family: monospace
 			border: 0
 
 		> input.term
@@ -29,6 +30,9 @@
 				display: flex
 				align-items: center
 
+			.to
+				margin-top: -2px
+
 			span
 				display: inline-block
 				width: 36px
@@ -40,7 +44,8 @@
 				flex: 1
 				size: 80px 22px
 				font-size: .85em
-				padding: 0 4px
+				padding: 1px 4px 0
+				font-family: monospace
 				border: 0
 
 				&::-webkit-inner-spin-button
@@ -116,6 +121,7 @@
 			z-index: 1
 			height: recordHeight
 			border-bottom: 1px solid colors.lighter
+			// animation-duration: 100ms
 
 			.query
 				color: colors.info
@@ -156,7 +162,6 @@
 				padding: 1px deleteWidth leftSpacing - 1 leftSpacing
 				color: colors.background - 100
 				font-size: .9em
-				background: colors.background
 				overflow: hidden
 
 			&:hover
@@ -182,3 +187,12 @@
 				&:hover
 					color: colors.danger
 					opacity: 1
+
+@keyframes Record-in
+	from
+		transform: translateX(100px)
+		opacity: 0
+
+	to
+		transform: translateX(0px)
+		opacity: 1

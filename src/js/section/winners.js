@@ -2,6 +2,7 @@ var m = require('mithril');
 var icon = require('../component/icon');
 var withKey = require('../lib/withkey');
 var makeDatePicker = require('../lib/datepicker');
+var animate = require('../lib/animate');
 var escapeRegexp = require('escape-regexp');
 var virtualList = require('../component/virtual-list');
 var releaseNames = ['new', 'added', 'removed', 'changed', 'fixed'];
@@ -48,12 +49,17 @@ function view(ctrl) {
 		? new RegExp('(' + escapeRegexp(ctrl.winners.searchTerm) + ')', 'i')
 		: false;
 
-	function renderRecord(i) {
+	var animationIndex = 0;
+
+	function renderRecord(i, firstRender) {
 		var record = ctrl.winners.selected[ctrl.winners.selected.length - i - 1];
 		var displayName = search
 				? m.trust(record.displayName.replace(search, '<span class="query">$1</span>'))
 				: record.displayName;
-		return m('.record', {key: record.id}, [
+		return m('.record', {
+			key: record.id,
+			config: firstRender ? animate('slideinleft', 25 * animationIndex++) : null
+		}, [
 			m('header', [
 				m('.name', {href: 'https://www.twitch.tv/' + record.name}, displayName),
 				m('a.profile', {
@@ -84,7 +90,7 @@ function view(ctrl) {
 	}
 
 	return [
-		m('.controls', [
+		m('.controls', {config: animate('fadein')}, [
 			m('input[type=search].term', {
 				placeholder: 'search...',
 				value: ctrl.winners.searchTerm,
@@ -94,7 +100,9 @@ function view(ctrl) {
 			}),
 			m('select.channel', {onchange: m.withAttr('value', ctrl.winners.switchChannel)},
 				channels.map(function (channel) {
-					return m('option', {value: channel, selected: channel === ctrl.winners.selectedChannel}, channel);
+					var count = ctrl.winners.channels[channel] ? ctrl.winners.channels[channel].length : 0;
+					var name = channel + ' (' + count + ')';
+					return m('option', {value: channel, selected: channel === ctrl.winners.selectedChannel}, name);
 				})
 			),
 			m('.time', [
@@ -102,7 +110,6 @@ function view(ctrl) {
 					m('span', 'From:'),
 					m('input[type=search].date', {
 						oninput: m.withAttr('value', ctrl.winners.from),
-						onkeydown: withKey(27, ctrl.winners.from.bind(null, null)),
 						config: datePicker,
 						placeholder: 'date',
 						value: ctrl.winners.fromTime
@@ -114,7 +121,6 @@ function view(ctrl) {
 					m('span', 'To:'),
 					m('input[type=search].date', {
 						oninput: m.withAttr('value', ctrl.winners.to),
-						onkeydown: withKey(27, ctrl.winners.to.bind(null, null)),
 						config: datePicker,
 						placeholder: 'date',
 						value: ctrl.winners.toTime
@@ -129,7 +135,7 @@ function view(ctrl) {
 			itemSize: 50, itemsCount: ctrl.winners.selected.length,
 			renderItem: renderRecord, renderEmpty: renderEmpty
 		}),
-		m('.stats', [
+		m('.stats', {config: animate('fadein')}, [
 			m('.stat', {'data-tip': 'Number of selected records'}, [
 				m('span.title', 'selected'),
 				m('span.value', ctrl.winners.selected.length)

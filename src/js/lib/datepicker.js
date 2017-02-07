@@ -1,4 +1,5 @@
 var Pikaday = require('../vendor/pikaday');
+var withKey = require('./withkey');
 
 var defaults = {
 	minDate: new Date('01-01-2017'),
@@ -10,8 +11,6 @@ module.exports = function makeDatePicker(options) {
 	return function (el, isInit, ctx) {
 		if (isInit) return;
 
-		console.log(options);
-
 		var picker = new Pikaday({
 			field: el,
 			minDate: options.minDate,
@@ -20,18 +19,32 @@ module.exports = function makeDatePicker(options) {
 			onSelect: mockInputEvent
 		});
 
-		window.picker = picker;
+		el.addEventListener('keydown', resetPicker);
+		el.addEventListener('input', refreshPicker);
 
 		ctx.onunload = function () {
-			console.log('destroying picker');
 			picker.destroy();
+			el.removeEventListener('keydown', resetPicker);
+			el.removeEventListener('input', refreshPicker);
 		};
 
+		function resetPicker(event) {
+			// Escape filter
+			if ((event.which || event.keyCode) !== 27) return;
+			el.value = '';
+			mockInputEvent();
+		}
+
+		function refreshPicker() {
+			var date = new Date(el.value);
+			if (isNaN(date.getTime())) date = null;
+			picker.setDate(date, true);
+			// blur on input reset
+			if (!el.value) setTimeout(function () {el.blur()}, 1);
+		}
+
 		function mockInputEvent() {
-			var event = new Event('input', {bubbles: true, cancelable: true});
-			Object.defineProperty(event, 'keyCode', {value: 13});
-			Object.defineProperty(event, 'which', {value: 13});
-			el.dispatchEvent(event);
+			el.dispatchEvent(new Event('input', {bubbles: true, cancelable: true}));
 		}
 	};
 };

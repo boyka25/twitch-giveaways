@@ -26,7 +26,7 @@ function Messages() {
 		self.store.length = 0;
 	};
 	this.render = function () {
-		return !self.store.length ? null : m('.msgs', self.store.map(function (message, i) {
+		return !self.store.length ? null : m('.msgs', {key: 'messages'}, self.store.map(function (message, i) {
 			return m('.msg.' + message.type, {key: message.text + message.type, config: animate('slideinleft', 50 * i)}, [
 				m('span.text', message.text),
 				m('span.close', {onclick: self.close.bind(self, i)}, icon('close'))

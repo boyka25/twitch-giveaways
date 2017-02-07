@@ -3,7 +3,13 @@ var m = require('mithril');
 module.exports = VirtualList;
 
 function VirtualList() {
-	var container, scrollTop, scrollLeft, width, height;
+	var container;
+	var scrollTop = 0;
+	var scrollLeft = 0;
+	var width = 0;
+	var height = 0;
+	var firstUpdate = true;
+	var firstRrender = false;
 
 	function config(el, isInit, ctx) {
 		if (isInit) return;
@@ -18,7 +24,7 @@ function VirtualList() {
 		};
 
 		// page crashes without timeout here. no idea...
-		setTimeout(update, 100);
+		setTimeout(update, 12);
 	}
 
 	function update() {
@@ -26,6 +32,10 @@ function VirtualList() {
 		scrollLeft = container.scrollLeft;
 		width = container.clientWidth;
 		height = container.clientHeight;
+		if (firstUpdate) {
+			firstUpdate = false;
+			firstRrender = true;
+		}
 		m.redraw();
 	}
 
@@ -33,10 +43,10 @@ function VirtualList() {
 		var v = !props.horizontal;
 		var pos = v ? scrollTop : scrollLeft;
 		var viewSize = v ? height : width;
-		var startIndex = Math.floor(pos / props.itemSize);
-		var endIndex = Math.min(startIndex + Math.ceil(viewSize / props.itemSize), props.itemsCount - 1);
+		var renderCount = Math.min(Math.ceil(viewSize / props.itemSize), props.itemsCount);
+		var startIndex = Math.min(Math.floor(pos / props.itemSize), props.itemsCount - renderCount);
 		var startSpacing = (startIndex * props.itemSize) + 'px';
-		var endSpacing = ((props.itemsCount - endIndex - 1) * props.itemSize) + 'px';
+		var endSpacing = ((props.itemsCount - startIndex - renderCount) * props.itemSize) + 'px';
 		var containerStyle = {
 			overflowX: v ? 'hidden' : 'auto',
 			overflowY: v ? 'auto' : 'hidden'
@@ -55,11 +65,13 @@ function VirtualList() {
 			if (props.renderEmpty) items.push(props.renderEmpty());
 		} else {
 			items.push(m('.start-spacer', {key: 'start-spacer', style: startSpacerStyle}));
-			for (var i = startIndex; i <= endIndex; i++) {
-				items.push(props.renderItem(i));
+			for (var i = startIndex; i < startIndex + renderCount; i++) {
+				items.push(props.renderItem(i, firstRrender));
 			}
 			items.push(m('.end-spacer', {key: 'end-spacer', style: endSpacerStyle}));
 		}
+
+		if (firstRrender) firstRrender = false;
 
 		return m('div', Object.assign({}, props.props, {style: containerStyle, config: config}), items);
 	};

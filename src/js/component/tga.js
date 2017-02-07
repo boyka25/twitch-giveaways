@@ -270,7 +270,7 @@ function Controller(container, config) {
 					nonInteraction: true
 				});
 			} catch (err) {
-				console.log(err);
+				console.error(err);
 			}
 
 			// send 'viewers' event
@@ -418,7 +418,7 @@ function view(ctrl) {
 				}, [icon('help')])
 			]),
 			ctrl.messages.render(),
-			m('section.section.' + ctrl.section.active, {key: 'section-' + ctrl.section.active}, ctrl.section.render()),
+			m('section.section.' + ctrl.section.active, {key: ctrl.section.key}, ctrl.section.render()),
 		])
 	];
 }
