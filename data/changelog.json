@@ -1,5 +1,12 @@
 [
 	{
+		"version": "2.10.10",
+		"date": "Mar 21, 2017",
+		"fixed": [
+			"Past winners were added to the selected channel instead of the main channel they were rolled from."
+		]
+	},
+	{
 		"version": "2.10.0",
 		"date": "Feb 5, 2017",
 		"new": [
