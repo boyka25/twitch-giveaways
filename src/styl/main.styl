@@ -27,4 +27,18 @@ html, body
 	overflow: hidden
 
 	> iframe
+		position: relative
+		z-index: 3
 		flex: 1
+		background: transparent
+
+	> .chat-not-loaded
+		position: absolute
+		z-index: 2
+		top: 50%
+		left: tga.width
+		right: 0
+		transform: translateY(-50%)
+		padding: 0 2em
+		text-align: center
+		color: colors.grey
