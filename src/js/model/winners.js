@@ -122,7 +122,7 @@ Winners.prototype.updateUsed = function () {
 
 Winners.prototype.add = function (data) {
 	if (!this.connected) throw new Error('Can\'t add a winner, store not connected.');
-	var list = this.channels[this.selectedChannel] = this.channels[this.selectedChannel] || [];
+	var list = this.channels[this.channel] = this.channels[this.channel] || [];
 	list.push({
 		id: uid(),
 		name: data.name,
