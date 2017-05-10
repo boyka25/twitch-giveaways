@@ -1,25 +1,86 @@
 .sponsors
-	display: flex
-	flex-flow: row nowrap
+	$height = 60px
+	$color = #666
+	position: relative
+	height: $height
 
-	a
+	.arrow
+		size: 16px
+		position: absolute
+		top: ($height - @height) * .5
+		color: $color
+		opacity: .5
+
+		&:hover
+			opacity: 1
+		&.left
+			left: -@width * .5
+		&.right
+			right: -@width * .5
+
+	.bullets
+		$size = 8px
+		position: absolute
+		bottom: -($size / 2)
 		display: flex
+		width: 100%
+		flex-direction: row
 		justify-content: center
-		align-items: center
-		flex: 1 1 0
-		height: 60px
-		margin: 0
-		padding: 0
-		font-size: 12px
-		line-height: 14px
-		text-align: center
-		text-decoration: none
-		transition: all 100ms ease-out
 
-		img
-			max-height: 100%
+		.bullet
+			size: $size
+			margin: 0 ($size / 4)
+			border: 1px solid $color
+			border-radius: 50%
+			opacity: .5
 
-	.sponsor-placeholder
+			&:hover
+				opacity: 1
+
+			&.active
+				opacity: 1
+				background: $color
+
+
+	.arrow,
+	.bullets
+		z-index: 3
+
+	&:not(:hover)
+		.arrow,
+		.bullets
+			opacity: 0
+
+	.banners
+		position: relative
+		size: 100%
+
+		.banner
+			absolute: left top
+			display: flex
+			justify-content: center
+			align-items: center
+			flex: 1 1 0
+			size: 360px 60px
+			margin: 0
+			padding: 0
+			font-size: 12px
+			line-height: 14px
+			text-align: center
+			text-decoration: none
+			transition: opacity 500ms linear
+			opacity: 0
+			z-index: 1
+
+			&.active
+				opacity: 1
+				z-index: 2
+
+			img
+				max-width: 100%
+				max-height: 100%
+
+	.placeholder
 		position: relative
 		overflow: hidden
 		display: flex
@@ -44,3 +105,16 @@
 			transform: rotate(15deg)
 		&:after
 			transform: rotate(-15deg)
+
+
+@keyframes sponsors-fadein
+	from
+		opacity: 0
+	to
+		opacity: 1
+
+@keyframes sponsors-fadeout
+	from
+		opacity: 1
+	to
+		opacity: 0

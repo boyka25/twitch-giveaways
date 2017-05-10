@@ -1,6 +1,7 @@
 {
 	"storageName": "twitchGiveaways",
 	"sponsorshipEmail": "sponsorship@darsa.in",
+	"sponsorsRotationTime": 7000,
 	"minWindowWidth": 800,
 	"maxSubscriberLuck": 10,
 	"maxActiveTimeout": 14400000,

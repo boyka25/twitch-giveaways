@@ -5,6 +5,7 @@ var withKey = require('../lib/withkey');
 var animate = require('../lib/animate');
 var manyTimes = require('../lib/many-times');
 var config = require('tga/data/config.json');
+var sponsors = require('../component/sponsors');
 
 module.exports = {
 	name: 'index',
@@ -53,7 +54,7 @@ function view(ctrl) {
 	return [
 		m('fieldset.sponsored-by', [
 			m('legend', 'Sponsored by'),
-			require('../component/sponsors').view(ctrl)
+			sponsors()
 		]),
 		m('.controls', [
 			m('.block.groups', Object.keys(ctrl.rolling.groups).map(groupToToggle, ctrl)),

@@ -9,6 +9,7 @@ var twitch = require('../lib/twitch');
 var chat = require('../lib/chat');
 var throttle = require('throttle');
 var callbacks = require('../lib/callbacks');
+var sponsors = require('../component/sponsors');
 
 module.exports = {
 	name: 'profile',
@@ -119,7 +120,7 @@ function view(ctrl) {
 	if (ctrl.loading) return [
 		m('fieldset', [
 			m('legend', 'Sponsored by'),
-			require('../component/sponsors').view(ctrl)
+			sponsors()
 		]),
 		m('.section-spinner')
 	];

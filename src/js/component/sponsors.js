@@ -1,52 +1,106 @@
 var m = require('mithril');
 var e = require('e');
-var Tooltip = require('tooltip');
-var animate = require('../lib/animate');
+var icon = require('../component/icon');
 
-var sponsors = require('tga/data/sponsors.json').filter(activeSponsors);
+var sponsors = require('tga/data/sponsors.json').filter(function (sponsor) {
+	var time = Date.now();
+	return time > new Date(sponsor.start) && time < new Date(sponsor.end);
+});
+var config = require('tga/data/config.json');
 
-module.exports = {
-	name: 'sponsors',
-	view: view
-};
-
-function view(ctrl) {
-	var s = sponsors;
-
-	return m('.sponsors', s[0] && s[0].double ? [sponsor(s[0])] : [
-			s[0] ? sponsor(s[0]) : placeholder(ctrl.config),
-			s[1] ? sponsor(s[1]) : placeholder(ctrl.config)
-	]);
+if (sponsors.length === 0) {
+	sponsors = [renderPlaceholder()];
 }
 
-function sponsor(sponsor) {
+var index = 0;
+var activeSponsor = sponsors[index];
+var prevSponsor;
+var timeoutId;
+
+resume();
+
+function activate(i) {
+	if (i < 0 || i >= sponsors.length) {
+		throw new Error('Trying to activate out of bounds sponsor.');
+	}
+	index = i;
+	prevSponsor = activeSponsor;
+	activeSponsor = sponsors[index];
+	m.redraw();
+}
+
+function next() {
+	activate((index + 1) % sponsors.length);
+}
+
+function prev() {
+	activate(index > 0 ? index - 1 : sponsors.length - 1);
+}
+
+function tick() {
+	next();
+	resume();
+}
+
+function pause() {
+	clearTimeout(timeoutId);
+}
+
+function resume() {
+	pause();
+	if (sponsors.length > 1) {
+		timeoutId = setTimeout(tick, config.sponsorsRotationTime);
+	}
+}
+
+module.exports = function () {
+	return m('.sponsors', {
+		onmouseenter: pause,
+		onmouseleave: resume
+	}, [
+		m('.banners', sponsors.map(function (sponsor) {
+			return renderSponsor(sponsor, sponsor === activeSponsor ? 'active' : '');
+		})),
+		sponsors.length > 1 ? icon('chevron-left', 'arrow left', {onclick: prev}) : null,
+		sponsors.length > 1 ? icon('chevron-right', 'arrow right', {onclick: next}) : null,
+		sponsors.length > 1 ? m('.bullets', sponsors.map(function (_, i) {
+			return m('.bullet', {
+				class: i === index ? 'active' : '',
+				onclick: activate.bind(null, i)
+			})
+		})) : null
+	]);
+};
+
+function renderSponsor(sponsor, classes) {
 	var anchorProps = {
+		key: sponsor.name,
 		href: sponsor.url,
 		target: '_blank',
-		class: sponsor.double ? 'double' : '',
-		config: tooltip(sponsor)
+		class: classes || ''
 	};
 
-	return m('a', anchorProps, [
-		m('img.banner', {
+	return m('a.banner', anchorProps, [
+		m('img', {
 			src: chrome.extension.getURL('banner/' + sponsor.banner)
 		})
 	]);
 }
 
-function placeholder(config) {
+function renderPlaceholder() {
 	var dummySponsor = {
 		name: 'Your name',
 		description: 'And description, leading to your custom URL...'
 	};
 	var linkProps = {
+		key: 'placeholder',
 		href: 'mailto:' + config.sponsorshipEmail,
 		target: '_blank',
-		config: tooltip(dummySponsor)
+		class: ''
 	};
 
-	return m('a', linkProps, [
-		m('.sponsor-placeholder', [
+	return m('a.banner', linkProps, [
+		m('.placeholder', [
 			m('.text', [
 				'Sponsor ',
 				m('strong', 'Twitch Giveaways'),
@@ -55,42 +109,4 @@ function placeholder(config) {
 			])
 		])
 	]);
-}
-
-function activeSponsors(sponsor) {
-	var time = Date.now();
-	return time > new Date(sponsor.start) && time < new Date(sponsor.end);
-}
-
-function tooltip(sponsor) {
-	return function (el, isInit, ctx) {
-		if (isInit) return;
-
-		var content = e([
-			e('strong', sponsor.name),
-			e('br'),
-			e('small', sponsor.description)
-		]);
-		var options = {
-			baseClass: 'tgatip',
-			auto: 1,
-			effectClass: 'slide'
-		};
-
-		ctx.tip = new Tooltip(content, options);
-		ctx.show = function () {
-			ctx.tip.show(el);
-		};
-		ctx.hide = function () {
-			ctx.tip.hide();
-		};
-		ctx.onunload = function () {
-			ctx.hide();
-			el.removeEventListener('mouseover', ctx.show);
-			el.removeEventListener('mouseout', ctx.hide);
-		};
-
-		el.addEventListener('mouseover', ctx.show);
-		el.addEventListener('mouseout', ctx.hide);
-	}
 }
