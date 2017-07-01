@@ -88,7 +88,7 @@ function subscribedIcon(user) {
 	}
 
 	var subBadgeVersionID = user.subscribedTime/1 === 1 ? 0 : user.subscribedTime;
-	var subBadgeURL = user.subscriber && channel.badges
+	var subBadgeURL = user.subscriber && channel.badges && channel.badges.subscriber && channel.badges.subscriber.versions
 		? channel.badges.subscriber.versions[subBadgeVersionID].image_url_2x
 		: false;
 
