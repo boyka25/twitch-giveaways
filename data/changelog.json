@@ -1,5 +1,12 @@
 [
 	{
+		"version": "2.10.14",
+		"date": "Jul 01, 2017",
+		"fixed": [
+			"App freezing when subscribers spoke in affiliated channels."
+		]
+	},
+	{
 		"version": "2.10.10",
 		"date": "Mar 21, 2017",
 		"fixed": [
