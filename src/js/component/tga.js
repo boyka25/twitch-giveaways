@@ -210,9 +210,9 @@ function Controller(container, config) {
 	});
 	this.setter.on('search', self.requestUpdateSelectedUsers);
 
-	// rolling function
+	// Rolling function
 	this.roll = function () {
-		// Blur active element, since there is a chrome rendering bug this.
+		// Blur active element to work around this chrome rendering bug:
 		// When section changes while some of the range inputs is focused,
 		// Chrome will not clear the old index.js section from raster,
 		// although it is no longer in DOM. This was causing loading indicator
@@ -223,12 +223,15 @@ function Controller(container, config) {
 
 		self.messages.clear();
 
+		// Create rolling pool
 		var pool = [];
 		var subLuck = self.rolling.subscriberLuck;
 		for (var i = 0, j, user; user = self.selectedUsers[i], i < self.selectedUsers.length; i++) {
 			if (!user.eligible) continue;
-			if (user.subscriber && subLuck > 1)
+			if (user.subscriber && subLuck > 1) {
+				// Duplicate subscirbers in the rolling pool to simulate luck
 				for (j = 0; j < subLuck; j++) pool.push(user);
+			}
 			else pool.push(user);
 		}
 
@@ -237,28 +240,46 @@ function Controller(container, config) {
 			return;
 		}
 
-		// clean current winner data
+		// Clean current winner data
 		if (self.winner) {
 			delete self.winner.rolledAt;
 			delete self.winner.respondedAt;
 			delete self.winner.messages;
 		}
 
+		// Pick random winner from pool
+		var winner = pool[Math.random() * pool.length | 0];
+		winner.messages = [];
+		winner.rolledAt = new Date();
 
+		// Uncheck winner
+		if (self.options.uncheckWinners) {
+			winner.eligible = false;
+		}
+
+		// Announce winner in chat
+		if (self.options.announceWinner) {
+			chat.post(String(self.options.announceTemplate).replace('{name}', winner.name));
+		}
+
+		// Set winner and open their profile
+		self.setter('winner')(winner);
+		self.section.activate('profile', winner);
+
+		// Add winner to the recent winners database
 		channel.channel()
 			.then(null, function (err) {
 				console.error(err);
 				return false;
 			}).then(function (stream) {
 				self.winners.add({
-					name: self.winner.name,
-					displayName: self.winner.displayName || self.winner.name,
+					name: winner.name,
+					displayName: winner.displayName || winner.name,
 					title: stream ? stream.status : 'couldn\'t retrieve stream title'
 				});
 			});
 
-		// send viewers + entered tracking events if user has management rights
-		// on the channel
+		// Gather some analytics
 		if (chat.user.broadcaster || chat.user.moderator) {
 			try {
 				// send 'entered' event
@@ -287,25 +308,6 @@ function Controller(container, config) {
 				console.error(err);
 			});
 		}
-
-		// pick random winner from array of eligible users
-		var winner = pool[Math.random() * pool.length | 0];
-		winner.messages = [];
-		winner.rolledAt = new Date();
-
-		// uncheck winner
-		if (self.options.uncheckWinners) {
-			winner.eligible = false;
-		}
-
-		// announce winner
-		if (self.options.announceWinner) {
-			chat.post(String(self.options.announceTemplate).replace('{name}', winner.name));
-		}
-
-		// set winner and open their profile
-		self.setter('winner')(winner);
-		self.section.activate('profile', winner);
 	};
 
 	// components

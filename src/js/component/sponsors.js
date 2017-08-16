@@ -98,7 +98,7 @@ function renderPlaceholder() {
 			m('.text', [
 				'Sponsor ',
 				m('strong', 'Twitch Giveaways'),
-				' and get your logo ',
+				' and get your banner ',
 				m('strong', 'HERE')
 			])
 		])
