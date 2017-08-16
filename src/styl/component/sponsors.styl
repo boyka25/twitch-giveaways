@@ -3,6 +3,7 @@
 	$color = #666
 	position: relative
 	height: $height
+	margin-top: 4px
 
 	.arrow
 		size: 16px
@@ -84,28 +85,16 @@
 		position: relative
 		overflow: hidden
 		display: flex
-		margin: 0px 4px
-		padding: 8px 4px
+		size: 100%
 		justify-content: center
 		align-items: center
-		color: rgba(0,0,0,.5)
+		color: rgba(0,0,0,.4)
+		font-size: 1.1em
 		text-shadow: 1px 1px white, -1px -1px white
+		border: 1px dashed rgba(#000, .05)
 
 		&:hover
 			color: #222
-
-		&:before,
-		&:after
-			content: ''
-			absolute: top 50% left
-			display: block
-			size: 100% 1px
-			background: rgba(0,0,0,.03)
-		&:before
-			transform: rotate(15deg)
-		&:after
-			transform: rotate(-15deg)
-
 
 @keyframes sponsors-fadein
 	from

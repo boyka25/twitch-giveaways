@@ -7,11 +7,6 @@ var sponsors = require('tga/data/sponsors.json').filter(function (sponsor) {
 	return time > new Date(sponsor.start) && time < new Date(sponsor.end);
 });
 var config = require('tga/data/config.json');
-
-if (sponsors.length === 0) {
-	sponsors = [renderPlaceholder()];
-}
-
 var index = 0;
 var activeSponsor = sponsors[index];
 var prevSponsor;
@@ -58,9 +53,12 @@ module.exports = function () {
 		onmouseenter: pause,
 		onmouseleave: resume
 	}, [
-		m('.banners', sponsors.map(function (sponsor) {
-			return renderSponsor(sponsor, sponsor === activeSponsor ? 'active' : '');
-		})),
+		m('.banners', sponsors.length > 0
+			? sponsors.map(function (sponsor) {
+				return renderSponsor(sponsor, sponsor === activeSponsor ? 'active' : '');
+			})
+			: renderPlaceholder()
+		),
 		sponsors.length > 1 ? icon('chevron-left', 'arrow left', {onclick: prev}) : null,
 		sponsors.length > 1 ? icon('chevron-right', 'arrow right', {onclick: next}) : null,
 		sponsors.length > 1 ? m('.bullets', sponsors.map(function (_, i) {
@@ -88,10 +86,6 @@ function renderSponsor(sponsor, classes) {
 }
 
 function renderPlaceholder() {
-	var dummySponsor = {
-		name: 'Your name',
-		description: 'And description, leading to your custom URL...'
-	};
 	var linkProps = {
 		key: 'placeholder',
 		href: 'mailto:' + config.sponsorshipEmail,
@@ -99,7 +93,7 @@ function renderPlaceholder() {
 		class: ''
 	};
 
-	return m('a.banner', linkProps, [
+	return m('a.banner active', linkProps, [
 		m('.placeholder', [
 			m('.text', [
 				'Sponsor ',
