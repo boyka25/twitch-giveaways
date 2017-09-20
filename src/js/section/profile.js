@@ -118,8 +118,8 @@ function Controller(user) {
 
 function view(ctrl) {
 	if (ctrl.loading) return [
-		m('fieldset', [
-			m('legend', 'Sponsored by'),
+		m('fieldset.sponsored-by', [
+			m('legend', 'Twitch Giveaways is sponsored by'),
 			sponsors()
 		]),
 		m('.section-spinner')
@@ -131,6 +131,9 @@ function view(ctrl) {
 	var elapsed = timespan(user.respondedAt ? user.respondedAt - user.rolledAt : new Date() - user.rolledAt, 2);
 	return [
 		m('.card', [
+			m('.title', {config: animate('slideintop', i++ * 50 + 200)}, [
+				m('h1', user.displayName)
+			]),
 			m('.lead', [
 				m('.emblem', {config: animate('rotatein', 0, 600)}, [
 					m('a', {href: user.profileURL, target: '_blank'}, [
@@ -161,10 +164,11 @@ function view(ctrl) {
 						m('span.name', 'Send message')
 					])
 				])
-			]),
-			m('.title', {config: animate('slideintop', i++ * 50 + 200)}, [
-				m('h1', user.displayName)
 			])
+		]),
+		m('fieldset.sponsored-by', [
+			m('legend', 'Twitch Giveaways is sponsored by'),
+			sponsors()
 		]),
 		m('.messages', [
 			m('h2.title', {config: animate('slideinleft', i++ * 50 + 200)}, [

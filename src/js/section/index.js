@@ -53,7 +53,7 @@ function view(ctrl) {
 	var i = 0;
 	return [
 		m('fieldset.sponsored-by', [
-			m('legend', 'Sponsored by'),
+			m('legend', 'Twitch Giveaways is sponsored by'),
 			sponsors()
 		]),
 		m('.controls', [
