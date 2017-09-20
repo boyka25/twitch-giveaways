@@ -57,6 +57,8 @@ function staticScriptStream() {
 	var files = [
 		'./src/js/background.js',
 		'./src/js/content.js',
+		'./src/js/options.js',
+		'./src/js/popup.js',
 		'./src/js/content-analytics.js',
 		'./src/js/chat-listener.js'
 	];

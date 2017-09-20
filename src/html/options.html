@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Options - Twitch Giveaways</title>
+		<style>
+			* { box-sizing: border-box; }
+			html, body { margin: 0; padding: 0; }
+			body { padding: 0 1em 1em; }
+			textarea { width: 100%; font-family: monospace; font-size: 1.5em }
+			.saved {
+				position: fixed;
+				top: 0;
+				right: 0;
+				padding: .4em .8em;
+				margin: .5em;
+				color: #fff;
+				background: #468B46;
+				border-radius: 2px;
+			}
+		</style>
+	</head>
+	<body>
+		<h2>Quick access button channel shortcuts</h2>
+		<p>Lower cased channel name on each line creates a shortcut.</p>
+		<textarea id="quick-access-channels" rows="5"></textarea>
+		<p>
+			Shortcuts are displayed in the small menu after clicking the extension button in the Chrome bar.
+			<br>
+			If there is only one channel shortcut, it will be opened immediately.
+			<br>
+			You can get channel names from their URLs. For example:
+			<br>
+			<code>https://www.twitch.tv/<strong>channelname</strong></code>
+		</p>
+
+		<div id="saved" class="saved">Saved</div>
+
+		<script src="options.js"></script>
+	</body>
+</html>
