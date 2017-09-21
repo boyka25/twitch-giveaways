@@ -2,11 +2,15 @@ var m = require('mithril');
 var e = require('e');
 var icon = require('../component/icon');
 
+var config = require('tga/data/config.json');
 var sponsors = require('tga/data/sponsors.json').filter(function (sponsor) {
 	var time = Date.now();
 	return time > new Date(sponsor.start) && time < new Date(sponsor.end);
 });
-var config = require('tga/data/config.json');
+sponsors.push({
+	name: 'Sponsor TGA',
+	message: 'Sponsor <strong>Twitch Giveaways</strong> and get your banner <strong>HERE</strong>! Email: <a href="mailto:' + config.sponsorshipEmail + '" target="_blank">' + config.sponsorshipEmail + '</a>',
+});
 var index = 0;
 var activeSponsor = sponsors[index];
 var prevSponsor;
@@ -53,12 +57,9 @@ module.exports = function () {
 		onmouseenter: pause,
 		onmouseleave: resume
 	}, [
-		m('.banners', sponsors.length > 0
-			? sponsors.map(function (sponsor) {
-				return renderSponsor(sponsor, sponsor === activeSponsor ? 'active' : '');
-			})
-			: renderPlaceholder()
-		),
+		m('.banners', sponsors.map(function (sponsor) {
+			return renderSponsor(sponsor, sponsor === activeSponsor ? 'active' : '');
+		})),
 		sponsors.length > 1 ? icon('chevron-left', 'arrow left', {onclick: prev}) : null,
 		sponsors.length > 1 ? icon('chevron-right', 'arrow right', {onclick: next}) : null,
 		sponsors.length > 1 ? m('.bullets', sponsors.map(function (_, i) {
@@ -71,36 +72,22 @@ module.exports = function () {
 };
 
 function renderSponsor(sponsor, classes) {
-	var anchorProps = {
-		key: sponsor.name,
-		href: sponsor.url,
-		target: '_blank',
-		class: classes || ''
-	};
+	var content = sponsor.message
+		? m('.message', m('.text', m.trust(sponsor.message)))
+		: m('img', {src: chrome.extension.getURL('banner/' + sponsor.banner)});
 
-	return m('a.banner', anchorProps, [
-		m('img', {
-			src: chrome.extension.getURL('banner/' + sponsor.banner)
-		})
-	]);
-}
+	if (sponsor.url) {
+		return m('a.banner', {
+			key: sponsor.name,
+			href: sponsor.url,
+			target: '_blank',
+			class: classes || ''
+		}, [content]);
+	} else {
+		return m('.banner', {
+			key: sponsor.name,
+			class: classes || ''
+		}, [content]);
+	}
 
-function renderPlaceholder() {
-	var linkProps = {
-		key: 'placeholder',
-		href: 'mailto:' + config.sponsorshipEmail,
-		target: '_blank',
-		class: ''
-	};
-
-	return m('a.banner active', linkProps, [
-		m('.placeholder', [
-			m('.text', [
-				'Sponsor ',
-				m('strong', 'Twitch Giveaways'),
-				' and get your banner ',
-				m('strong', 'HERE')
-			])
-		])
-	]);
 }
