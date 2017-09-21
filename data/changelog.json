@@ -1,5 +1,12 @@
 [
 	{
+		"version": "2.11.0",
+		"date": "Sep 21, 2017",
+		"new": [
+			"Added quick access channel shortcuts to Chrome bar button, so it's no longer useless, and you don't have to open the channel chat to open its giveaways. If there is only one shortcut, it will be opened immediately after clicking the button. Add shortcuts in extension options (More Tools > Extensions > Twitch Giveaways > Options)."
+		]
+	},
+	{
 		"version": "2.10.14",
 		"date": "Jul 01, 2017",
 		"fixed": [
