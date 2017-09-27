@@ -1,5 +1,12 @@
 [
 	{
+		"version": "2.12.0",
+		"date": "Sep 27, 2017",
+		"new": [
+			"\"Open TGA\" button is now also displayed in the new go.twitch.tv beta chats. But consider using the new quick access via chrome bar extension button. It's faster."
+		]
+	},
+	{
 		"version": "2.11.0",
 		"date": "Sep 21, 2017",
 		"new": [
