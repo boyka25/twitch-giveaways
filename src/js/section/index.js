@@ -136,8 +136,23 @@ function view(ctrl) {
 						m('a[href="#"]', {onmousedown: ctrl.toSection('config')}, 'Settings'),
 						'.'
 					])
-				])
+				]),
 
+				// forbidden words
+				m('.option', {key: 'forbiddenWords', config: animate('slideinleft', 50 * i++)}, [
+					m('label[for=forbiddenWords]', 'Forbidden words'),
+					m('input[type=text]#forbiddenWords', {
+						value: ctrl.options.forbiddenWords,
+						placeholder: 'naughty,words,like,this',
+						oninput: m.withAttr('value', ctrl.setter('options.forbiddenWords')),
+						onkeydown: withKey(27, ctrl.setter('options.forbiddenWords').to(''))
+					}),
+					m('p.description.sameline', [
+						'Comma separated list of words. See ',
+						m('a[href="#"]', {onmousedown: ctrl.toSection('about')}, 'FAQ > Forbidden words'),
+						'.'
+					])
+				]),
 			]),
 			m('.block.actions', [
 				m('.btn.btn-info.reset', {
@@ -239,7 +254,7 @@ tabs.keyword = {
 	},
 	view: function (ctrl) {
 		return [
-			m('.option.keyword' + (ctrl.rolling.keyword ? '.active' : ''), {key: 'keyword', config: animate('slideinleft', 0)}, [
+			m('.keyword' + (ctrl.rolling.keyword ? '.active' : ''), {key: 'keyword', config: animate('slideinleft', 0)}, [
 				m('input[type=text].word', {
 					value: ctrl.rolling.keyword,
 					placeholder: 'Enter keyword ...',

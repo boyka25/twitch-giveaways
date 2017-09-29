@@ -6,6 +6,7 @@
 	"keywordAntispam": false,
 	"keywordAntispamLimit": 1,
 	"displayTooltips": true,
+	"forbiddenWords": "",
 	"ignoreList": [
 		"jtv",
 		"nightbot",

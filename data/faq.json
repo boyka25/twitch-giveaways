@@ -23,14 +23,22 @@
 		]
 	},
 	{
-		"question": "Subscriber luck, how does it work?",
+		"question": "Subscriber luck",
 		"answer": [
 			"Subscriber luck specifies how many times are subscribers likely to win as opposed to regular users.",
 			"For example, Subscriber luck 3 is the same as if every subscriber was in the list 3 times."
 		]
 	},
 	{
-		"question": "Search filters?",
+		"question": "Forbidden words",
+		"answer": [
+			"A comma separated list of forbidden words. Any user that writes any of the specified words in chat will be unchecked - made not eligible to win.",
+			"You can see who has been unchecked by searching for <strong><code>!</code></strong> (see <em>Search filters</em> below).",
+			"You can reset all unchecked people by clicking the blue circle \"Reset eligible status\" button next to the big green \"Roll\" button."
+		]
+	},
+	{
+		"question": "Search filters",
 		"answer": [
 			"Special characters that, when entered as a first letter of a search query, apply a special filter to results.",
 			"Available search filters are:",
@@ -45,7 +53,7 @@
 		"question": "When are people unchecked?",
 		"answer": [
 			"People are unchecked (made not eligible to win) when:",
-			"<ul><li>You manually click on them in the list.</li><li>They spam keyword and <strong>Keyword antispam</strong> is enabled.</li><li>They've already won once and <strong>Uncheck winners</strong> is enabled.</li></ul>"
+			"<ul><li>You manually click on them in the list.</li><li>They spam keyword and <strong>Keyword antispam</strong> is enabled.</li><li>They write one of the <strong>Forbidden words</strong>.</li><li>They've already won once and <strong>Uncheck winners</strong> is enabled.</li></ul>"
 		]
 	},
 	{

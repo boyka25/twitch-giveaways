@@ -71,6 +71,7 @@ function Controller(container, config) {
 		subscriberLuck: 1,
 		minBits: 0,
 		subscribedTime: 0,
+		forbiddenWords: [],
 		groups: {
 			staff: true,
 			admin: true,
@@ -164,6 +165,16 @@ function Controller(container, config) {
 		}
 		user.lastMessage = new Date();
 		if (self.winner === user) user.messages.push(new Message(message));
+		if (self.rolling.forbiddenWords.length > 0) {
+			var lowercaseMessage = String(message.text).replace(' ', '').toLowerCase();
+			var forbiddenCount = self.rolling.forbiddenWords.reduce(function (acc, word) {
+				return lowercaseMessage.indexOf(word) > -1 ? acc + 1 : acc;
+			}, 0);
+			if (forbiddenCount > 0) {
+				user.eligible = false;
+				self.requestUpdateSelectedUsers();
+			}
+		}
 		if (self.rolling.keyword) {
 			var keywordIndex = self.rolling.caseSensitive
 				? message.text.indexOf(self.rolling.keyword)
@@ -209,6 +220,21 @@ function Controller(container, config) {
 		self.searchQuery = self.searchFilter ? self.search.substr(1).trim() : self.search;
 	});
 	this.setter.on('search', self.requestUpdateSelectedUsers);
+
+	// forbidden words
+	this.setter.on('options.forbiddenWords', serializeForbiddenWords);
+	serializeForbiddenWords();
+	function serializeForbiddenWords() {
+		var list = String(self.options.forbiddenWords)
+			.split(',')
+			.map(function (word) {
+				return word.trim().toLowerCase();
+			})
+			.filter(function (word) {
+				return word;
+			});
+		self.setter('rolling.forbiddenWords')(list);
+	}
 
 	// Rolling function
 	this.roll = function () {
