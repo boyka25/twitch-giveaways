@@ -9,7 +9,7 @@ var sponsors = require('tga/data/sponsors.json').filter(function (sponsor) {
 });
 sponsors.push({
 	name: 'Sponsor TGA',
-	message: 'Sponsor <strong>Twitch Giveaways</strong> and get your banner <strong>HERE</strong>! Email: <a href="mailto:' + config.sponsorshipEmail + '" target="_blank">' + config.sponsorshipEmail + '</a>',
+	message: 'Sponsor Twitch Giveaways!<br><a href="mailto:' + config.sponsorshipEmail + '" target="_blank"><strong>' + config.sponsorshipEmail + '</strong></a>',
 });
 var index = 0;
 var activeSponsor = sponsors[index];
