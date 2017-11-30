@@ -1,5 +1,12 @@
 [
 	{
+		"version": "2.13.2",
+		"date": "Nov 30, 2017",
+		"new": [
+			"Fixed TGA button not appearing in chats. Although this is fixed, you should consider switching to extension Chrome bar quick access button, since it's more stable and has no chance of breaking like this. You can configure which channels you want to appear there by clicking on it and following instructions, or in More tools -> Extensions -> Twitch Giveaways -> Options."
+		]
+	},
+	{
 		"version": "2.13.0",
 		"date": "Sep 29, 2017",
 		"new": [
