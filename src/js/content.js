@@ -42,9 +42,6 @@ if (window.name === 'tga-embedded-chat') {
 		button.href = chrome.extension.getURL('main.html?channel=' + channel);
 		if (button.parentNode !== container) container.appendChild(button);
 	}, 1000);
-	// content analytics
-	// disabled due to triggering too many events
-	// inject({src: chrome.extension.getURL('content-analytics.js')});
 }
 
 function getChannelName() {
