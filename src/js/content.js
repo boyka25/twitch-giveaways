@@ -24,6 +24,7 @@ if (window.name === 'tga-embedded-chat') {
 	// Keep updating TGA button
 	setInterval(function (callback) {
 		var container = document.querySelector('.chat-buttons-container');
+		if (!container) container = document.querySelector('.chat-input__buttons-container');
 		if (!container) return;
 
 		channel = getChannelName();
